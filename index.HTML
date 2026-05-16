@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ — Shoot2Sell Photography</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --white: #ffffff;
+    --black: #0a0a0a;
+    --gray-100: #f7f7f7;
+    --gray-200: #ebebeb;
+    --gray-300: #d4d4d4;
+    --gray-400: #a3a3a3;
+    --gray-500: #737373;
+    --gray-700: #404040;
+    --gray-900: #171717;
+    --red: #C8102E;
+    --red-dark: #a00d24;
+    --red-muted: #f9e8eb;
+    --font: 'Montserrat', sans-serif;
+    --nav-h: 68px;
+    --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font);
+    background: var(--white);
+    color: var(--black);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--nav-h);
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    z-index: 100;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--black);
+  }
+
+  .nav-logo-mark {
+    width: 32px;
+    height: 32px;
+  }
+
+  .nav-logo-text {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--black);
+  }
+
+  .nav-logo-text span {
+    color: var(--red);
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .nav-links a {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gray-500);
+    text-decoration: none;
+    letter-spacing: 0.2px;
+    transition: color var(--transition);
+  }
+
+  .nav-links a:hover { color: var(--black); }
+
+  .nav-cta {
+    background: var(--black) !important;
+    color: var(--white) !important;
+    padding: 9px 20px;
+    border-radius: 6px;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.3px;
+    transition: background var(--transition) !important;
+  }
+
+  .nav-cta:hover { background: var(--gray-900) !important; }
+
+  /* ── HERO ── */
+  .hero {
+    padding-top: calc(var(--nav-h) + 88px);
+    padding-bottom: 80px;
+    text-align: center;
+    background: var(--white);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: var(--nav-h);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(200,16,46,0.055) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 22px;
+  }
+
+  .hero-eyebrow::before,
+  .hero-eyebrow::after {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 1px;
+    background: var(--red);
+    opacity: 0.5;
+  }
+
+  h1 {
+    font-size: clamp(40px, 5.5vw, 68px);
+    font-weight: 800;
+    letter-spacing: -2.5px;
+    line-height: 1.05;
+    color: var(--black);
+    margin-bottom: 20px;
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--red);
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    font-weight: 400;
+    color: var(--gray-500);
+    line-height: 1.65;
+    max-width: 480px;
+    margin: 0 auto 44px;
+    letter-spacing: -0.1px;
+  }
+
+  /* ── SEARCH ── */
+  .search-wrap {
+    max-width: 560px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    pointer-events: none;
+    color: var(--gray-400);
+  }
+
+  .search-input {
+    width: 100%;
+    height: 56px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 12px;
+    font-family: var(--font);
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--black);
+    background: var(--white);
+    padding: 0 52px 0 52px;
+    outline: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+    letter-spacing: -0.1px;
+  }
+
+  .search-input::placeholder { color: var(--gray-400); }
+
+  .search-input:focus {
+    border-color: var(--black);
+    box-shadow: 0 0 0 4px rgba(10,10,10,0.06);
+  }
+
+  .search-clear {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: var(--gray-200);
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--transition);
+  }
+
+  .search-clear:hover { background: var(--gray-300); }
+  .search-clear.visible { display: flex; }
+
+  .search-clear svg {
+    width: 12px;
+    height: 12px;
+    stroke: var(--gray-700);
+  }
+
+  .search-hint {
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--gray-400);
+    font-weight: 500;
+    letter-spacing: 0.1px;
+  }
+
+  /* ── STATS STRIP ── */
+  .stats-strip {
+    background: var(--gray-100);
+    border-top: 1px solid var(--gray-200);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 28px 0;
+  }
+
+  .stats-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 64px;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--black);
+    letter-spacing: -0.8px;
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gray-400);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-top: 2px;
+    display: block;
+  }
+
+  .stat-div {
+    width: 1px;
+    height: 36px;
+    background: var(--gray-300);
+  }
+
+  /* ── MAIN ── */
+  .main {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 72px 48px 120px;
+  }
+
+  /* ── CATEGORIES ── */
+  .categories-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    margin-bottom: 16px;
+  }
+
+  .categories-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 64px;
+  }
+
+  .cat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 100px;
+    border: 1.5px solid var(--gray-200);
+    background: var(--white);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-500);
+    cursor: pointer;
+    transition: all var(--transition);
+    letter-spacing: 0.1px;
+    white-space: nowrap;
+  }
+
+  .cat-pill svg {
+    width: 15px;
+    height: 15px;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    fill: none;
+    flex-shrink: 0;
+  }
+
+  .cat-pill:hover {
+    border-color: var(--gray-400);
+    color: var(--black);
+  }
+
+  .cat-pill.active {
+    background: var(--black);
+    border-color: var(--black);
+    color: var(--white);
+  }
+
+  .cat-pill.active svg {
+    stroke: var(--white);
+  }
+
+  /* ── SECTION HEADERS ── */
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1.5px solid var(--gray-200);
+  }
+
+  .section-icon-box {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    border: 1.5px solid var(--gray-200);
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .section-icon-box svg {
+    width: 20px;
+    height: 20px;
+    stroke: var(--black);
+    stroke-width: 1.6;
+    fill: none;
+  }
+
+  .section-header-text h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--black);
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
+
+  .section-header-text p {
+    font-size: 13px;
+    color: var(--gray-500);
+    margin-top: 3px;
+    font-weight: 500;
+  }
+
+  /* ── FAQ BLOCK ── */
+  .faq-block {
+    margin-bottom: 64px;
+    display: none;
+  }
+
+  .faq-block.visible {
+    display: block;
+  }
+
+  /* ── ACCORDION ── */
+  .accordion-item {
+    border-bottom: 1px solid var(--gray-200);
+    transition: background var(--transition);
+  }
+
+  .accordion-item:first-child {
+    border-top: none;
+  }
+
+  .accordion-trigger {
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 22px 0;
+    text-align: left;
+    font-family: var(--font);
+    transition: opacity var(--transition);
+  }
+
+  .accordion-trigger:hover .accordion-q {
+    color: var(--black);
+  }
+
+  .accordion-q {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gray-700);
+    line-height: 1.45;
+    letter-spacing: -0.2px;
+    transition: color var(--transition);
+  }
+
+  .accordion-item.open .accordion-q {
+    color: var(--black);
+  }
+
+  .accordion-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gray-300);
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: border-color var(--transition), background var(--transition), transform var(--transition);
+  }
+
+  .accordion-icon svg {
+    width: 13px;
+    height: 13px;
+    stroke: var(--gray-500);
+    stroke-width: 2.2;
+    fill: none;
+    transition: all var(--transition);
+  }
+
+  .accordion-item.open .accordion-icon {
+    background: var(--black);
+    border-color: var(--black);
+    transform: rotate(45deg);
+  }
+
+  .accordion-item.open .accordion-icon svg {
+    stroke: var(--white);
+  }
+
+  .accordion-body {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .accordion-answer {
+    padding: 0 48px 24px 0;
+    font-size: 14.5px;
+    color: var(--gray-500);
+    line-height: 1.75;
+    font-weight: 400;
+    letter-spacing: -0.1px;
+  }
+
+  .accordion-answer p + p { margin-top: 12px; }
+
+  .accordion-answer ul {
+    margin: 10px 0 10px 0;
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .accordion-answer ul li {
+    padding-left: 18px;
+    position: relative;
+    margin-bottom: 6px;
+  }
+
+  .accordion-answer ul li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--red);
+    font-weight: 700;
+  }
+
+  .accordion-answer strong {
+    color: var(--black);
+    font-weight: 600;
+  }
+
+  /* ── NO RESULTS ── */
+  .no-results {
+    display: none;
+    text-align: center;
+    padding: 80px 0;
+  }
+
+  .no-results.visible { display: block; }
+
+  .no-results-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 20px;
+    stroke: var(--gray-300);
+    stroke-width: 1.4;
+    fill: none;
+  }
+
+  .no-results h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 8px;
+    letter-spacing: -0.4px;
+  }
+
+  .no-results p {
+    font-size: 14px;
+    color: var(--gray-400);
+    font-weight: 400;
+  }
+
+  /* ── CTA FOOTER ── */
+  .cta-section {
+    background: var(--gray-900);
+    padding: 80px 48px;
+    text-align: center;
+  }
+
+  .cta-inner {
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .cta-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 18px;
+    display: block;
+  }
+
+  .cta-h {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--white);
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .cta-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.5);
+    font-weight: 400;
+    margin-bottom: 36px;
+    line-height: 1.6;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--red);
+    color: var(--white);
+    border: none;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    padding: 14px 28px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background var(--transition), transform var(--transition);
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-primary:hover {
+    background: var(--red-dark);
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.85);
+    border: 1px solid rgba(255,255,255,0.15);
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    padding: 14px 28px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background var(--transition);
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-secondary:hover { background: rgba(255,255,255,0.12); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--black);
+    padding: 32px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .footer-logo {
+    font-size: 14px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: -0.2px;
+  }
+
+  .footer-logo span { color: var(--red); }
+
+  .footer-copy {
+    font-size: 12px;
+    color: rgba(255,255,255,0.25);
+    font-weight: 400;
+  }
+
+  /* ── HIGHLIGHT ── */
+  mark {
+    background: rgba(200,16,46,0.12);
+    color: var(--red-dark);
+    border-radius: 2px;
+    padding: 0 2px;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-eyebrow { animation: fadeUp 0.5s ease both; }
+  h1 { animation: fadeUp 0.5s 0.08s ease both; }
+  .hero-sub { animation: fadeUp 0.5s 0.15s ease both; }
+  .search-wrap { animation: fadeUp 0.5s 0.22s ease both; }
+  .search-hint { animation: fadeUp 0.5s 0.28s ease both; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 0 24px; }
+    .nav-links { display: none; }
+    .hero { padding-top: calc(var(--nav-h) + 60px); padding-bottom: 60px; }
+    h1 { font-size: 36px; letter-spacing: -1.5px; }
+    .stats-inner { gap: 32px; padding: 0 24px; }
+    .main { padding: 48px 24px 80px; }
+    .cta-section { padding: 60px 24px; }
+    footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <svg class="nav-logo-mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="32" height="32" rx="7" fill="#0a0a0a"/>
+      <circle cx="16" cy="14" r="5.5" stroke="white" stroke-width="1.6" fill="none"/>
+      <circle cx="16" cy="14" r="2" fill="#C8102E"/>
+      <rect x="8" y="22" width="16" height="2" rx="1" fill="#C8102E"/>
+    </svg>
+    <span class="nav-logo-text">Shoot<span>2</span>Sell</span>
+  </a>
+  <div class="nav-links">
+    <a href="#">Services</a>
+    <a href="#">Pricing</a>
+    <a href="#">Portfolio</a>
+    <a href="#">Markets</a>
+    <a href="#" class="nav-cta">Book a Shoot</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Help Center</div>
+  <h1>Questions? We have<br><em>clear answers.</em></h1>
+  <p class="hero-sub">Everything you need to know about booking, turnaround, media delivery, and working with Shoot2Sell.</p>
+
+  <div class="search-wrap">
+    <svg class="search-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+      <circle cx="8.5" cy="8.5" r="5.5"/>
+      <path d="M14.5 14.5 L18 18" stroke-linecap="round"/>
+    </svg>
+    <input
+      class="search-input"
+      id="searchInput"
+      type="text"
+      placeholder="Search questions — e.g. turnaround time, floor plans…"
+      autocomplete="off"
+    />
+    <button class="search-clear" id="searchClear" aria-label="Clear search">
+      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M1 1 L11 11 M11 1 L1 11"/>
+      </svg>
+    </button>
+  </div>
+  <p class="search-hint">32 questions across 6 categories</p>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <span class="stat-num">24hr</span>
+      <span class="stat-label">Turnaround</span>
+    </div>
+    <div class="stat-div"></div>
+    <div class="stat-item">
+      <span class="stat-num">4</span>
+      <span class="stat-label">TX Markets</span>
+    </div>
+    <div class="stat-div"></div>
+    <div class="stat-item">
+      <span class="stat-num">32%</span>
+      <span class="stat-label">Faster Sales</span>
+    </div>
+    <div class="stat-div"></div>
+    <div class="stat-item">
+      <span class="stat-num">87%</span>
+      <span class="stat-label">Buyers Use Photos</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- CATEGORIES -->
+  <p class="categories-label">Browse by category</p>
+  <div class="categories-row" id="catRow">
+    <button class="cat-pill active" data-cat="all">
+      <svg viewBox="0 0 16 16"><rect x="1" y="1" width="5" height="5" rx="1"/><rect x="10" y="1" width="5" height="5" rx="1"/><rect x="1" y="10" width="5" height="5" rx="1"/><rect x="10" y="10" width="5" height="5" rx="1"/></svg>
+      All Questions
+    </button>
+    <button class="cat-pill" data-cat="services">
+      <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 4.5v4l2.5 2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Services & Pricing
+    </button>
+    <button class="cat-pill" data-cat="booking">
+      <svg viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M5 1.5v3M11 1.5v3M2 7h12" stroke-linecap="round"/></svg>
+      Booking & Scheduling
+    </button>
+    <button class="cat-pill" data-cat="delivery">
+      <svg viewBox="0 0 16 16"><path d="M2 10.5L8 13.5l6-3V5.5L8 2.5 2 5.5v5z"/><path d="M8 13.5V8.5M2 5.5L8 8.5l6-3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Delivery & Turnaround
+    </button>
+    <button class="cat-pill" data-cat="floorplans">
+      <svg viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12" rx="1"/><path d="M2 7h5M7 2v5M7 7h7M7 7v7" stroke-linecap="round"/></svg>
+      Floor Plans & Tours
+    </button>
+    <button class="cat-pill" data-cat="media">
+      <svg viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="1.2"/><path d="M5.5 12.5v1.5M10.5 12.5v1.5M3.5 14h9" stroke-linecap="round"/><circle cx="8" cy="8" r="1.8"/></svg>
+      Media & Dashboard
+    </button>
+    <button class="cat-pill" data-cat="account">
+      <svg viewBox="0 0 16 16"><circle cx="8" cy="5.5" r="3"/><path d="M2 13.5c0-3.3 2.7-5 6-5s6 1.7 6 5" stroke-linecap="round"/></svg>
+      Account & Access
+    </button>
+  </div>
+
+  <!-- NO RESULTS -->
+  <div class="no-results" id="noResults">
+    <svg class="no-results-icon" viewBox="0 0 48 48"><circle cx="20" cy="20" r="14"/><path d="M31 31 L43 43" stroke-linecap="round" stroke-width="2.5"/><path d="M15 20h10M20 15v10" stroke-linecap="round" stroke-width="2"/></svg>
+    <h3>No results found</h3>
+    <p>Try a different keyword, or browse a category above.</p>
+  </div>
+
+  <!-- ─── CATEGORY 1: SERVICES & PRICING ─── -->
+  <div class="faq-block visible" id="block-services" data-cat="services">
+    <div class="section-header">
+      <div class="section-icon-box">
+        <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/><path d="M10 6v5l3 3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="section-header-text">
+        <h2>Services &amp; Pricing</h2>
+        <p>What we offer and what it costs</p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">What services does Shoot2Sell offer?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>We offer a full suite of real estate marketing media — all under one roof, all on one appointment:</p>
+        <ul>
+          <li><strong>Professional Photography</strong> — interior, exterior, and twilight</li>
+          <li><strong>HD Video Walkthroughs &amp; Property Reels</strong> — MLS-ready and social-ready</li>
+          <li><strong>Aerial Drone Photography &amp; Video</strong></li>
+          <li><strong>Matterport 3D Virtual Tours</strong></li>
+          <li><strong>2D and 3D Floor Plans</strong></li>
+          <li><strong>Virtual Staging</strong> — human-reviewed results</li>
+          <li><strong>Digital Enhancements</strong> — twilight, blue sky, green grass</li>
+          <li><strong>Zillow Showcase</strong> — 360° tour, interactive floor plan, and listing lead page</li>
+        </ul>
+        <p>All services are available across DFW, Houston, Austin, and San Antonio.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">How much does Shoot2Sell cost?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>Pricing is based on square footage, services selected, and your metro market. Most residential listings fall between <strong>$159–$549 per shoot</strong>. Add-ons like aerial, twilight, virtual staging, and Matterport 3D are priced per service.</p>
+        <p>All current rates are listed on each service page and inside the booking flow. See your total in 60 seconds at /book — pick services, enter property details, and the total appears before confirming.</p>
+        <p>Recurring builder shoots, multi-property contracts, and very large commercial campuses can be discussed for custom pricing.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">Does professional photography actually help sell homes faster?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>Yes — the data is clear. According to Redfin (2024), homes with professional photos sell <strong>32% faster</strong> and spend 34 fewer days on market compared to listings with amateur photos (89 vs. 123 days).</p>
+        <p>NAR reports that <strong>87% of buyers</strong> say photos are the most useful feature on listing websites. Professional images also receive <strong>61% more online views</strong> — which translates directly to more showings and faster offers.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">What areas does Shoot2Sell serve?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>We serve all major Texas metros:</p>
+        <ul>
+          <li><strong>Dallas-Fort Worth</strong> — Plano, Frisco, McKinney, Allen, Prosper, Southlake, Flower Mound, Arlington, Rockwall, Denton, Celina, and more</li>
+          <li><strong>Houston</strong> — The Woodlands, Katy, Sugar Land, Pearland, Cypress, Spring, League City, and more</li>
+          <li><strong>Austin</strong> — Round Rock, Cedar Park, Georgetown, Pflugerville, Leander, Lakeway, Dripping Springs, and more</li>
+          <li><strong>San Antonio</strong> — New Braunfels, Boerne, Schertz, Cibolo, and more</li>
+        </ul>
+        <p>Outlying or rural areas may incur a modest trip charge. We also travel to East Texas and Southern Oklahoma for a custom travel fee. Reach out for a quick quote if you're outside our immediate coverage.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">Can I see examples of your work before booking?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>Absolutely. Each service page includes a portfolio of recent work. You can also browse by property type — residential, multifamily, commercial, builder, or rental — to see examples relevant to your market.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">Do I own the images?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>Shoot2Sell retains copyright. Usage rights depend on the package:</p>
+        <ul>
+          <li><strong>MLS Shoots</strong> — Temporary Usage Rights until the property sells and for 90 days after, covering "Just Sold" marketing.</li>
+          <li><strong>Portfolio Shoots</strong> — Permanent Usage Rights.</li>
+        </ul>
+        <p>Images cannot be transferred or sold to third parties.</p>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ─── CATEGORY 2: BOOKING ─── -->
+  <div class="faq-block visible" id="block-booking" data-cat="booking">
+    <div class="section-header">
+      <div class="section-icon-box">
+        <svg viewBox="0 0 20 20"><rect x="3" y="4" width="14" height="13" rx="2"/><path d="M6 2v4M14 2v4M3 9h14" stroke-linecap="round"/></svg>
+      </div>
+      <div class="section-header-text">
+        <h2>Booking &amp; Scheduling</h2>
+        <p>How to get on the calendar and what to expect</p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">Can I book a photographer for tomorrow?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>In most cases, yes. We have photographers across each market, so next-day availability is standard. Same-day shoots may be available depending on your area — call us to check.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">Can I bundle multiple services into one appointment?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>Yes. Most clients bundle photography with aerial, video, floor plans, or 3D tours in a single visit. It saves time, keeps the media consistent, and means fewer disruptions at the property.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">What is your cancellation policy?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>Free rescheduling is available <strong>up to 4 hours before</strong> your scheduled appointment. Cancellations within 4 hours may incur a late cancellation fee because it becomes difficult to reassign that time slot. Contact us as early as possible and we will work with you to find an alternative date.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">Do you schedule on weekends?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>Photographers are available voluntarily on weekends with an added weekend rate charge. Images will be delivered by noon on the following Monday.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">What happens if it rains on my shoot day?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>Light drizzle and overcast skies are usually workable for ground photography. If you contact us at least <strong>4 hours before</strong> your shoot, we'll reschedule at no charge.</p>
+        <p>Closer to shoot time, the crew may already be dispatched and a trip fee can apply. If we're on-site and conditions turn — active heavy rain, storms, or sustained wind — we'll reschedule at no fee.</p>
+        <p>On a listing clock? We can shoot interiors at the scheduled appointment and return for exteriors separately. A return trip carries an <strong>Inclement Weather Return (IWR)</strong> fee — ask at booking.</p>
+        <p>Aerial/drone shoots have stricter rules — drones cannot fly in any rain, including light drizzle.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">What payment methods do you accept?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>We accept online payment via our website, phone credit/debit card payment, and keeping a card on file for day-of-service charging.</p>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ─── CATEGORY 3: DELIVERY ─── -->
+  <div class="faq-block visible" id="block-delivery" data-cat="delivery">
+    <div class="section-header">
+      <div class="section-icon-box">
+        <svg viewBox="0 0 20 20"><path d="M3 13l5 3 9-7"/><circle cx="6" cy="6" r="3"/><path d="M10 5h6M10 9h4" stroke-linecap="round"/></svg>
+      </div>
+      <div class="section-header-text">
+        <h2>Delivery &amp; Turnaround</h2>
+        <p>When your media lands in your inbox</p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">How quickly will I receive my media?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>Standard turnaround for each service from end of shoot:</p>
+        <ul>
+          <li><strong>Photography</strong> (interior, exterior, aerial stills) — 24 hours</li>
+          <li><strong>HD Video &amp; Property Reels</strong> — 24 hours</li>
+          <li><strong>Floor Plans</strong> — 24 hours</li>
+          <li><strong>Matterport 3D Tours</strong> — typically 24 hours</li>
+          <li><strong>Virtual Staging</strong> — 24–48 hours after you select photos and design style</li>
+          <li><strong>Zillow Showcase</strong> — full package delivered within 24 hours</li>
+        </ul>
+        <p>Rush delivery is available for most services — just let us know when you book.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">Do you offer same-day rush delivery?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>Yes. Same-day rush delivery is available for most services for an additional rush fee, subject to photographer availability. Let us know when you book and we'll confirm availability.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">Can I request a reshoot if I don't like the photos?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>Photo approval happens on-site. Your photographer walks each frame with you before leaving — flag any concerns then and we'll re-take while still on the property.</p>
+        <p>After delivery, <strong>minor edits and Photoshop refinements are included at no charge</strong> — just reply to your delivery email with what you'd like adjusted.</p>
+        <p>Full reshoots requiring a return visit carry a modest service fee. Most clients never need this because of the on-site approval step.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">How do I download my images and video?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p><strong>Photos:</strong> You'll receive a delivery email with a dashboard link. Click Hi-Res or Low-Res download buttons, then save and extract the ZIP file.</p>
+        <p><strong>Video:</strong> Click the listing in your feed, scroll to Property Media, and click the Branded or Unbranded Vimeo button. Use the Vimeo Download button to save the file.</p>
+        <p><strong>Matterport / Panoramic Spotlight:</strong> These cannot be downloaded directly from the Dashboard. Contact the Front Office for direct Matterport access.</p>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ─── CATEGORY 4: FLOOR PLANS & TOURS ─── -->
+  <div class="faq-block visible" id="block-floorplans" data-cat="floorplans">
+    <div class="section-header">
+      <div class="section-icon-box">
+        <svg viewBox="0 0 20 20"><rect x="3" y="3" width="14" height="14" rx="1.5"/><path d="M3 9h6M9 3v6M9 9h8M9 9v8" stroke-linecap="round"/></svg>
+      </div>
+      <div class="section-header-text">
+        <h2>Floor Plans &amp; 3D Tours</h2>
+        <p>Formats, delivery, and revisions</p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">What types of floor plans does Shoot2Sell offer?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>We offer three formats — all measured on-site during your photography appointment:</p>
+        <ul>
+          <li><strong>2D Standard Floor Plans</strong> — detailed with room dimensions, labels, and fixtures. Most popular for MLS and rental listings.</li>
+          <li><strong>3D Rendered Floor Plans</strong> — photorealistic with furnishings, textures, and a lifelike perspective of the space.</li>
+          <li><strong>Interactive Floor Plans</strong> — clickable, zoomable, and embeddable versions of any 2D plan, delivered with a shareable link and embed code.</li>
+        </ul>
+        <p>Pricing varies by plan type and property size. See the pricing section on this page for current rates.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">How quickly are floor plans delivered?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>Floor plans are delivered within <strong>24 hours</strong> of your photography appointment, alongside your edited photos. 3D rendered plans may take up to 24 hours due to additional processing. Interactive floor plans are delivered with a shareable link and embed code.</p>
+        <p>Commercial floor plans for complex multi-floor properties may require an additional business day. Rush delivery is available — contact us to discuss your timeline.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">What if I need a floor plan revised?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>We offer <strong>free revisions within 24 hours of delivery</strong>. If a label, dimension, or layout detail needs correction, we fix it at no charge. Our digital measurement process is highly accurate, but we want every floor plan to meet your standards before it goes live.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">How does virtual staging work for multiple units?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>Most multi-family clients stage <strong>2–3 key rooms per floor plan</strong> — living area, primary bedroom, and one flex space. When staging multiple floor plans, we match style and furnishings across variants so your gallery reads as a cohesive lease-up campaign rather than isolated one-offs.</p>
+        <p>Virtual staging is delivered within 24–48 hours after you select your photos and design style. Turnaround and revisions are the same regardless of how many plans we stage.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">Do I need fresh photos every time a tenant moves out?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>Not usually. High-quality photos of unfurnished or staged spaces typically stay accurate across <strong>3–5 lease cycles</strong>, assuming no major renovations. Permanent usage rights are included, so you can relist the same property across turnovers without re-licensing.</p>
+        <p>The exception: if you've updated flooring, paint, appliances, or landscaping, a refresh is worth it — a dated-looking listing drops on every platform's search ranking.</p>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ─── CATEGORY 5: MEDIA & DASHBOARD ─── -->
+  <div class="faq-block visible" id="block-media" data-cat="media">
+    <div class="section-header">
+      <div class="section-icon-box">
+        <svg viewBox="0 0 20 20"><rect x="2" y="4" width="16" height="12" rx="1.5"/><path d="M7 8l4 3-4 3V8z" fill="currentColor" stroke="none"/></svg>
+      </div>
+      <div class="section-header-text">
+        <h2>Media &amp; Dashboard</h2>
+        <p>Managing, sharing, and editing your listing media</p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">How do I access my Shoot2Sell Dashboard?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>Go to <strong>client.shoot2sell.com</strong> or click the "Download Images, Virtual Tour" link in any delivery email. That direct link takes you to the listing page; use the "Home" button at top right to return to the Dashboard home.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">What is the difference between branded and unbranded Virtual Tours?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>Your Dashboard includes both versions of every tour:</p>
+        <ul>
+          <li><strong>Branded Virtual Tour</strong> — includes your agent contact information, headshot, website link, and a Lead Collection form that lets prospects reach you by phone, email, or Facebook Messenger.</li>
+          <li><strong>Unbranded Virtual Tour</strong> — meets MLS regulations in the Texas areas we serve, so it can be posted directly on the MLS.</li>
+        </ul>
+        <p>Marketing copy must be MLS-compliant because it appears in both versions.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">How do I show, hide, or reorder my photos?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>Click the listing name or first photo in the Listing Feed to reach the Listing Page. <strong>Drag and drop images to reorder them.</strong></p>
+        <p>Hover over an image to reveal "Hide" or "Show" buttons in the top-right corner — these control whether the image appears in your Virtual Tours.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">How do I share my images or Virtual Tour with my homeowner?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>Scroll past the Property Info area on your listing page to the <strong>Sharing Tools</strong> section. You can also share your Virtual Tour anywhere by copying and pasting the URL.</p>
+        <p>To give edit access or download permissions to a teammate instead of just viewing, see the team-member questions in the Account &amp; Access section.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">Can I change the Marketing Address after sharing?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>Yes — but if you change the Marketing Address, the URL to share the Virtual Tour will also change. <strong>Verify the Marketing Address is correct before you share your Virtual Tours</strong> to avoid broken links.</p>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ─── CATEGORY 6: ACCOUNT & ACCESS ─── -->
+  <div class="faq-block visible" id="block-account" data-cat="account">
+    <div class="section-header">
+      <div class="section-icon-box">
+        <svg viewBox="0 0 20 20"><circle cx="10" cy="7" r="3.5"/><path d="M4 17c0-3.3 2.7-5 6-5s6 1.7 6 5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="section-header-text">
+        <h2>Account &amp; Access</h2>
+        <p>Logins, passwords, and team members</p>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">How do I log in for the first time?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>You'll receive a default password in your Image Delivery email. When you log in for the first time, we recommend setting a secure password of your choosing.</p>
+        <p>Click the <strong>"View &amp; Download Images, Virtual Tour"</strong> link in the delivery email to reach the login page.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">What if I forgot my password?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>Use the <strong>Reset Password</strong> link on the login screen. Enter your email address and follow the instructions we send you. If the reset doesn't work, contact Shoot2Sell support directly.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">How do I add a Listing Coordinator or team member?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>For simple viewing, use the Sharing Tools on the listing page. For team members who need to edit listings or download media, they will need to log in with their own account.</p>
+        <p>Once added as <strong>Editors</strong>, team members get full access to download media and edit listing information. Let us know during booking or email Shoot2Sell support to add team members.</p>
+        <p><strong>Owner vs Editor:</strong> Be an Owner if you're sharing Virtual Tours with your headshot and contact info. Be an Editor if you're a Listing Coordinator who only needs to enter listing information or download media.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">Why am I getting a 403 or 400 error?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>The most common reason for a 403 or 400 error is <strong>logging in with the wrong email address</strong>. Make sure you're using the email you use to do business with Shoot2Sell. If the error persists after verifying your email, contact support.</p>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">What should I do if I'm not satisfied?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M3 7h8M7 3v8" stroke-linecap="round"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>Honest, quality service is paramount to us. We regularly work with our clients and collaborate on individual solutions. Reach out to our support team directly — we will make it right.</p>
+      </div></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <span class="cta-eyebrow">Ready to list?</span>
+    <h2 class="cta-h">Book your shoot in under 60 seconds.</h2>
+    <p class="cta-sub">Pick your services, enter the property address, and get an instant price — no calls, no back-and-forth.</p>
+    <div class="cta-buttons">
+      <a href="#" class="btn-primary">Book a Shoot →</a>
+      <a href="#" class="btn-secondary">View Pricing</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Shoot<span>2</span>Sell Photography</div>
+  <div class="footer-copy">© 2025 Shoot2Sell. All rights reserved. Dallas · Houston · Austin · San Antonio</div>
+</footer>
+
+<script>
+(function() {
+  const searchInput = document.getElementById('searchInput');
+  const searchClear = document.getElementById('searchClear');
+  const catPills = document.querySelectorAll('.cat-pill');
+  const faqBlocks = document.querySelectorAll('.faq-block');
+  const noResults = document.getElementById('noResults');
+
+  let activeCategory = 'all';
+
+  /* ── ACCORDION ── */
+  function closeAll() {
+    document.querySelectorAll('.accordion-item.open').forEach(item => {
+      item.classList.remove('open');
+      item.querySelector('.accordion-trigger').setAttribute('aria-expanded', 'false');
+      item.querySelector('.accordion-body').style.maxHeight = '0';
+    });
+  }
+
+  document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', function() {
+      const item = this.closest('.accordion-item');
+      const body = item.querySelector('.accordion-body');
+      const isOpen = item.classList.contains('open');
+
+      closeAll();
+
+      if (!isOpen) {
+        item.classList.add('open');
+        this.setAttribute('aria-expanded', 'true');
+        body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    });
+  });
+
+  /* ── CATEGORIES ── */
+  catPills.forEach(pill => {
+    pill.addEventListener('click', function() {
+      catPills.forEach(p => p.classList.remove('active'));
+      this.classList.add('active');
+      activeCategory = this.dataset.cat;
+      closeAll();
+      filterContent();
+    });
+  });
+
+  /* ── SEARCH ── */
+  searchInput.addEventListener('input', function() {
+    const val = this.value.trim();
+    searchClear.classList.toggle('visible', val.length > 0);
+    filterContent();
+  });
+
+  searchClear.addEventListener('click', function() {
+    searchInput.value = '';
+    this.classList.remove('visible');
+    filterContent();
+    searchInput.focus();
+  });
+
+  function highlightText(el, query) {
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    let node;
+    while ((node = walker.nextNode())) nodes.push(node);
+
+    nodes.forEach(n => {
+      const parent = n.parentNode;
+      if (parent.tagName === 'MARK') return;
+      const text = n.nodeValue;
+      const idx = text.toLowerCase().indexOf(query.toLowerCase());
+      if (idx === -1) return;
+      const frag = document.createDocumentFragment();
+      frag.appendChild(document.createTextNode(text.slice(0, idx)));
+      const mark = document.createElement('mark');
+      mark.textContent = text.slice(idx, idx + query.length);
+      frag.appendChild(mark);
+      frag.appendChild(document.createTextNode(text.slice(idx + query.length)));
+      parent.replaceChild(frag, n);
+    });
+  }
+
+  function clearHighlights() {
+    document.querySelectorAll('mark').forEach(m => {
+      const parent = m.parentNode;
+      parent.replaceChild(document.createTextNode(m.textContent), m);
+      parent.normalize();
+    });
+  }
+
+  function filterContent() {
+    const query = searchInput.value.trim().toLowerCase();
+    clearHighlights();
+
+    let anyVisible = false;
+
+    faqBlocks.forEach(block => {
+      const blockCat = block.dataset.cat;
+      const catMatch = activeCategory === 'all' || activeCategory === blockCat;
+      let blockHasResults = false;
+
+      block.querySelectorAll('.accordion-item').forEach(item => {
+        const qText = item.querySelector('.accordion-q').textContent.toLowerCase();
+        const aText = item.querySelector('.accordion-answer').textContent.toLowerCase();
+        const textMatch = !query || qText.includes(query) || aText.includes(query);
+        const show = catMatch && textMatch;
+        item.style.display = show ? '' : 'none';
+        if (show) blockHasResults = true;
+      });
+
+      const showBlock = catMatch && blockHasResults;
+      block.classList.toggle('visible', showBlock);
+      if (showBlock) anyVisible = true;
+
+      if (query && showBlock) {
+        block.querySelectorAll('.accordion-item').forEach(item => {
+          if (item.style.display !== 'none') {
+            highlightText(item.querySelector('.accordion-q'), query);
+          }
+        });
+      }
+    });
+
+    noResults.classList.toggle('visible', !anyVisible);
+  }
+})();
+</script>
+</body>
+</html>
