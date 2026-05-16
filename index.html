@@ -108,20 +108,27 @@
   .nav-cta:hover { background: var(--gray-900) !important; }
 
   /* ── BRAND LOCKUP ── */
+  .brand-lockup-wrap {
+    display: block;
+    text-align: center;
+    margin-bottom: 0;
+    animation: fadeUp 0.4s ease both;
+  }
+
   .brand-lockup {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    margin-bottom: 0;
+    gap: 11px;
     text-decoration: none;
-    animation: fadeUp 0.4s ease both;
+    vertical-align: middle;
   }
 
   .brand-lockup-mark {
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
     flex-shrink: 0;
+    display: block;
   }
 
   .brand-lockup-name {
@@ -129,38 +136,40 @@
     font-weight: 700;
     letter-spacing: -0.5px;
     color: var(--black);
-    line-height: 1;
+    line-height: 40px;
     display: block;
+    white-space: nowrap;
   }
 
   .brand-lockup-name span { color: var(--red); }
 
   .brand-lockup-text-block {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    align-items: center;
+    height: 40px;
   }
 
   /* ── HERO ── */
   .hero {
-    padding-top: 80px;
-    padding-bottom: 72px;
+    padding-top: 72px;
+    padding-bottom: 56px;
     text-align: center;
     background: var(--white);
     border-bottom: 1px solid var(--gray-200);
   }
 
   .hero-eyebrow {
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
     color: var(--red);
-    margin-top: 32px;
-    margin-bottom: 28px;
+    margin-top: 24px;
+    margin-bottom: 24px;
   }
 
   .hero-eyebrow::before,
@@ -365,7 +374,7 @@
   .main {
     max-width: 980px;
     margin: 0 auto;
-    padding: 64px 48px 120px;
+    padding: 48px 48px 120px;
   }
 
   .cat-pill {
@@ -413,17 +422,17 @@
   /* ── SECTION HEADERS ── */
   .section-header {
     display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    margin-bottom: 28px;
-    padding-bottom: 24px;
-    border-bottom: 1.5px solid var(--gray-200);
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
   }
 
   .section-icon-box {
-    width: 42px;
-    height: 42px;
-    border-radius: 10px;
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
     border: 1.5px solid var(--gray-200);
     background: var(--white);
     display: flex;
@@ -433,36 +442,50 @@
   }
 
   .section-icon-box svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     stroke: var(--black);
     stroke-width: 1.6;
     fill: none;
   }
 
+  .section-header-text {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
   .section-header-text h2 {
-    font-size: 20px;
+    font-size: 17px;
     font-weight: 700;
     color: var(--black);
-    letter-spacing: -0.5px;
-    line-height: 1.2;
+    letter-spacing: -0.4px;
+    line-height: 1;
+    white-space: nowrap;
   }
 
   .section-header-text p {
-    font-size: 13px;
-    color: var(--gray-500);
-    margin-top: 3px;
+    font-size: 12px;
+    color: var(--gray-400);
     font-weight: 500;
+    white-space: nowrap;
+    line-height: 1;
   }
 
   /* ── FAQ BLOCK ── */
   .faq-block {
-    margin-bottom: 64px;
+    margin-bottom: 12px;
+    padding-top: 40px;
     display: none;
   }
 
   .faq-block.visible {
     display: block;
+  }
+
+  .faq-block:first-of-type {
+    padding-top: 0;
   }
 
   /* ── ACCORDION ── */
@@ -471,8 +494,10 @@
     transition: background var(--transition);
   }
 
+  /* First accordion item gets a top border to close the section header gap */
   .accordion-item:first-child {
-    border-top: none;
+    border-top: 1px solid var(--gray-200);
+    margin-top: 20px;
   }
 
   .accordion-trigger {
@@ -737,7 +762,7 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  .brand-lockup { animation: fadeUp 0.45s ease both; }
+  .brand-lockup-wrap { animation: fadeUp 0.45s ease both; }
   .hero-eyebrow { animation: fadeUp 0.5s 0.07s ease both; }
   h1 { animation: fadeUp 0.5s 0.14s ease both; }
   .hero-sub { animation: fadeUp 0.5s 0.21s ease both; }
@@ -768,17 +793,19 @@
 <section class="hero">
 
   <!-- Brand Lockup — icon + name only, no tagline -->
-  <a href="#" class="brand-lockup">
-    <svg class="brand-lockup-mark" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="42" height="42" rx="10" fill="#0a0a0a"/>
-      <circle cx="21" cy="18" r="7" stroke="white" stroke-width="1.8" fill="none"/>
-      <circle cx="21" cy="18" r="2.6" fill="#C8102E"/>
-      <rect x="10.5" y="29" width="21" height="2.4" rx="1.2" fill="#C8102E"/>
-    </svg>
-    <div class="brand-lockup-text-block">
-      <span class="brand-lockup-name">Shoot<span>2</span>Sell</span>
-    </div>
-  </a>
+  <div class="brand-lockup-wrap">
+    <a href="#" class="brand-lockup">
+      <svg class="brand-lockup-mark" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="40" height="40" rx="9" fill="#0a0a0a"/>
+        <circle cx="20" cy="17" r="6.5" stroke="white" stroke-width="1.8" fill="none"/>
+        <circle cx="20" cy="17" r="2.5" fill="#C8102E"/>
+        <rect x="10" y="27.5" width="20" height="2.2" rx="1.1" fill="#C8102E"/>
+      </svg>
+      <div class="brand-lockup-text-block">
+        <span class="brand-lockup-name">Shoot<span>2</span>Sell</span>
+      </div>
+    </a>
+  </div>
 
   <!-- FAQ eyebrow — own line, centered, below lockup -->
   <div class="hero-eyebrow">FAQ</div>
@@ -809,7 +836,7 @@
   </div>
 
   <!-- Categories — 2 rows of 3, flush grid, no All Questions -->
-  <div style="margin-top: 36px;">
+  <div style="margin-top: 28px;">
     <p class="categories-label">Browse by category</p>
     <div class="categories-grid" id="catRow">
       <button class="cat-pill" data-cat="services">
