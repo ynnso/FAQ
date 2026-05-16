@@ -247,6 +247,11 @@
     stroke: var(--gray-700);
   }
 
+  /* ── CATEGORIES WRAPPER ── */
+  .categories-wrap {
+    margin-top: 40px;
+  }
+
   /* ── CATEGORIES (in hero) ── */
   .categories-label {
     font-size: 10px;
@@ -316,21 +321,24 @@
     stroke: var(--white);
   }
 
-  /* ── SECTION HEADERS ── */
-  .section-header {
+  /* ── SECTION HEADERS — full-bleed shelf ── */
+  .section-header-shelf {
+    background: var(--gray-100);
+    border-top: 1px solid var(--gray-200);
+    border-bottom: 1px solid var(--gray-200);
+    margin-left: -48px;
+    margin-right: -48px;
+    padding: 20px 48px;
     display: flex;
     align-items: center;
     gap: 14px;
-    margin-bottom: 0;
-    padding-bottom: 0;
-    border-bottom: none;
   }
 
   .section-icon-box {
-    width: 38px;
-    height: 38px;
-    border-radius: 9px;
-    border: 1.5px solid var(--gray-200);
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1.5px solid var(--gray-300);
     background: var(--white);
     display: flex;
     align-items: center;
@@ -339,8 +347,8 @@
   }
 
   .section-icon-box svg {
-    width: 18px;
-    height: 18px;
+    width: 17px;
+    height: 17px;
     stroke: var(--black);
     stroke-width: 1.6;
     fill: none;
@@ -354,10 +362,10 @@
   }
 
   .section-header-text h2 {
-    font-size: 17px;
+    font-size: 15px;
     font-weight: 700;
     color: var(--black);
-    letter-spacing: -0.4px;
+    letter-spacing: -0.3px;
     line-height: 1;
     white-space: nowrap;
   }
@@ -372,8 +380,8 @@
 
   /* ── FAQ BLOCK ── */
   .faq-block {
-    margin-bottom: 12px;
-    padding-top: 52px;
+    margin-bottom: 0;
+    padding-top: 48px;
     display: none;
   }
 
@@ -391,10 +399,9 @@
     transition: background var(--transition);
   }
 
-  /* First accordion item gets a top border to close the section header gap */
   .accordion-item:first-child {
     border-top: 1px solid var(--gray-200);
-    margin-top: 20px;
+    margin-top: 0;
   }
 
   .accordion-trigger {
@@ -429,9 +436,10 @@
     color: var(--black);
   }
 
+  /* Accordion icon — 36px circle, clear binary open/closed state */
   .accordion-icon {
-    width: 28px;
-    height: 28px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     border: 1.5px solid var(--gray-300);
     background: var(--white);
@@ -448,9 +456,10 @@
     stroke: var(--gray-500);
     stroke-width: 2.2;
     fill: none;
-    transition: all var(--transition);
+    transition: stroke var(--transition);
   }
 
+  /* Open state: solid black fill + white × — zero ambiguity */
   .accordion-item.open .accordion-icon {
     background: var(--black);
     border-color: var(--black);
@@ -667,13 +676,59 @@
 
   /* ── RESPONSIVE ── */
   @media (max-width: 768px) {
-    .hero { padding-top: 72px; padding-bottom: 72px; padding-left: 24px; padding-right: 24px; }
+    .hero { padding-top: 72px; padding-bottom: 40px; padding-left: 24px; padding-right: 24px; }
     h1 { font-size: 44px; letter-spacing: -2.2px; }
     .hero-sub { font-size: 17px; margin-bottom: 44px; }
     .search-wrap { max-width: 100%; }
-    .categories-grid { grid-template-columns: repeat(2, 1fr); max-width: 380px; gap: 10px; }
-    .cat-pill { font-size: 12px; padding: 11px 16px; justify-content: center; }
-    .main { padding: 56px 20px 100px; }
+    .main { padding: 0 0 100px; }
+    .section-header-shelf { margin-left: 0; margin-right: 0; padding: 18px 20px; }
+
+    /* ── STICKY MOBILE CATEGORY BAR ── */
+    .categories-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      margin-top: 0;
+      padding: 0;
+    }
+
+    /* Hide label on mobile sticky — space is precious */
+    .categories-label { display: none; }
+
+    /* Single scrollable row, no wrap */
+    .categories-grid {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      gap: 8px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      max-width: none;
+      margin: 0;
+      padding: 12px 20px;
+      justify-content: flex-start;
+    }
+
+    /* Hide scrollbar on webkit */
+    .categories-grid::-webkit-scrollbar { display: none; }
+
+    /* Pills compact for sticky bar */
+    .cat-pill {
+      font-size: 12px;
+      padding: 9px 14px;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    /* FAQ content gets its own padding since main lost it */
+    .faq-block { padding-left: 20px; padding-right: 20px; }
+    .faq-block:first-of-type { padding-top: 32px; }
+    .section-header-shelf { margin-left: -20px; margin-right: -20px; }
+
     .cta-section { padding: 60px 24px; }
     footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px; }
   }
@@ -711,12 +766,12 @@
     </button>
   </div>
 
-  <!-- Categories — 2 rows of 3, flush grid, no All Questions -->
-  <div style="margin-top: 40px;">
+  <!-- Categories — 2 rows of 3 desktop / sticky scrollable row mobile -->
+  <div class="categories-wrap">
     <p class="categories-label">Browse by category</p>
     <div class="categories-grid" id="catRow">
       <button class="cat-pill" data-cat="services">
-        <svg viewBox="0 0 16 16"><path d="M8 2a5 5 0 100 10A5 5 0 008 2z"/><path d="M8 5v3.5l2 1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg viewBox="0 0 16 16" fill="none"><rect x="1.5" y="4.5" width="13" height="9" rx="1.5"/><path d="M5.5 4.5l1-2h3l1 2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="9" r="2.2"/></svg>
         Services &amp; Pricing
       </button>
       <button class="cat-pill" data-cat="booking">
@@ -724,11 +779,11 @@
         Booking &amp; Scheduling
       </button>
       <button class="cat-pill" data-cat="delivery">
-        <svg viewBox="0 0 16 16"><path d="M1.5 5.5l6.5-3.5 6.5 3.5v5L8 14l-6.5-3.5v-5z"/><path d="M8 14V8.5M1.5 5.5L8 8.5l6.5-3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg viewBox="0 0 16 16" fill="none"><rect x="1.5" y="8" width="13" height="6" rx="1.2"/><path d="M8 1.5v7M5 5.5l3 3 3-3" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Delivery &amp; Turnaround
       </button>
       <button class="cat-pill" data-cat="floorplans">
-        <svg viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12" rx="1"/><path d="M2 7h5M7 2v5M7 7h7M7 7v7" stroke-linecap="round"/></svg>
+        <svg viewBox="0 0 16 16" fill="none"><rect x="1.5" y="1.5" width="13" height="13" rx="1"/><path d="M1.5 6.5h6M7.5 1.5v5M7.5 6.5v8.5M7.5 6.5h6.5" stroke-linecap="round"/></svg>
         Floor Plans &amp; Tours
       </button>
       <button class="cat-pill" data-cat="media">
@@ -756,9 +811,9 @@
 
   <!-- ─── CATEGORY 1: SERVICES & PRICING ─── -->
   <div class="faq-block visible" id="block-services" data-cat="services">
-    <div class="section-header">
+    <div class="section-header-shelf">
       <div class="section-icon-box">
-        <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/><path d="M10 6v5l3 3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="6" width="16" height="11" rx="1.8"/><path d="M7 6l1.2-2.5h3.6L13 6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="11.5" r="2.8"/></svg>
       </div>
       <div class="section-header-text">
         <h2>Services &amp; Pricing</h2>
@@ -855,7 +910,7 @@
 
   <!-- ─── CATEGORY 2: BOOKING ─── -->
   <div class="faq-block visible" id="block-booking" data-cat="booking">
-    <div class="section-header">
+    <div class="section-header-shelf">
       <div class="section-icon-box">
         <svg viewBox="0 0 20 20"><rect x="3" y="4" width="14" height="13" rx="2"/><path d="M6 2v4M14 2v4M3 9h14" stroke-linecap="round"/></svg>
       </div>
@@ -931,9 +986,9 @@
 
   <!-- ─── CATEGORY 3: DELIVERY ─── -->
   <div class="faq-block visible" id="block-delivery" data-cat="delivery">
-    <div class="section-header">
+    <div class="section-header-shelf">
       <div class="section-icon-box">
-        <svg viewBox="0 0 20 20"><path d="M3 13l5 3 9-7"/><circle cx="6" cy="6" r="3"/><path d="M10 5h6M10 9h4" stroke-linecap="round"/></svg>
+        <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="10" width="16" height="8" rx="1.5"/><path d="M10 2v9M6.5 7l3.5 4 3.5-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <div class="section-header-text">
         <h2>Delivery &amp; Turnaround</h2>
@@ -997,7 +1052,7 @@
 
   <!-- ─── CATEGORY 4: FLOOR PLANS & TOURS ─── -->
   <div class="faq-block visible" id="block-floorplans" data-cat="floorplans">
-    <div class="section-header">
+    <div class="section-header-shelf">
       <div class="section-icon-box">
         <svg viewBox="0 0 20 20"><rect x="3" y="3" width="14" height="14" rx="1.5"/><path d="M3 9h6M9 3v6M9 9h8M9 9v8" stroke-linecap="round"/></svg>
       </div>
@@ -1069,7 +1124,7 @@
 
   <!-- ─── CATEGORY 5: MEDIA & DASHBOARD ─── -->
   <div class="faq-block visible" id="block-media" data-cat="media">
-    <div class="section-header">
+    <div class="section-header-shelf">
       <div class="section-icon-box">
         <svg viewBox="0 0 20 20"><rect x="2" y="4" width="16" height="12" rx="1.5"/><path d="M7 8l4 3-4 3V8z" fill="currentColor" stroke="none"/></svg>
       </div>
@@ -1139,7 +1194,7 @@
 
   <!-- ─── CATEGORY 6: ACCOUNT & ACCESS ─── -->
   <div class="faq-block visible" id="block-account" data-cat="account">
-    <div class="section-header">
+    <div class="section-header-shelf">
       <div class="section-icon-box">
         <svg viewBox="0 0 20 20"><circle cx="10" cy="7" r="3.5"/><path d="M4 17c0-3.3 2.7-5 6-5s6 1.7 6 5" stroke-linecap="round"/></svg>
       </div>
