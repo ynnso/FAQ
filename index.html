@@ -121,31 +121,34 @@
     align-items: center;
     justify-content: center;
     gap: 16px;
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 700;
-    letter-spacing: 3.5px;
+    letter-spacing: 3px;
     text-transform: uppercase;
     color: var(--red);
     margin-bottom: 40px;
+    max-width: 580px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .hero-eyebrow::before,
   .hero-eyebrow::after {
     content: '';
     display: block;
-    width: 40px;
+    flex: 1;
     height: 1px;
     background: var(--red);
-    opacity: 0.4;
+    opacity: 0.35;
   }
 
   h1 {
     font-size: clamp(52px, 7vw, 86px);
     font-weight: 800;
-    letter-spacing: -3.5px;
-    line-height: 1.02;
+    letter-spacing: -0.05em;
+    line-height: 0.97;
     color: var(--black);
-    margin-bottom: 32px;
+    margin-bottom: 36px;
     max-width: 860px;
     margin-left: auto;
     margin-right: auto;
@@ -157,18 +160,18 @@
   }
 
   .hero-sub {
-    font-size: 19px;
-    font-weight: 400;
-    color: var(--gray-500);
-    line-height: 1.65;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--black);
+    line-height: 1.6;
     max-width: 480px;
     margin: 0 auto 56px;
-    letter-spacing: -0.1px;
+    letter-spacing: -0.15px;
   }
 
   /* ── SEARCH ── */
   .search-wrap {
-    max-width: 580px;
+    max-width: 660px;
     margin: 0 auto;
     position: relative;
   }
@@ -178,9 +181,9 @@
     left: 0;
     top: 0;
     bottom: 0;
-    width: 54px;
+    width: 56px;
     background: var(--black);
-    border-radius: 12px 0 0 12px;
+    border-radius: 100px 0 0 100px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -199,22 +202,33 @@
 
   .search-input {
     width: 100%;
-    height: 58px;
+    height: 54px;
     border: 2px solid var(--black);
-    border-radius: 12px;
+    border-radius: 100px;
     font-family: var(--font);
     font-size: 15px;
-    font-weight: 400;
+    font-weight: 500;
     color: var(--black);
     background: var(--white);
-    padding: 0 20px 0 70px;
+    padding: 0 24px 0 74px;
     outline: none;
     transition: box-shadow var(--transition);
     letter-spacing: -0.1px;
     caret-color: var(--red);
+    /* Slow blinking cursor — invites interaction */
+    animation: blink-caret 1.4s step-end infinite;
   }
 
-  .search-input::placeholder { color: var(--gray-400); }
+  @keyframes blink-caret {
+    0%, 100% { caret-color: var(--red); }
+    50% { caret-color: transparent; }
+  }
+
+  .search-input::placeholder {
+    color: var(--gray-400);
+    font-weight: 400;
+    transition: opacity 0.3s ease;
+  }
 
   .search-input:focus {
     box-shadow: 0 0 0 4px rgba(10,10,10,0.08);
@@ -222,7 +236,7 @@
 
   .search-clear {
     position: absolute;
-    right: 14px;
+    right: 16px;
     top: 50%;
     transform: translateY(-50%);
     width: 30px;
@@ -244,7 +258,7 @@
   .search-clear svg {
     width: 11px;
     height: 11px;
-    stroke: var(--gray-700);
+    stroke: var(--black);
   }
 
   /* ── CATEGORIES WRAPPER ── */
@@ -254,18 +268,19 @@
 
   /* ── CATEGORIES (in hero) ── */
   .categories-label {
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 700;
-    letter-spacing: 1.8px;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--gray-400);
+    color: var(--black);
     margin-bottom: 20px;
     text-align: center;
+    font-family: var(--font);
   }
 
   .categories-grid {
     display: grid;
-    grid-template-columns: repeat(3, auto);
+    grid-template-columns: repeat(3, 1fr);
     gap: 12px;
     justify-content: center;
     max-width: 660px;
@@ -282,39 +297,52 @@
   .cat-pill {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 12px 22px;
+    justify-content: center;
+    gap: 9px;
+    padding: 14px 20px;
     border-radius: 100px;
-    border: 1.5px solid var(--gray-200);
+    border: 2px solid var(--black);
     background: var(--white);
     font-family: var(--font);
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
-    color: var(--gray-500);
+    color: var(--black);
     cursor: pointer;
-    transition: all var(--transition);
-    letter-spacing: 0.1px;
+    transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+                background 0.5s ease,
+                border-color 0.5s ease,
+                color 0.5s ease,
+                box-shadow 0.45s ease;
+    letter-spacing: -0.1px;
     white-space: nowrap;
+    width: 100%;
   }
 
   .cat-pill svg {
-    width: 15px;
-    height: 15px;
-    stroke: currentColor;
+    width: 16px;
+    height: 16px;
+    stroke: var(--black);
     stroke-width: 1.8;
     fill: none;
     flex-shrink: 0;
+    transition: stroke 0.5s ease;
   }
 
   .cat-pill:hover {
-    border-color: var(--gray-400);
-    color: var(--black);
+    transform: scale(1.035);
+    box-shadow: 0 2px 14px rgba(10,10,10,0.12);
   }
 
   .cat-pill.active {
-    background: var(--black);
-    border-color: var(--black);
+    background: var(--red);
+    border-color: var(--red);
     color: var(--white);
+    animation: pill-pulse 2.2s ease-in-out infinite;
+  }
+
+  @keyframes pill-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(200,16,46,0.3); }
+    50%       { box-shadow: 0 0 0 8px rgba(200,16,46,0); }
   }
 
   .cat-pill.active svg {
@@ -372,7 +400,7 @@
 
   .section-header-text p {
     font-size: 12px;
-    color: var(--gray-400);
+    color: var(--gray-700);
     font-weight: 500;
     white-space: nowrap;
     line-height: 1;
@@ -426,7 +454,7 @@
   .accordion-q {
     font-size: 15px;
     font-weight: 600;
-    color: var(--gray-700);
+    color: var(--black);
     line-height: 1.45;
     letter-spacing: -0.2px;
     transition: color var(--transition);
@@ -478,8 +506,8 @@
 
   .accordion-answer {
     padding: 0 48px 24px 0;
-    font-size: 14.5px;
-    color: var(--gray-500);
+    font-size: 15px;
+    color: var(--gray-700);
     line-height: 1.75;
     font-weight: 400;
     letter-spacing: -0.1px;
@@ -722,6 +750,8 @@
       padding: 9px 14px;
       flex-shrink: 0;
       white-space: nowrap;
+      width: auto;
+    }
     }
 
     /* FAQ content gets its own padding since main lost it */
@@ -742,7 +772,7 @@
   <div class="hero-eyebrow">Frequently Asked Questions</div>
 
   <h1>Questions? We Have<br><em>Clear Answers.</em></h1>
-  <p class="hero-sub">Listings move fast in Texas. Get the answers you need in under 60 seconds — no calls, no waiting.</p>
+  <p class="hero-sub">Listings move fast in Texas.<br>Get answers in seconds — No calls. No waiting.</p>
 
   <!-- Search bar with black flush-left bar + white icon -->
   <div class="search-wrap">
@@ -768,7 +798,7 @@
 
   <!-- Categories — 2 rows of 3 desktop / sticky scrollable row mobile -->
   <div class="categories-wrap">
-    <p class="categories-label">Browse by category</p>
+    <p class="categories-label">Browse By Category</p>
     <div class="categories-grid" id="catRow">
       <button class="cat-pill" data-cat="services">
         <svg viewBox="0 0 16 16" fill="none"><rect x="1.5" y="4.5" width="13" height="9" rx="1.5"/><path d="M5.5 4.5l1-2h3l1 2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="9" r="2.2"/></svg>
@@ -1409,6 +1439,37 @@
 
     noResults.classList.toggle('visible', !anyVisible);
   }
+  /* ── ROTATING PLACEHOLDER ── */
+  const placeholders = [
+    'Try: turnaround time…',
+    'Try: cancellation policy…',
+    'Try: floor plans…',
+    'Try: rush delivery…',
+    'Try: virtual staging…',
+    'Try: aerial photos…',
+    'Try: Matterport tour…',
+    'Try: weekend shoots…',
+  ];
+  let phIndex = 0;
+  let phInterval = null;
+
+  function rotatePlaceholder() {
+    if (searchInput.value.length > 0) return;
+    phIndex = (phIndex + 1) % placeholders.length;
+    searchInput.setAttribute('placeholder', placeholders[phIndex]);
+  }
+
+  // Only rotate when input is empty and not focused
+  searchInput.addEventListener('focus', () => clearInterval(phInterval));
+  searchInput.addEventListener('blur', () => {
+    if (searchInput.value.length === 0) {
+      phInterval = setInterval(rotatePlaceholder, 2800);
+    }
+  });
+
+  // Start rotating after 2.8s
+  phInterval = setInterval(rotatePlaceholder, 2800);
+
 })();
 </script>
 </body>
