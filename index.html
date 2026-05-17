@@ -399,24 +399,24 @@
     min-height: 64px;
     border-radius: 0;
     border: none;
-    background: var(--white);
+    background: var(--black);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    border-right: 1px solid var(--gray-200);
+    border-right: 1px solid rgba(255,255,255,0.06);
     transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .section-header-shelf.active .section-icon-box {
-    background: var(--white);
-    border-right-color: var(--gray-200);
+    background: var(--red);
+    border-right-color: rgba(200, 16, 46, 0.4);
   }
 
   .section-icon-box svg {
     width: 24px;
     height: 24px;
-    stroke: var(--black);
+    stroke: var(--white);
     stroke-width: 1.8;
     fill: none;
   }
@@ -426,7 +426,7 @@
   .section-icon-box svg line,
   .section-icon-box svg rect,
   .section-icon-box svg polyline {
-    stroke: var(--black);
+    stroke: var(--white);
   }
 
   .section-header-text {
