@@ -379,13 +379,19 @@
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 16px;
+    border-radius: 100px;
     margin: 0;
     padding: 0;
     display: flex;
     align-items: stretch;
     gap: 0;
     overflow: hidden;
+    transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .section-header-shelf.active {
+    background: rgba(200, 16, 46, 0.92);
+    border-color: rgba(255,255,255,0.12);
   }
 
   /* Flush-left icon stripe — mirrors search bar left bar */
@@ -1516,6 +1522,60 @@
 
   // Start rotating after 1.8s
   phInterval = setInterval(rotatePlaceholder, 1800);
+
+  /* ── INTERSECTION OBSERVER — Real-time active section detection ── */
+  const sectionHeaders = document.querySelectorAll('.section-header-shelf');
+  const faqBlockElements = document.querySelectorAll('.faq-block');
+
+  // Map of category to section header element
+  const categoryToHeader = {};
+  faqBlockElements.forEach(block => {
+    const cat = block.dataset.cat;
+    const header = block.querySelector('.section-header-shelf');
+    if (header) {
+      categoryToHeader[cat] = header;
+    }
+  });
+
+  // Observer options — trigger when section header enters viewport
+  const observerOptions = {
+    root: null,
+    rootMargin: '-80px 0px -66% 0px', // Fire when header is near top of viewport
+    threshold: 0
+  };
+
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // Find which category this section belongs to
+        const faqBlock = entry.target.closest('.faq-block');
+        if (faqBlock) {
+          const cat = faqBlock.dataset.cat;
+          
+          // Remove active from all headers
+          sectionHeaders.forEach(h => h.classList.remove('active'));
+          
+          // Add active to this header
+          const header = categoryToHeader[cat];
+          if (header) {
+            header.classList.add('active');
+          }
+          
+          // Also update pill to match
+          catPills.forEach(p => p.classList.remove('active'));
+          const matchingPill = document.querySelector(`.cat-pill[data-cat="${cat}"]`);
+          if (matchingPill) {
+            matchingPill.classList.add('active');
+          }
+        }
+      }
+    });
+  }, observerOptions);
+
+  // Observe all FAQ blocks
+  faqBlockElements.forEach(block => {
+    sectionObserver.observe(block);
+  });
 
 })();
 </script>
