@@ -110,7 +110,9 @@
   /* ── HERO ── */
   .hero {
     padding-top: 96px;
-    padding-bottom: 88px;
+    padding-bottom: 72px;
+    padding-left: 24px;
+    padding-right: 24px;
     text-align: center;
     background: var(--white);
   }
@@ -126,7 +128,7 @@
     text-transform: none;
     color: var(--red);
     margin-bottom: 56px;
-    max-width: 660px;
+    max-width: 860px;
     margin-left: auto;
     margin-right: auto;
   }
@@ -163,14 +165,14 @@
     font-weight: 600;
     color: var(--black);
     line-height: 1.45;
-    max-width: 660px;
+    max-width: 860px;
     margin: 0 auto 48px;
     letter-spacing: -0.2px;
   }
 
   /* ── SEARCH ── */
   .search-wrap {
-    max-width: 660px;
+    max-width: 860px;
     margin: 0 auto;
     position: relative;
   }
@@ -278,7 +280,8 @@
 
   /* ── CATEGORIES WRAPPER ── */
   .categories-wrap {
-    margin-top: 72px;
+    margin-top: 48px;
+    padding: 0 24px;
   }
 
   /* ── CATEGORIES ── */
@@ -298,15 +301,15 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
     row-gap: 21px;
-    max-width: 660px;
+    max-width: 860px;
     margin: 0 auto;
   }
 
   /* ── MAIN ── */
   .main {
-    max-width: 660px;
+    max-width: 860px;
     margin: 0 auto;
-    padding: 72px 0 140px;
+    padding: 56px 24px 140px;
   }
 
   .cat-pill {
@@ -738,6 +741,13 @@
   .hero-sub { animation: fadeUp 0.5s 0.16s ease both; }
   .search-wrap { animation: fadeUp 0.5s 0.24s ease both; }
   .search-hint { animation: fadeUp 0.5s 0.30s ease both; }
+
+  /* ── MID-RANGE — column fills but breathes ── */
+  @media (max-width: 1000px) and (min-width: 769px) {
+    .hero { padding-left: 40px; padding-right: 40px; }
+    .categories-wrap { padding: 0 40px; }
+    .main { padding-left: 40px; padding-right: 40px; }
+  }
 
   /* ── RESPONSIVE ── */
   @media (max-width: 768px) {
