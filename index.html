@@ -298,12 +298,11 @@
 
   .categories-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
     gap: 16px;
     row-gap: 14px;
     max-width: 860px;
     margin: 0 auto;
-    justify-items: center;
   }
 
   /* ── MAIN ── */
@@ -314,11 +313,11 @@
   }
 
   .cat-pill {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 13px 24px;
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 13px 0 13px 0;
     border-radius: 100px;
     border: 1.5px solid var(--black);
     background: var(--white);
@@ -334,32 +333,45 @@
                 box-shadow 0.5s ease;
     letter-spacing: 0px;
     white-space: nowrap;
-    width: auto;
+    width: 100%;
     line-height: 1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── Icon stripe (left bar) ── */
+  .cat-pill::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 44px;
+    background: var(--black);
+    border-radius: 100px 0 0 100px;
+    z-index: 0;
   }
 
   .cat-pill svg {
     width: 17px;
     height: 17px;
     display: block;
-    stroke: var(--black);
+    stroke: var(--white);
     stroke-width: 1.7;
     fill: none;
     flex-shrink: 0;
     transition: stroke 0.6s ease;
+    position: relative;
+    z-index: 1;
+    margin-left: 10px;
   }
 
   .cat-pill span {
     display: block;
     line-height: 1;
-  }
-
-  .cat-pill svg path,
-  .cat-pill svg circle,
-  .cat-pill svg line,
-  .cat-pill svg rect {
-    stroke: var(--black);
-    transition: stroke 0.6s ease;
+    position: relative;
+    z-index: 1;
+    margin-right: 12px;
   }
 
   .cat-pill:hover {
@@ -371,6 +383,10 @@
     background: var(--red);
     border-color: var(--red);
     color: var(--white);
+  }
+
+  .cat-pill.active::before {
+    background: rgba(255, 255, 255, 0.3);
   }
 
   .cat-pill.active svg,
@@ -803,10 +819,23 @@
 
     .cat-pill {
       font-size: 12px;
-      padding: 8px 16px;
+      padding: 8px 14px;
       flex-shrink: 0;
       white-space: nowrap;
       width: auto;
+    }
+
+    .cat-pill::before {
+      display: none;
+    }
+
+    .cat-pill svg {
+      stroke: var(--black);
+      margin-left: 0;
+    }
+
+    .cat-pill span {
+      margin-right: 0;
     }
 
     .faq-block { padding-left: 20px; padding-right: 20px; }
