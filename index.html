@@ -399,25 +399,25 @@
     min-height: 64px;
     border-radius: 0;
     border: none;
-    background: rgba(255,255,255,0.07);
+    background: var(--white);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    border-right: 1px solid rgba(255,255,255,0.08);
+    border-right: 1px solid var(--gray-200);
     transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .section-header-shelf.active .section-icon-box {
-    background: rgba(200, 16, 46, 0.9);
-    border-right-color: rgba(200, 16, 46, 0.6);
+    background: var(--white);
+    border-right-color: var(--gray-200);
   }
 
   .section-icon-box svg {
     width: 24px;
     height: 24px;
-    stroke: var(--white);
-    stroke-width: 1.6;
+    stroke: var(--black);
+    stroke-width: 1.8;
     fill: none;
   }
 
@@ -426,7 +426,7 @@
   .section-icon-box svg line,
   .section-icon-box svg rect,
   .section-icon-box svg polyline {
-    stroke: var(--white);
+    stroke: var(--black);
   }
 
   .section-header-text {
@@ -448,7 +448,7 @@
 
   .section-header-text p {
     font-size: 15px;
-    color: rgba(255,255,255,0.4);
+    color: var(--white);
     font-weight: 500;
     white-space: nowrap;
     line-height: 1;
@@ -533,8 +533,8 @@
   }
 
   .accordion-icon svg {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     color: var(--black);
     fill: currentColor;
     transition: color 0.22s ease;
