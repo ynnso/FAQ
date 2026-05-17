@@ -171,19 +171,28 @@
   }
 
   /* ── SEARCH ── */
+  /*
+   * Layout math (all values relative to .search-wrap, no padding on wrap):
+   *   Left bar width:        60px
+   *   Input padding-left:    68px  (60px bar + 8px gap)
+   *   Fake cursor left:      68px  (exactly where native caret starts)
+   *   Input padding-right:   56px  (room for X button)
+   *   Clear btn right:       16px  (inside input boundary, well clear of edge)
+   */
   .search-wrap {
     max-width: 860px;
     margin: 0 auto;
     position: relative;
     padding: 0 24px;
+    box-sizing: border-box;
   }
 
   .search-left-bar {
     position: absolute;
-    left: 0;
+    left: 24px; /* matches search-wrap padding */
     top: 0;
     bottom: 0;
-    width: 56px;
+    width: 60px;
     background: var(--black);
     border-radius: 100px 0 0 100px;
     display: flex;
@@ -208,56 +217,65 @@
     border: 2px solid var(--black);
     border-radius: 100px;
     font-family: var(--font);
-    font-size: 17px;
+    font-size: 15px;
     font-weight: 500;
     color: var(--black);
     background: var(--white);
-    padding: 0 48px 0 56px;
+    /* 60px bar + 8px gap = 68px. Right: 56px gives X button breathing room */
+    padding: 0 56px 0 68px;
     outline: none;
     transition: box-shadow var(--transition);
     letter-spacing: -0.1px;
+    /* Use black caret so native cursor is invisible until clicked */
     caret-color: var(--black);
+    box-sizing: border-box;
   }
 
   .search-input::placeholder {
     color: var(--black);
     font-weight: 400;
-    opacity: 0.4;
+    opacity: 0.38;
   }
 
   .search-input:focus {
     box-shadow: 0 0 0 4px rgba(10,10,10,0.08);
   }
 
-  /* Blinking cursor overlay when inactive — BLACK */
+  /*
+   * Fake blinking cursor — sits at exactly padding-left (68px from input left edge).
+   * search-wrap has padding: 0 24px, so cursor left = 24px (wrap padding) + 68px (input padding-left) = 92px from wrap left.
+   * BUT: the cursor is positioned relative to .search-wrap, and the input starts at left: 24px (wrap padding).
+   * So cursor left = 24px + 68px = 92px.
+   */
   .search-cursor {
     position: absolute;
-    left: 64px;
+    left: 92px;
     top: 50%;
     transform: translateY(-50%);
-    width: 2px;
-    height: 24px;
+    width: 1.5px;
+    height: 22px;
     background: var(--black);
     z-index: 3;
     pointer-events: none;
-    animation: cursor-blink 1.2s ease-in-out infinite;
+    animation: cursor-blink 1.1s ease-in-out infinite;
   }
 
   .search-cursor.hidden { display: none; }
 
   @keyframes cursor-blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
+    0%, 48% { opacity: 1; }
+    52%, 100% { opacity: 0; }
   }
 
-  /* Clear button */
+  /* Clear button — box-sizing: border-box so padding doesn't expand width */
   .search-clear {
     position: absolute;
-    right: 20px;
+    right: 32px; /* 24px wrap padding + 8px inside edge */
     top: 50%;
     transform: translateY(-50%);
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
+    box-sizing: border-box;
     border: none;
     background: transparent;
     cursor: pointer;
@@ -265,18 +283,21 @@
     align-items: center;
     justify-content: center;
     transition: opacity var(--transition);
-    z-index: 2;
-    padding: 12px;
+    z-index: 4;
+    padding: 0;
+    flex-shrink: 0;
   }
 
-  .search-clear:hover { opacity: 0.5; }
+  .search-clear:hover { opacity: 0.4; }
   .search-clear.visible { display: flex; }
 
   .search-clear svg {
-    width: 14px;
-    height: 14px;
+    width: 13px;
+    height: 13px;
     stroke: var(--black);
-    stroke-width: 2.5;
+    stroke-width: 2.4;
+    flex-shrink: 0;
+    display: block;
   }
 
   /* ── CATEGORIES WRAPPER ── */
@@ -519,8 +540,8 @@
 
   /* SVG plus icon — rotates to × on open */
   .accordion-icon {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -533,14 +554,14 @@
   }
 
   .accordion-icon svg {
-    width: 20px;
-    height: 20px;
-    color: var(--black);
-    fill: currentColor;
-    transition: color 0.22s ease;
+    width: 22px;
+    height: 22px;
     display: block;
-    font-weight: 900;
-    stroke-width: 2.2;
+    stroke: var(--black);
+    stroke-width: 2.6;
+    stroke-linecap: round;
+    fill: none;
+    transition: stroke 0.22s ease;
   }
 
   .accordion-item.open .accordion-icon {
@@ -548,7 +569,7 @@
   }
 
   .accordion-item.open .accordion-icon svg {
-    color: var(--red);
+    stroke: var(--red);
   }
 
   .accordion-body {
@@ -899,7 +920,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">What services does Shoot2Sell offer?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>We offer a full suite of real estate marketing media — all under one roof, all on one appointment:</p>
@@ -920,7 +941,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">How much does Shoot2Sell cost?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Pricing is based on square footage, services selected, and your metro market. Most residential listings fall between <strong>$159–$549 per shoot</strong>. Add-ons like aerial, twilight, virtual staging, and Matterport 3D are priced per service.</p>
@@ -932,7 +953,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">Does professional photography actually help sell homes faster?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Yes — the data is clear. According to Redfin (2024), homes with professional photos sell <strong>32% faster</strong> and spend 34 fewer days on market compared to listings with amateur photos (89 vs. 123 days).</p>
@@ -943,7 +964,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">What areas does Shoot2Sell serve?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>We serve all major Texas metros:</p>
@@ -960,7 +981,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">Can I see examples of your work before booking?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Absolutely. Each service page includes a portfolio of recent work. You can also browse by property type — residential, multifamily, commercial, builder, or rental — to see examples relevant to your market.</p>
@@ -970,7 +991,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">Do I own the images?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Shoot2Sell retains copyright. Usage rights depend on the package:</p>
@@ -998,7 +1019,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">Can I book a photographer for tomorrow?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>In most cases, yes. We have photographers across each market, so next-day availability is standard. Same-day shoots may be available depending on your area — call us to check.</p>
@@ -1008,7 +1029,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">Can I bundle multiple services into one appointment?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Yes. Most clients bundle photography with aerial, video, floor plans, or 3D tours in a single visit. It saves time, keeps the media consistent, and means fewer disruptions at the property.</p>
@@ -1018,7 +1039,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">What is your cancellation policy?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Free rescheduling is available <strong>up to 4 hours before</strong> your scheduled appointment. Cancellations within 4 hours may incur a late cancellation fee because it becomes difficult to reassign that time slot. Contact us as early as possible and we will work with you to find an alternative date.</p>
@@ -1028,7 +1049,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">Do you schedule on weekends?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Photographers are available voluntarily on weekends with an added weekend rate charge. Images will be delivered by noon on the following Monday.</p>
@@ -1038,7 +1059,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">What happens if it rains on my shoot day?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Light drizzle and overcast skies are usually workable for ground photography. If you contact us at least <strong>4 hours before</strong> your shoot, we'll reschedule at no charge.</p>
@@ -1051,7 +1072,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">What payment methods do you accept?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>We accept online payment via our website, phone credit/debit card payment, and keeping a card on file for day-of-service charging.</p>
@@ -1074,7 +1095,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">How quickly will I receive my media?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Standard turnaround for each service from end of shoot:</p>
@@ -1093,7 +1114,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">Do you offer same-day rush delivery?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Yes. Same-day rush delivery is available for most services for an additional rush fee, subject to photographer availability. Let us know when you book and we'll confirm availability.</p>
@@ -1103,7 +1124,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">Can I request a reshoot if I don't like the photos?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Photo approval happens on-site. Your photographer walks each frame with you before leaving — flag any concerns then and we'll re-take while still on the property.</p>
@@ -1115,7 +1136,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">How do I download my images and video?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p><strong>Photos:</strong> You'll receive a delivery email with a dashboard link. Click Hi-Res or Low-Res download buttons, then save and extract the ZIP file.</p>
@@ -1140,7 +1161,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">What types of floor plans does Shoot2Sell offer?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>We offer three formats — all measured on-site during your photography appointment:</p>
@@ -1156,7 +1177,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">How quickly are floor plans delivered?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Floor plans are delivered within <strong>24 hours</strong> of your photography appointment, alongside your edited photos. 3D rendered plans may take up to 24 hours due to additional processing. Interactive floor plans are delivered with a shareable link and embed code.</p>
@@ -1167,7 +1188,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">What if I need a floor plan revised?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>We offer <strong>free revisions within 24 hours of delivery</strong>. If a label, dimension, or layout detail needs correction, we fix it at no charge. Our digital measurement process is highly accurate, but we want every floor plan to meet your standards before it goes live.</p>
@@ -1177,7 +1198,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">How does virtual staging work for multiple units?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Most multi-family clients stage <strong>2–3 key rooms per floor plan</strong> — living area, primary bedroom, and one flex space. When staging multiple floor plans, we match style and furnishings across variants so your gallery reads as a cohesive lease-up campaign rather than isolated one-offs.</p>
@@ -1188,7 +1209,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">Do I need fresh photos every time a tenant moves out?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Not usually. High-quality photos of unfurnished or staged spaces typically stay accurate across <strong>3–5 lease cycles</strong>, assuming no major renovations. Permanent usage rights are included, so you can relist the same property across turnovers without re-licensing.</p>
@@ -1212,7 +1233,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">How do I access my Shoot2Sell Dashboard?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Go to <strong>client.shoot2sell.com</strong> or click the "Download Images, Virtual Tour" link in any delivery email. That direct link takes you to the listing page; use the "Home" button at top right to return to the Dashboard home.</p>
@@ -1222,7 +1243,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">What is the difference between branded and unbranded Virtual Tours?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Your Dashboard includes both versions of every tour:</p>
@@ -1237,7 +1258,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">How do I show, hide, or reorder my photos?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Click the listing name or first photo in the Listing Feed to reach the Listing Page. <strong>Drag and drop images to reorder them.</strong></p>
@@ -1248,7 +1269,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">How do I share my images or Virtual Tour with my homeowner?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Scroll past the Property Info area on your listing page to the <strong>Sharing Tools</strong> section. You can also share your Virtual Tour anywhere by copying and pasting the URL.</p>
@@ -1259,7 +1280,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">Can I change the Marketing Address after sharing?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Yes — but if you change the Marketing Address, the URL to share the Virtual Tour will also change. <strong>Verify the Marketing Address is correct before you share your Virtual Tours</strong> to avoid broken links.</p>
@@ -1282,7 +1303,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">How do I log in for the first time?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>You'll receive a default password in your Image Delivery email. When you log in for the first time, we recommend setting a secure password of your choosing.</p>
@@ -1293,7 +1314,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">What if I forgot my password?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Use the <strong>Reset Password</strong> link on the login screen. Enter your email address and follow the instructions we send you. If the reset doesn't work, contact Shoot2Sell support directly.</p>
@@ -1303,7 +1324,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">How do I add a Listing Coordinator or team member?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>For simple viewing, use the Sharing Tools on the listing page. For team members who need to edit listings or download media, they will need to log in with their own account.</p>
@@ -1315,7 +1336,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">Why am I getting a 403 or 400 error?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>The most common reason for a 403 or 400 error is <strong>logging in with the wrong email address</strong>. Make sure you're using the email you use to do business with Shoot2Sell. If the error persists after verifying your email, contact support.</p>
@@ -1325,7 +1346,7 @@
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">What should I do if I'm not satisfied?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/></svg></span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Honest, quality service is paramount to us. We regularly work with our clients and collaborate on individual solutions. Reach out to our support team directly — we will make it right.</p>
