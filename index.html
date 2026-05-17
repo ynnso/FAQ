@@ -120,13 +120,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 14px;
-    font-size: 13px;
+    gap: 12px;
+    font-size: 16px;
     font-weight: 700;
-    letter-spacing: 1.8px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
     color: var(--red);
-    margin-bottom: 40px;
+    margin-bottom: 36px;
     max-width: 660px;
     margin-left: auto;
     margin-right: auto;
@@ -136,20 +136,20 @@
   .hero-eyebrow::after {
     content: '';
     display: block;
-    width: 32px;
+    width: 16px;
     flex-shrink: 0;
-    height: 1px;
+    height: 1.5px;
     background: var(--red);
-    opacity: 0.4;
+    opacity: 0.5;
   }
 
   h1 {
     font-size: clamp(58px, 8vw, 96px);
     font-weight: 800;
     letter-spacing: -0.05em;
-    line-height: 0.95;
+    line-height: 0.90;
     color: var(--black);
-    margin-bottom: 32px;
+    margin-bottom: 36px;
     max-width: 860px;
     margin-left: auto;
     margin-right: auto;
@@ -161,10 +161,10 @@
   }
 
   .hero-sub {
-    font-size: 20px;
-    font-weight: 500;
+    font-size: 21px;
+    font-weight: 600;
     color: var(--black);
-    line-height: 1.55;
+    line-height: 1.45;
     max-width: 660px;
     margin: 0 auto 48px;
     letter-spacing: -0.2px;
@@ -216,25 +216,40 @@
     transition: box-shadow var(--transition);
     letter-spacing: -0.1px;
     caret-color: var(--red);
-    animation: blink-caret 1.6s step-end infinite;
-  }
-
-  @keyframes blink-caret {
-    0%, 100% { caret-color: var(--red); }
-    50% { caret-color: transparent; }
   }
 
   .search-input::placeholder {
     color: var(--black);
     font-weight: 400;
-    opacity: 0.35;
+    opacity: 0.4;
   }
 
   .search-input:focus {
     box-shadow: 0 0 0 4px rgba(10,10,10,0.08);
   }
 
-  /* Clear button — no circle, just the × */
+  /* Blinking cursor overlay when inactive */
+  .search-cursor {
+    position: absolute;
+    left: 74px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 24px;
+    background: var(--red);
+    z-index: 3;
+    pointer-events: none;
+    animation: cursor-blink 1.2s ease-in-out infinite;
+  }
+
+  .search-cursor.hidden { display: none; }
+
+  @keyframes cursor-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* Clear button — just the × */
   .search-clear {
     position: absolute;
     right: 20px;
@@ -242,7 +257,6 @@
     transform: translateY(-50%);
     width: 24px;
     height: 24px;
-    border-radius: 0;
     border: none;
     background: transparent;
     cursor: pointer;
@@ -254,7 +268,7 @@
     padding: 0;
   }
 
-  .search-clear:hover { opacity: 0.6; }
+  .search-clear:hover { opacity: 0.5; }
   .search-clear.visible { display: flex; }
 
   .search-clear svg {
@@ -266,17 +280,17 @@
 
   /* ── CATEGORIES WRAPPER ── */
   .categories-wrap {
-    margin-top: 48px;
+    margin-top: 72px;
   }
 
   /* ── CATEGORIES (in hero) ── */
   .categories-label {
-    font-size: 14px;
+    font-size: 18px;
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 0.8px;
     text-transform: uppercase;
     color: var(--black);
-    margin-bottom: 20px;
+    margin-bottom: 24px;
     text-align: center;
     font-family: var(--font);
   }
@@ -284,9 +298,8 @@
   .categories-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px 12px;
-    row-gap: 24px;
-    justify-content: center;
+    gap: 12px;
+    row-gap: 18px;
     max-width: 660px;
     margin: 0 auto;
   }
@@ -313,9 +326,9 @@
     color: var(--black);
     cursor: pointer;
     transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-                background 0.55s ease,
-                border-color 0.55s ease,
-                color 0.55s ease,
+                background 0.6s ease,
+                border-color 0.6s ease,
+                color 0.6s ease,
                 box-shadow 0.5s ease;
     letter-spacing: -0.1px;
     white-space: nowrap;
@@ -329,49 +342,45 @@
     stroke-width: 1.8;
     fill: none;
     flex-shrink: 0;
-    transition: stroke 0.55s ease;
+    transition: stroke 0.6s ease;
   }
 
   .cat-pill:hover {
     transform: scale(1.04);
-    box-shadow: 0 3px 16px rgba(10,10,10,0.13);
+    box-shadow: 0 3px 16px rgba(10,10,10,0.12);
   }
 
   .cat-pill.active {
     background: var(--red);
     border-color: var(--red);
     color: var(--white);
-    animation: pill-pulse 2.4s ease-in-out infinite;
-  }
-
-  @keyframes pill-pulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(200,16,46,0.28); }
-    55%       { box-shadow: 0 0 0 9px rgba(200,16,46,0); }
   }
 
   .cat-pill.active svg {
     stroke: var(--white);
   }
 
-  /* ── SECTION HEADERS — full-bleed shelf ── */
+  /* ── SECTION HEADERS — frosted black glass ── */
   .section-header-shelf {
-    background: var(--gray-100);
-    border-top: 1px solid var(--gray-200);
-    border-bottom: 1px solid var(--gray-200);
-    margin-left: calc(-50vw + 330px);
-    margin-right: calc(-50vw + 330px);
-    padding: 20px max(48px, calc(50vw - 330px));
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: none;
+    border-bottom: none;
+    border-radius: 10px;
+    margin: 0;
+    padding: 18px 24px;
     display: flex;
     align-items: center;
     gap: 14px;
   }
 
   .section-icon-box {
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
     border-radius: 8px;
-    border: 1.5px solid var(--gray-300);
-    background: var(--white);
+    border: 1.5px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -379,9 +388,9 @@
   }
 
   .section-icon-box svg {
-    width: 17px;
-    height: 17px;
-    stroke: var(--black);
+    width: 16px;
+    height: 16px;
+    stroke: var(--white);
     stroke-width: 1.6;
     fill: none;
   }
@@ -394,17 +403,17 @@
   }
 
   .section-header-text h2 {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
-    color: var(--black);
-    letter-spacing: -0.3px;
+    color: var(--white);
+    letter-spacing: -0.2px;
     line-height: 1;
     white-space: nowrap;
   }
 
   .section-header-text p {
     font-size: 12px;
-    color: var(--gray-700);
+    color: rgba(255,255,255,0.5);
     font-weight: 500;
     white-space: nowrap;
     line-height: 1;
@@ -468,7 +477,7 @@
     color: var(--black);
   }
 
-  /* Plain bold +/× — no circle, just the symbol */
+  /* Plain bold +/× — no circle, just the symbol, 2x bigger thick */
   .accordion-icon {
     width: 32px;
     height: 32px;
@@ -476,8 +485,8 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    font-size: 28px;
-    font-weight: 300;
+    font-size: 32px;
+    font-weight: 600;
     color: var(--black);
     line-height: 1;
     font-family: var(--font);
@@ -488,10 +497,8 @@
     user-select: none;
   }
 
-  /* Hide the SVG inside — we use text content instead */
   .accordion-icon svg { display: none; }
 
-  /* Open state: rotate + to × */
   .accordion-item.open .accordion-icon {
     transform: rotate(45deg);
     color: var(--red);
@@ -508,7 +515,7 @@
   .accordion-answer {
     padding: 0 48px 24px 0;
     font-size: 15px;
-    color: var(--gray-700);
+    color: var(--black);
     line-height: 1.75;
     font-weight: 400;
     letter-spacing: -0.1px;
@@ -569,7 +576,7 @@
 
   .no-results p {
     font-size: 14px;
-    color: var(--gray-400);
+    color: var(--black);
     font-weight: 400;
   }
 
@@ -711,9 +718,9 @@
     .search-wrap { max-width: 100%; }
     .main { max-width: 100%; padding: 0 0 100px; }
     .section-header-shelf {
-      margin-left: 0;
-      margin-right: 0;
-      padding: 18px 20px;
+      margin: 0;
+      border-radius: 10px;
+      padding: 16px 20px;
     }
 
     /* ── STICKY MOBILE CATEGORY BAR ── */
@@ -781,6 +788,7 @@
         <path d="M14.5 14.5 L18 18" stroke="white" stroke-width="1.9" stroke-linecap="round"/>
       </svg>
     </div>
+    <div class="search-cursor" id="searchCursor"></div>
     <input
       class="search-input"
       id="searchInput"
@@ -1312,11 +1320,21 @@
 (function() {
   const searchInput = document.getElementById('searchInput');
   const searchClear = document.getElementById('searchClear');
+  const searchCursor = document.getElementById('searchCursor');
   const catPills = document.querySelectorAll('.cat-pill');
   const faqBlocks = document.querySelectorAll('.faq-block');
   const noResults = document.getElementById('noResults');
 
   let activeCategory = 'all';
+
+  /* ── BLINKING CURSOR — hide on focus / type, show on blur when empty ── */
+  searchInput.addEventListener('focus', () => searchCursor.classList.add('hidden'));
+  searchInput.addEventListener('blur', () => {
+    if (searchInput.value.length === 0) searchCursor.classList.remove('hidden');
+  });
+  searchInput.addEventListener('input', () => {
+    if (searchInput.value.length > 0) searchCursor.classList.add('hidden');
+  });
 
   /* ── ACCORDION ── */
   function closeAll() {
