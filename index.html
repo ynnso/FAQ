@@ -298,11 +298,12 @@
 
   .categories-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(220px, 1fr));
-    gap: 16px;
-    row-gap: 14px;
+    grid-template-columns: repeat(3, auto);
+    gap: 32px;
+    row-gap: 28px;
     max-width: 860px;
     margin: 0 auto;
+    justify-content: center;
   }
 
   /* ── MAIN ── */
@@ -313,11 +314,11 @@
   }
 
   .cat-pill {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 12px;
-    padding: 13px 0 13px 0;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 22px;
     border-radius: 100px;
     border: 1.5px solid var(--black);
     background: var(--white);
@@ -333,45 +334,24 @@
                 box-shadow 0.5s ease;
     letter-spacing: 0px;
     white-space: nowrap;
-    width: 100%;
+    width: auto;
     line-height: 1;
-    position: relative;
-    overflow: hidden;
-  }
-
-  /* ── Icon stripe (left bar) ── */
-  .cat-pill::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 44px;
-    background: var(--black);
-    border-radius: 100px 0 0 100px;
-    z-index: 0;
   }
 
   .cat-pill svg {
-    width: 17px;
-    height: 17px;
+    width: 16px;
+    height: 16px;
     display: block;
-    stroke: var(--white);
-    stroke-width: 1.7;
+    stroke: var(--black);
+    stroke-width: 1.6;
     fill: none;
     flex-shrink: 0;
     transition: stroke 0.6s ease;
-    position: relative;
-    z-index: 1;
-    margin-left: 10px;
   }
 
   .cat-pill span {
     display: block;
     line-height: 1;
-    position: relative;
-    z-index: 1;
-    margin-right: 12px;
   }
 
   .cat-pill:hover {
@@ -383,10 +363,6 @@
     background: var(--red);
     border-color: var(--red);
     color: var(--white);
-  }
-
-  .cat-pill.active::before {
-    background: rgba(255, 255, 255, 0.3);
   }
 
   .cat-pill.active svg,
@@ -819,23 +795,14 @@
 
     .cat-pill {
       font-size: 12px;
-      padding: 8px 14px;
+      padding: 10px 16px;
       flex-shrink: 0;
       white-space: nowrap;
       width: auto;
     }
 
-    .cat-pill::before {
-      display: none;
-    }
-
     .cat-pill svg {
       stroke: var(--black);
-      margin-left: 0;
-    }
-
-    .cat-pill span {
-      margin-right: 0;
     }
 
     .faq-block { padding-left: 20px; padding-right: 20px; }
