@@ -212,7 +212,7 @@
     font-weight: 500;
     color: var(--black);
     background: var(--white);
-    padding: 0 48px 0 64px;
+    padding: 0 48px 0 56px;
     outline: none;
     transition: box-shadow var(--transition);
     letter-spacing: -0.1px;
@@ -232,7 +232,7 @@
   /* Blinking cursor overlay when inactive — BLACK */
   .search-cursor {
     position: absolute;
-    left: 74px;
+    left: 64px;
     top: 50%;
     transform: translateY(-50%);
     width: 2px;
@@ -253,7 +253,7 @@
   /* Clear button */
   .search-clear {
     position: absolute;
-    right: 24px;
+    right: 20px;
     top: 50%;
     transform: translateY(-50%);
     width: 24px;
@@ -266,7 +266,7 @@
     justify-content: center;
     transition: opacity var(--transition);
     z-index: 2;
-    padding: 0;
+    padding: 12px;
   }
 
   .search-clear:hover { opacity: 0.5; }
@@ -533,13 +533,14 @@
   }
 
   .accordion-icon svg {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     color: var(--black);
     fill: currentColor;
     transition: color 0.22s ease;
     display: block;
     font-weight: 900;
+    stroke-width: 2.2;
   }
 
   .accordion-item.open .accordion-icon {
