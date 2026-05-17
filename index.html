@@ -175,6 +175,7 @@
     max-width: 860px;
     margin: 0 auto;
     position: relative;
+    padding: 0 24px;
   }
 
   .search-left-bar {
@@ -386,12 +387,10 @@
     align-items: stretch;
     gap: 0;
     overflow: hidden;
-    transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .section-header-shelf.active {
-    background: rgba(200, 16, 46, 0.92);
-    border-color: rgba(255,255,255,0.12);
+    /* Header stays dark charcoal — only icon stripe changes */
   }
 
   /* Flush-left icon stripe — mirrors search bar left bar */
@@ -406,6 +405,12 @@
     justify-content: center;
     flex-shrink: 0;
     border-right: 1px solid rgba(255,255,255,0.08);
+    transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .section-header-shelf.active .section-icon-box {
+    background: rgba(200, 16, 46, 0.9);
+    border-right-color: rgba(200, 16, 46, 0.6);
   }
 
   .section-icon-box svg {
