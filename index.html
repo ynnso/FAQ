@@ -113,20 +113,19 @@
     padding-bottom: 88px;
     text-align: center;
     background: var(--white);
-    border-bottom: 1px solid var(--gray-200);
   }
 
   .hero-eyebrow {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    font-size: 16px;
+    gap: 10px;
+    font-size: 20px;
     font-weight: 700;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
+    letter-spacing: -0.3px;
+    text-transform: none;
     color: var(--red);
-    margin-bottom: 36px;
+    margin-bottom: 56px;
     max-width: 660px;
     margin-left: auto;
     margin-right: auto;
@@ -136,20 +135,19 @@
   .hero-eyebrow::after {
     content: '';
     display: block;
-    width: 16px;
-    flex-shrink: 0;
+    flex: 1;
     height: 1.5px;
     background: var(--red);
-    opacity: 0.5;
+    opacity: 0.4;
   }
 
   h1 {
     font-size: clamp(58px, 8vw, 96px);
     font-weight: 800;
     letter-spacing: -0.05em;
-    line-height: 0.90;
+    line-height: 0.86;
     color: var(--black);
-    margin-bottom: 36px;
+    margin-bottom: 48px;
     max-width: 860px;
     margin-left: auto;
     margin-right: auto;
@@ -215,7 +213,7 @@
     outline: none;
     transition: box-shadow var(--transition);
     letter-spacing: -0.1px;
-    caret-color: var(--red);
+    caret-color: var(--black);
   }
 
   .search-input::placeholder {
@@ -228,7 +226,7 @@
     box-shadow: 0 0 0 4px rgba(10,10,10,0.08);
   }
 
-  /* Blinking cursor overlay when inactive */
+  /* Blinking cursor overlay when inactive — BLACK */
   .search-cursor {
     position: absolute;
     left: 74px;
@@ -236,7 +234,7 @@
     transform: translateY(-50%);
     width: 2px;
     height: 24px;
-    background: var(--red);
+    background: var(--black);
     z-index: 3;
     pointer-events: none;
     animation: cursor-blink 1.2s ease-in-out infinite;
@@ -249,7 +247,7 @@
     50% { opacity: 0; }
   }
 
-  /* Clear button — just the × */
+  /* Clear button */
   .search-clear {
     position: absolute;
     right: 20px;
@@ -283,14 +281,14 @@
     margin-top: 72px;
   }
 
-  /* ── CATEGORIES (in hero) ── */
+  /* ── CATEGORIES ── */
   .categories-label {
-    font-size: 18px;
+    font-size: 21px;
     font-weight: 700;
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
+    letter-spacing: -0.2px;
+    text-transform: none;
     color: var(--black);
-    margin-bottom: 24px;
+    margin-bottom: 36px;
     text-align: center;
     font-family: var(--font);
   }
@@ -299,7 +297,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    row-gap: 18px;
+    row-gap: 21px;
     max-width: 660px;
     margin: 0 auto;
   }
@@ -360,36 +358,38 @@
     stroke: var(--white);
   }
 
-  /* ── SECTION HEADERS — frosted black glass ── */
+  /* ── SECTION HEADERS — Apple glass morphism with flush-left icon stripe ── */
   .section-header-shelf {
     background: rgba(10,10,10,0.92);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-top: none;
-    border-bottom: none;
-    border-radius: 10px;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
     margin: 0;
-    padding: 18px 24px;
+    padding: 0;
     display: flex;
-    align-items: center;
-    gap: 14px;
+    align-items: stretch;
+    gap: 0;
+    overflow: hidden;
   }
 
+  /* Flush-left icon stripe — mirrors search bar left bar */
   .section-icon-box {
-    width: 34px;
-    height: 34px;
-    border-radius: 8px;
-    border: 1.5px solid rgba(255,255,255,0.2);
-    background: rgba(255,255,255,0.08);
+    width: 64px;
+    min-height: 64px;
+    border-radius: 0;
+    border: none;
+    background: rgba(255,255,255,0.07);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    border-right: 1px solid rgba(255,255,255,0.08);
   }
 
   .section-icon-box svg {
-    width: 16px;
-    height: 16px;
+    width: 24px;
+    height: 24px;
     stroke: var(--white);
     stroke-width: 1.6;
     fill: none;
@@ -398,22 +398,23 @@
   .section-header-text {
     display: flex;
     align-items: baseline;
-    gap: 10px;
+    gap: 14px;
     flex-wrap: wrap;
+    padding: 20px 28px;
   }
 
   .section-header-text h2 {
-    font-size: 14px;
+    font-size: 20px;
     font-weight: 700;
     color: var(--white);
-    letter-spacing: -0.2px;
+    letter-spacing: -0.4px;
     line-height: 1;
     white-space: nowrap;
   }
 
   .section-header-text p {
-    font-size: 12px;
-    color: rgba(255,255,255,0.5);
+    font-size: 15px;
+    color: rgba(255,255,255,0.4);
     font-weight: 500;
     white-space: nowrap;
     line-height: 1;
@@ -457,7 +458,12 @@
     padding: 26px 0;
     text-align: left;
     font-family: var(--font);
-    transition: opacity var(--transition);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity var(--transition);
+    transform-origin: left center;
+  }
+
+  .accordion-trigger:hover {
+    transform: scale(1.01);
   }
 
   .accordion-trigger:hover .accordion-q {
@@ -1336,7 +1342,7 @@
     if (searchInput.value.length > 0) searchCursor.classList.add('hidden');
   });
 
-  /* ── ACCORDION ── */
+  /* ── ACCORDION — click trigger to open, click anywhere else to close ── */
   function closeAll() {
     document.querySelectorAll('.accordion-item.open').forEach(item => {
       item.classList.remove('open');
@@ -1346,7 +1352,8 @@
   }
 
   document.querySelectorAll('.accordion-trigger').forEach(trigger => {
-    trigger.addEventListener('click', function() {
+    trigger.addEventListener('click', function(e) {
+      e.stopPropagation();
       const item = this.closest('.accordion-item');
       const body = item.querySelector('.accordion-body');
       const isOpen = item.classList.contains('open');
@@ -1361,19 +1368,27 @@
     });
   });
 
-  /* ── CATEGORIES — click to filter, click active again to show all ── */
+  /* Click anywhere outside an open accordion to close it */
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.accordion-item.open')) {
+      closeAll();
+    }
+  });
+
+  /* ── CATEGORIES — click to scroll to section, all sections always visible ── */
   catPills.forEach(pill => {
     pill.addEventListener('click', function() {
       const wasActive = this.classList.contains('active');
       catPills.forEach(p => p.classList.remove('active'));
-      if (wasActive) {
-        activeCategory = 'all';
-      } else {
+
+      if (!wasActive) {
         this.classList.add('active');
-        activeCategory = this.dataset.cat;
+        const targetCat = this.dataset.cat;
+        const targetBlock = document.getElementById('block-' + targetCat);
+        if (targetBlock) {
+          targetBlock.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }
-      closeAll();
-      filterContent();
     });
   });
 
@@ -1428,24 +1443,20 @@
     let anyVisible = false;
 
     faqBlocks.forEach(block => {
-      const blockCat = block.dataset.cat;
-      const catMatch = activeCategory === 'all' || activeCategory === blockCat;
       let blockHasResults = false;
 
       block.querySelectorAll('.accordion-item').forEach(item => {
         const qText = item.querySelector('.accordion-q').textContent.toLowerCase();
         const aText = item.querySelector('.accordion-answer').textContent.toLowerCase();
         const textMatch = !query || qText.includes(query) || aText.includes(query);
-        const show = catMatch && textMatch;
-        item.style.display = show ? '' : 'none';
-        if (show) blockHasResults = true;
+        item.style.display = textMatch ? '' : 'none';
+        if (textMatch) blockHasResults = true;
       });
 
-      const showBlock = catMatch && blockHasResults;
-      block.classList.toggle('visible', showBlock);
-      if (showBlock) anyVisible = true;
+      block.classList.toggle('visible', blockHasResults);
+      if (blockHasResults) anyVisible = true;
 
-      if (query && showBlock) {
+      if (query && blockHasResults) {
         block.querySelectorAll('.accordion-item').forEach(item => {
           if (item.style.display !== 'none') {
             highlightText(item.querySelector('.accordion-q'), query);
