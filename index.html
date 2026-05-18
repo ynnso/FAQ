@@ -111,8 +111,8 @@
   .hero {
     padding-top: 96px;
     padding-bottom: 56px;
-    padding-left: 48px;
-    padding-right: 48px;
+    padding-left: 24px;
+    padding-right: 24px;
     background: var(--white);
     display: flex;
     flex-direction: column;
@@ -121,7 +121,8 @@
   }
 
   .hero-content {
-    max-width: 640px;
+    max-width: 860px;
+    width: 100%;
     margin: 0 auto;
     text-align: center;
   }
@@ -129,15 +130,15 @@
   /* ── HERO IMAGE BAND — full-width between hero and FAQ ── */
   .hero-image-band {
     width: 100%;
-    max-width: 900px;
+    max-width: 860px;
     margin: 0 auto;
-    padding: 0 48px;
+    padding: 0 24px;
     display: block;
   }
 
   .hero-image {
     width: 100%;
-    height: 320px;
+    aspect-ratio: 3 / 2;
     object-fit: cover;
     object-position: center 35%;
     border-radius: 16px;
@@ -180,7 +181,7 @@
 
   /* ── SEARCH ── */
   .search-wrap {
-    max-width: 400px;
+    max-width: 100%;
     margin: 0 auto;
     position: relative;
     padding: 0;
@@ -303,23 +304,16 @@
 
   /* ── CATEGORIES ── */
   .categories-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
-    color: var(--gray-500);
-    margin-bottom: 16px;
-    text-align: center;
-    font-family: var(--font);
+    display: none;
   }
 
   .categories-grid {
     display: grid;
-    grid-template-columns: repeat(3, auto);
+    grid-template-columns: repeat(3, 1fr);
     gap: 12px;
     row-gap: 12px;
-    max-width: 500px;
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0;
     justify-content: center;
   }
 
@@ -333,9 +327,9 @@
   .cat-pill {
     display: inline-flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     gap: 8px;
-    padding: 11px 16px;
+    padding: 22px 32px;
     border-radius: 100px;
     border: 1.5px solid var(--black);
     background: var(--white);
@@ -783,8 +777,8 @@
   .hero-image { animation: fadeUp 0.6s 0.12s ease both; }
 
   @media (max-width: 1000px) {
-    .hero { padding-left: 36px; padding-right: 36px; }
-    .hero-image-band { padding: 0 36px; }
+    .hero { padding-left: 24px; padding-right: 24px; }
+    .hero-image-band { padding: 0 24px; }
   }
 
   @media (max-width: 768px) {
@@ -807,7 +801,8 @@
     }
 
     .hero-image {
-      height: 220px;
+      aspect-ratio: 3 / 2;
+      height: auto;
       border-radius: 12px;
     }
 
@@ -853,7 +848,7 @@
 
     .cat-pill {
       font-size: 12px;
-      padding: 10px 16px;
+      padding: 16px 24px;
       flex-shrink: 0;
       white-space: nowrap;
       width: auto;
