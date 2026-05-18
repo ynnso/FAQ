@@ -113,65 +113,75 @@
     padding-bottom: 72px;
     padding-left: 24px;
     padding-right: 24px;
-    text-align: center;
     background: var(--white);
+    display: flex;
+    align-items: flex-start;
+    gap: 64px;
+    max-width: 100%;
+  }
+
+  .hero-content {
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+    max-width: 540px;
+  }
+
+  .hero-image-wrap {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 320px;
+  }
+
+  .hero-image {
+    width: 100%;
+    max-width: 420px;
+    aspect-ratio: 1 / 1.3;
+    object-fit: cover;
+    border-radius: 16px;
+    box-shadow: 0 20px 64px rgba(10, 10, 10, 0.14), 0 2px 8px rgba(10, 10, 10, 0.08);
+    transition: box-shadow var(--transition), transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .hero-image:hover {
+    box-shadow: 0 24px 80px rgba(10, 10, 10, 0.18), 0 4px 16px rgba(10, 10, 10, 0.1);
+    transform: translateY(-2px);
   }
 
   .hero-eyebrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    font-size: 28px;
+    display: inline-block;
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: -0.3px;
-    text-transform: none;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
     color: var(--red);
-    margin-bottom: 44px;
-    max-width: 812px;
-    margin-left: auto;
-    margin-right: auto;
-    white-space: nowrap;
-  }
-
-  .hero-eyebrow::before,
-  .hero-eyebrow::after {
-    content: '';
-    display: block;
-    flex: 1;
-    height: 1.5px;
-    background: var(--red);
-    opacity: 0.45;
-    min-width: 0;
+    margin-bottom: 28px;
   }
 
   h1 {
-    font-size: clamp(58px, 8vw, 96px);
+    font-size: clamp(52px, 5.5vw, 76px);
     font-weight: 800;
-    letter-spacing: -0.05em;
-    line-height: 0.93;
+    letter-spacing: -0.06em;
+    line-height: 1.15;
     color: var(--black);
-    margin-bottom: 44px;
-    max-width: 860px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-bottom: 28px;
   }
 
   h1 em {
     font-style: normal;
     color: var(--red);
-    display: block;
-    line-height: 0.93;
+    display: inline;
   }
 
   .hero-sub {
-    font-size: 21px;
-    font-weight: 600;
-    color: var(--black);
-    line-height: 1.45;
-    max-width: 860px;
-    margin: 0 auto 48px;
-    letter-spacing: -0.2px;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--gray-500);
+    line-height: 1.65;
+    margin: 0 0 52px 0;
+    letter-spacing: -0.15px;
   }
 
   /* ── SEARCH ── */
@@ -184,16 +194,16 @@
    *   Clear btn right:       16px  (inside input boundary, well clear of edge)
    */
   .search-wrap {
-    max-width: 860px;
-    margin: 0 auto;
+    max-width: 400px;
+    margin: 0;
     position: relative;
-    padding: 0 24px;
+    padding: 0;
     box-sizing: border-box;
   }
 
   .search-left-bar {
     position: absolute;
-    left: 24px; /* matches search-wrap padding */
+    left: 0;
     top: 0;
     bottom: 0;
     width: 60px;
@@ -253,7 +263,7 @@
    */
   .search-cursor {
     position: absolute;
-    left: 92px;
+    left: 68px;
     top: 50%;
     transform: translateY(-50%);
     width: 1.5px;
@@ -274,7 +284,7 @@
   /* Clear button — box-sizing: border-box so padding doesn't expand width */
   .search-clear {
     position: absolute;
-    right: 32px; /* 24px wrap padding + 8px inside edge */
+    right: 16px;
     top: 50%;
     transform: translateY(-50%);
     width: 32px;
@@ -311,29 +321,29 @@
   /* ── CATEGORIES WRAPPER ── */
   .categories-wrap {
     margin-top: 48px;
-    padding: 0 24px;
+    padding: 0;
   }
 
   /* ── CATEGORIES ── */
   .categories-label {
-    font-size: 21px;
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: -0.2px;
-    text-transform: none;
-    color: var(--black);
-    margin-bottom: 36px;
-    text-align: center;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    margin-bottom: 16px;
+    text-align: left;
     font-family: var(--font);
   }
 
   .categories-grid {
     display: grid;
-    grid-template-columns: repeat(3, auto);
-    gap: 32px;
-    row-gap: 28px;
-    max-width: 860px;
-    margin: 0 auto;
-    justify-content: center;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    row-gap: 12px;
+    max-width: 400px;
+    margin: 0;
+    justify-content: flex-start;
   }
 
   /* ── MAIN ── */
@@ -346,14 +356,14 @@
   .cat-pill {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 8px;
-    padding: 13px 22px;
+    padding: 11px 16px;
     border-radius: 100px;
     border: 1.5px solid var(--black);
     background: var(--white);
     font-family: var(--font);
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     color: var(--black);
     cursor: pointer;
@@ -364,8 +374,9 @@
                 box-shadow 0.5s ease;
     letter-spacing: 0px;
     white-space: nowrap;
-    width: auto;
+    width: 100%;
     line-height: 1;
+    justify-content: center;
   }
 
   .cat-pill svg {
@@ -797,19 +808,66 @@
   .hero-sub { animation: fadeUp 0.5s 0.16s ease both; }
   .search-wrap { animation: fadeUp 0.5s 0.24s ease both; }
   .search-hint { animation: fadeUp 0.5s 0.30s ease both; }
+  .hero-image { animation: fadeUp 0.6s 0.12s ease both; }
 
   /* ── MID-RANGE — column fills but breathes ── */
+  @media (max-width: 1200px) {
+    .hero {
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .hero-content {
+      flex: 1 1 auto;
+    }
+
+    .hero-image-wrap {
+      flex: 1 1 auto;
+      max-width: 400px;
+    }
+
+    .search-wrap {
+      max-width: 100%;
+    }
+
+    .categories-grid {
+      max-width: 100%;
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
   @media (max-width: 1000px) and (min-width: 769px) {
     .hero { padding-left: 40px; padding-right: 40px; }
-    .categories-wrap { padding: 0 40px; }
-    .main { padding-left: 40px; padding-right: 40px; }
+    .categories-wrap { padding: 0; }
   }
 
   /* ── RESPONSIVE ── */
   @media (max-width: 768px) {
-    .hero { padding-top: 72px; padding-bottom: 40px; padding-left: 24px; padding-right: 24px; }
-    h1 { font-size: 46px; letter-spacing: -2.5px; line-height: 0.93; }
-    .hero-sub { font-size: 17px; margin-bottom: 40px; }
+    .hero {
+      padding-top: 72px;
+      padding-bottom: 40px;
+      padding-left: 24px;
+      padding-right: 24px;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .hero-content {
+      flex: 1 1 auto;
+      text-align: left;
+    }
+
+    .hero-image-wrap {
+      flex: 1 1 auto;
+      max-width: 100%;
+    }
+
+    .hero-image {
+      max-width: 100%;
+    }
+
+    h1 { font-size: 44px; letter-spacing: -0.06em; line-height: 1.15; }
+    .hero-sub { font-size: 15px; margin-bottom: 32px; }
     .search-wrap { max-width: 100%; }
     .main { max-width: 100%; padding: 0 0 100px; }
     .section-header-shelf {
@@ -873,48 +931,52 @@
 
 <!-- HERO -->
 <section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">Frequently Asked Questions</div>
 
-  <div class="hero-eyebrow">Frequently Asked Questions</div>
+    <h1>Real Estate <em>Photography</em><br>Questions Answered</h1>
+    <p class="hero-sub">Get clarity on pricing, turnaround, services, and delivery in seconds. No calls. No waiting.</p>
 
-  <h1>Questions?<br>We Have<br><em>Clear Answers</em></h1>
-  <p class="hero-sub">Listings move fast in Texas.<br>Get answers in seconds — No calls. No waiting.</p>
-
-  <!-- Search bar with black flush-left bar + white icon -->
-  <div class="search-wrap">
-    <div class="search-left-bar" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="9.14" cy="9.14" r="7.64" stroke="white" stroke-width="1.91" stroke-miterlimit="10"/>
-        <line x1="22.5" y1="22.5" x2="14.39" y2="14.39" stroke="white" stroke-width="1.91" stroke-miterlimit="10" stroke-linecap="round"/>
-      </svg>
+    <!-- Search bar with black flush-left bar + white icon -->
+    <div class="search-wrap">
+      <div class="search-left-bar" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="9.14" cy="9.14" r="7.64" stroke="white" stroke-width="1.91" stroke-miterlimit="10"/>
+          <line x1="22.5" y1="22.5" x2="14.39" y2="14.39" stroke="white" stroke-width="1.91" stroke-miterlimit="10" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="search-cursor" id="searchCursor"></div>
+      <input
+        class="search-input"
+        id="searchInput"
+        type="text"
+        placeholder="Search: pricing, turnaround, same-day, floor plans…"
+        autocomplete="off"
+      />
+      <button class="search-clear" id="searchClear" aria-label="Clear search">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <path d="M1 1 L11 11 M11 1 L1 11"/>
+        </svg>
+      </button>
     </div>
-    <div class="search-cursor" id="searchCursor"></div>
-    <input
-      class="search-input"
-      id="searchInput"
-      type="text"
-      placeholder="Try: cancellation, floor plans, rush delivery…"
-      autocomplete="off"
-    />
-    <button class="search-clear" id="searchClear" aria-label="Clear search">
-      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-        <path d="M1 1 L11 11 M11 1 L1 11"/>
-      </svg>
-    </button>
+
+    <!-- Categories — 2 columns desktop / sticky scrollable row mobile -->
+    <div class="categories-wrap">
+      <p class="categories-label">Browse By Category</p>
+      <div class="categories-grid" id="catRow">
+        <button class="cat-pill" data-cat="services"><svg viewBox="0 0 24 24" fill="none"><path d="M12 16C13.6569 16 15 14.6569 15 13C15 11.3431 13.6569 10 12 10C10.3431 10 9 11.3431 9 13C9 14.6569 10.3431 16 12 16Z" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 16.8V9.2C3 8.0799 3 7.51984 3.21799 7.09202C3.40973 6.71569 3.71569 6.40973 4.09202 6.21799C4.51984 6 5.0799 6 6.2 6H7.25464C7.37758 6 7.43905 6 7.49576 5.9935C7.79166 5.95961 8.05705 5.79559 8.21969 5.54609C8.25086 5.49827 8.27836 5.44328 8.33333 5.33333C8.44329 5.11342 8.49827 5.00346 8.56062 4.90782C8.8859 4.40882 9.41668 4.08078 10.0085 4.01299C10.1219 4 10.2448 4 10.4907 4H13.5093C13.7552 4 13.8781 4 13.9915 4.01299C14.5833 4.08078 15.1141 4.40882 15.4394 4.90782C15.5017 5.00345 15.5567 5.11345 15.6667 5.33333C15.7216 5.44329 15.7491 5.49827 15.7803 5.54609C15.943 5.79559 16.2083 5.95961 16.5042 5.9935C16.561 6 16.6224 6 16.7454 6H17.8C18.9201 6 19.4802 6 19.908 6.21799C20.2843 6.40973 20.5903 6.71569 20.782 7.09202C21 7.51984 21 8.0799 21 9.2V16.8C21 17.9201 21 18.4802 20.782 18.908C20.5903 19.2843 20.2843 19.5903 19.908 19.782C19.4802 20 18.9201 20 17.8 20H6.2C5.0799 20 4.51984 20 4.09202 19.782C3.71569 19.5903 3.40973 19.2843 3.21799 18.908C3 18.4802 3 17.9201 3 16.8Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Services</span></button>
+        <button class="cat-pill" data-cat="booking"><svg viewBox="0 0 24 24" fill="none"><path d="M3 10H21M7 3V5M17 3V5M6.2 21H17.8C18.9201 21 19.4802 21 19.908 20.782C20.2843 20.5903 20.5903 20.2843 20.782 19.908C21 19.4802 21 18.9201 21 17.8V8.2C21 7.07989 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V17.8C3 18.9201 3 19.4802 3.21799 19.908C3.40973 20.2843 3.71569 20.5903 4.09202 20.782C4.51984 21 5.07989 21 6.2 21Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Booking</span></button>
+        <button class="cat-pill" data-cat="delivery"><svg viewBox="0 0 24 24" fill="none"><path d="M20 15V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18L4 15M8 11L12 15M12 15L16 11M12 15V3" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Delivery</span></button>
+        <button class="cat-pill" data-cat="floorplans"><svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="1.5"/><path d="M2 10h9M11.5 2v8M11.5 10v12M11.5 10h10.5" stroke-linecap="round"/></svg><span>Floor Plans</span></button>
+        <button class="cat-pill" data-cat="media"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20.5H16M12 20.5H8M12 20.5V16.5M12 16.5C16 16.5 19.5 16.1667 20 15.8333C20.5 15.5 21 12.6667 21 10C21 7.33333 20.5 4.5 20 4.16667C19.5 3.83333 16 3.5 12 3.5C8 3.5 4.5 3.83333 4 4.16667C3.5 4.5 3 7.33333 3 10C3 12.6667 3.5 15.5 4 15.8333C4.5 16.1667 8 16.5 12 16.5Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Media</span></button>
+        <button class="cat-pill" data-cat="account"><svg viewBox="0 0 24 24" fill="none"><path d="M5 20V19C5 16.2386 7.23858 14 10 14H14C16.7614 14 19 16.2386 19 19V20M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Account</span></button>
+      </div>
+    </div>
   </div>
 
-  <!-- Categories — 2 rows of 3 desktop / sticky scrollable row mobile -->
-  <div class="categories-wrap">
-    <p class="categories-label">Browse By Category</p>
-    <div class="categories-grid" id="catRow">
-      <button class="cat-pill" data-cat="services"><svg viewBox="0 0 24 24" fill="none"><path d="M12 16C13.6569 16 15 14.6569 15 13C15 11.3431 13.6569 10 12 10C10.3431 10 9 11.3431 9 13C9 14.6569 10.3431 16 12 16Z" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 16.8V9.2C3 8.0799 3 7.51984 3.21799 7.09202C3.40973 6.71569 3.71569 6.40973 4.09202 6.21799C4.51984 6 5.0799 6 6.2 6H7.25464C7.37758 6 7.43905 6 7.49576 5.9935C7.79166 5.95961 8.05705 5.79559 8.21969 5.54609C8.25086 5.49827 8.27836 5.44328 8.33333 5.33333C8.44329 5.11342 8.49827 5.00346 8.56062 4.90782C8.8859 4.40882 9.41668 4.08078 10.0085 4.01299C10.1219 4 10.2448 4 10.4907 4H13.5093C13.7552 4 13.8781 4 13.9915 4.01299C14.5833 4.08078 15.1141 4.40882 15.4394 4.90782C15.5017 5.00345 15.5567 5.11345 15.6667 5.33333C15.7216 5.44329 15.7491 5.49827 15.7803 5.54609C15.943 5.79559 16.2083 5.95961 16.5042 5.9935C16.561 6 16.6224 6 16.7454 6H17.8C18.9201 6 19.4802 6 19.908 6.21799C20.2843 6.40973 20.5903 6.71569 20.782 7.09202C21 7.51984 21 8.0799 21 9.2V16.8C21 17.9201 21 18.4802 20.782 18.908C20.5903 19.2843 20.2843 19.5903 19.908 19.782C19.4802 20 18.9201 20 17.8 20H6.2C5.0799 20 4.51984 20 4.09202 19.782C3.71569 19.5903 3.40973 19.2843 3.21799 18.908C3 18.4802 3 17.9201 3 16.8Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Services &amp; Pricing</span></button>
-      <button class="cat-pill" data-cat="booking"><svg viewBox="0 0 24 24" fill="none"><path d="M3 10H21M7 3V5M17 3V5M6.2 21H17.8C18.9201 21 19.4802 21 19.908 20.782C20.2843 20.5903 20.5903 20.2843 20.782 19.908C21 19.4802 21 18.9201 21 17.8V8.2C21 7.07989 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V17.8C3 18.9201 3 19.4802 3.21799 19.908C3.40973 20.2843 3.71569 20.5903 4.09202 20.782C4.51984 21 5.07989 21 6.2 21Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Booking &amp; Scheduling</span></button>
-      <button class="cat-pill" data-cat="delivery"><svg viewBox="0 0 24 24" fill="none"><path d="M20 15V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18L4 15M8 11L12 15M12 15L16 11M12 15V3" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Delivery &amp; Turnaround</span></button>
-      <button class="cat-pill" data-cat="floorplans"><svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="1.5"/><path d="M2 10h9M11.5 2v8M11.5 10v12M11.5 10h10.5" stroke-linecap="round"/></svg><span>Floor Plans &amp; Tours</span></button>
-      <button class="cat-pill" data-cat="media"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20.5H16M12 20.5H8M12 20.5V16.5M12 16.5C16 16.5 19.5 16.1667 20 15.8333C20.5 15.5 21 12.6667 21 10C21 7.33333 20.5 4.5 20 4.16667C19.5 3.83333 16 3.5 12 3.5C8 3.5 4.5 3.83333 4 4.16667C3.5 4.5 3 7.33333 3 10C3 12.6667 3.5 15.5 4 15.8333C4.5 16.1667 8 16.5 12 16.5Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Media &amp; Dashboard</span></button>
-      <button class="cat-pill" data-cat="account"><svg viewBox="0 0 24 24" fill="none"><path d="M5 20V19C5 16.2386 7.23858 14 10 14H14C16.7614 14 19 16.2386 19 19V20M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Account &amp; Access</span></button>
-    </div>
+  <div class="hero-image-wrap">
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 520'%3E%3Cdefs%3E%3ClinearGradient id='wall' x1='0%25' y1='0%25' x2='100%25' y2='50%25'%3E%3Cstop offset='0%25' style='stop-color:%23f5f1ed;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23ede7e0;stop-opacity:1' /%3E%3C/linearGradient%3E%3ClinearGradient id='light' x1='50%25' y1='0%25' x2='50%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23fef9f3;stop-opacity:0.8' /%3E%3Cstop offset='100%25' style='stop-color:%23e8dfd5;stop-opacity:0.3' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='400' height='520' fill='url(%23wall)'/%3E%3Crect x='0' y='0' width='400' height='280' fill='url(%23light)' opacity='0.6'/%3E%3Crect x='0' y='280' width='400' height='240' fill='%23d4cac1' opacity='0.4'/%3E%3Ccircle cx='100' cy='80' r='50' fill='%23f0e8df' opacity='0.5'/%3E%3Ccircle cx='320' cy='100' r='35' fill='%23e8dcd2' opacity='0.4'/%3E%3Crect x='60' y='180' width='280' height='160' fill='%23e8e1d7' opacity='0.5' rx='6'/%3E%3Crect x='60' y='360' width='100' height='120' fill='%23d0c9bf' opacity='0.6'/%3E%3Crect x='180' y='360' width='140' height='120' fill='%23d0c9bf' opacity='0.6'/%3E%3Crect x='80' y='390' width='240' height='6' fill='%23b5aca0' opacity='0.4'/%3E%3Ctext x='200' y='500' font-size='12' font-family='Montserrat, sans-serif' text-anchor='middle' fill='%23888' opacity='0.4' font-weight='500'%3EProfessional Real Estate Photography%3C/text%3E%3C/svg%3E" class="hero-image" alt="Professional real estate interior photography example" loading="lazy">
   </div>
-
 </section>
 
 <!-- MAIN -->
