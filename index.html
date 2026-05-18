@@ -109,40 +109,43 @@
 
   /* ── HERO ── */
   .hero {
-    padding-top: 96px;
-    padding-bottom: 56px;
-    padding-left: 24px;
-    padding-right: 24px;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 96px 24px 56px;
     background: var(--white);
+  }
+
+  /* Row 1: 2-column — text left, image right */
+  .hero-row {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    max-width: 100%;
+    gap: 48px;
+    margin-bottom: 48px;
   }
 
-  .hero-content {
-    max-width: 860px;
-    width: 100%;
-    margin: 0 auto;
-    text-align: center;
+  .hero-text {
+    flex: 1;
+    min-width: 0;
+    text-align: left;
   }
 
-  /* ── HERO IMAGE BAND — full-width between hero and FAQ ── */
-  .hero-image-band {
-    width: 100%;
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 0 24px;
-    display: block;
+  .hero-image-col {
+    flex: 0 0 340px;
+    max-width: 340px;
   }
 
   .hero-image {
     width: 100%;
-    aspect-ratio: 3 / 2;
+    aspect-ratio: 4 / 5;
     object-fit: cover;
-    object-position: center 35%;
+    object-position: center 30%;
     border-radius: 16px;
     display: block;
+  }
+
+  /* Row 2: single-column — search + pills */
+  .hero-actions {
+    max-width: 100%;
   }
 
   .hero-eyebrow {
@@ -181,8 +184,8 @@
 
   /* ── SEARCH ── */
   .search-wrap {
-    max-width: 100%;
-    margin: 0 auto;
+    max-width: 480px;
+    margin: 0;
     position: relative;
     padding: 0;
     box-sizing: border-box;
@@ -308,13 +311,11 @@
   }
 
   .categories-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    row-gap: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
     max-width: 100%;
     margin: 0;
-    justify-content: center;
   }
 
   /* ── MAIN ── */
@@ -329,7 +330,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 22px 32px;
+    padding: 14px 22px;
     border-radius: 100px;
     border: 1.5px solid var(--black);
     background: var(--white);
@@ -345,9 +346,7 @@
                 box-shadow 0.5s ease;
     letter-spacing: 0px;
     white-space: nowrap;
-    width: 100%;
     line-height: 1;
-    justify-content: center;
   }
 
   .cat-pill svg {
@@ -870,11 +869,20 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-content">
-    <div class="hero-eyebrow">Frequently Asked Questions</div>
+  <!-- ROW 1: Text left + Image right -->
+  <div class="hero-row">
+    <div class="hero-text">
+      <div class="hero-eyebrow">Frequently Asked Questions</div>
+      <h1>Real Estate <em>Photography</em><br>Questions Answered</h1>
+      <p class="hero-sub">Get clarity on pricing, turnaround, services, and delivery in seconds. No calls. No waiting.</p>
+    </div>
+    <div class="hero-image-col">
+      <img src="hero.jpg" class="hero-image" alt="Professional real estate exterior photography — Shoot2Sell" loading="lazy">
+    </div>
+  </div>
 
-    <h1>Real Estate <em>Photography</em><br>Questions Answered</h1>
-    <p class="hero-sub">Get clarity on pricing, turnaround, services, and delivery in seconds. No calls. No waiting.</p>
+  <!-- ROW 2: Search + Pills -->
+  <div class="hero-actions">
 
     <div class="search-wrap">
       <div class="search-left-bar" aria-hidden="true">
