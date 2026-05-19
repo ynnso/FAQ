@@ -248,7 +248,7 @@
     background: var(--white);
     padding: 16px 20px 16px 68px;
     outline: none;
-    transition: box-shadow var(--transition);
+    transition: border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     letter-spacing: -0.1px;
     caret-color: var(--black);
     box-sizing: border-box;
@@ -538,7 +538,7 @@
     padding: 26px 28px 26px 28px;
     text-align: left;
     font-family: var(--font);
-    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity var(--transition);
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), opacity var(--transition);
     transform-origin: left center;
   }
 
@@ -570,7 +570,7 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     background: none;
     border: none;
     padding: 0;
@@ -585,7 +585,7 @@
     stroke-width: 2.6;
     stroke-linecap: round;
     fill: none;
-    transition: stroke 0.22s ease;
+    transition: stroke 0.15s ease;
   }
 
   .accordion-trigger:hover .accordion-icon svg {
@@ -603,7 +603,7 @@
   .accordion-body {
     overflow: hidden;
     max-height: 0;
-    transition: max-height 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .accordion-answer {
@@ -614,12 +614,18 @@
     font-weight: 400;
     letter-spacing: 0;
     opacity: 0;
-    animation: fadeIn 0.3s ease 0.08s forwards;
+    animation: fadeInSlide 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.08s forwards;
   }
 
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  @keyframes fadeInSlide {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .accordion-answer p + p { margin-top: 16px; }
