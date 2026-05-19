@@ -120,6 +120,7 @@
     flex-direction: column;
     align-items: center;
     position: relative;
+    background: linear-gradient(180deg, rgba(10,10,10,0.3) 0%, rgba(10,10,10,0.6) 100%);
   }
 
   /* ── ROW 1: Eyebrow tag ── */
@@ -155,15 +156,10 @@
     letter-spacing: -1.2%;
     line-height: 1.1;
     color: var(--white);
-    margin: 0;
+    margin: 0 0 20px 0;
     text-align: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: relative;
     z-index: 10;
-    width: 90%;
-    max-width: 800px;
   }
 
   h1 em {
@@ -173,20 +169,16 @@
 
   /* ── ROW 3: Subtitle ── */
   .hero-sub {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 400;
     color: var(--white);
     line-height: 1.6;
-    margin: 0;
+    margin: 0 0 40px 0;
     max-width: 600px;
     letter-spacing: -0.01em;
     text-align: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, 60px);
+    position: relative;
     z-index: 10;
-    width: 90%;
   }
 
   /* ── ROW 4: Hero image ── */
@@ -221,14 +213,10 @@
   /* ── ROW 5: Search ── */
   .hero-actions {
     padding-bottom: 0;
-    position: absolute;
-    bottom: 40px;
-    left: 24px;
-    right: 24px;
-    width: auto;
-    z-index: 10;
-    max-width: 600px;
-    margin: 0 auto;
+    position: relative;
+    width: 100%;
+    z-index: 20;
+    margin-top: 40px;
   }
 
   /* ── SEARCH ── */
