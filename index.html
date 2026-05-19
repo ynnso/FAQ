@@ -1558,34 +1558,6 @@
     noResults.classList.toggle('visible', !anyVisible);
   }
 
-  const placeholders = [
-    'Try: turnaround time…',
-    'Try: cancellation policy…',
-    'Try: floor plans…',
-    'Try: rush delivery…',
-    'Try: virtual staging…',
-    'Try: aerial photos…',
-    'Try: Matterport tour…',
-    'Try: weekend shoots…',
-  ];
-  let phIndex = 0;
-  let phInterval = null;
-
-  function rotatePlaceholder() {
-    if (searchInput.value.length > 0) return;
-    phIndex = (phIndex + 1) % placeholders.length;
-    searchInput.setAttribute('placeholder', placeholders[phIndex]);
-  }
-
-  searchInput.addEventListener('focus', () => clearInterval(phInterval));
-  searchInput.addEventListener('blur', () => {
-    if (searchInput.value.length === 0) {
-      phInterval = setInterval(rotatePlaceholder, 1800);
-    }
-  });
-
-  phInterval = setInterval(rotatePlaceholder, 1800);
-
   const sectionHeaders = document.querySelectorAll('.section-header-shelf');
   const faqBlockElements = document.querySelectorAll('.faq-block');
 
