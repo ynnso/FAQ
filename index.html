@@ -257,11 +257,17 @@
   .search-input::placeholder {
     color: var(--black);
     font-weight: 400;
-    opacity: 0.38;
+    opacity: 0.55;
   }
 
   .search-input:focus {
+    border-color: var(--red);
     box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.12);
+    background-color: rgba(200, 16, 46, 0.02);
+  }
+
+  .search-input:hover:not(:focus) {
+    border-color: var(--gray-400);
   }
 
   .search-cursor {
@@ -907,7 +913,7 @@
         class="search-input"
         id="searchInput"
         type="text"
-        placeholder="Search: pricing, turnaround, same-day, floor plans&hellip;"
+        placeholder="Search questions about photography, booking, delivery..."
         autocomplete="off"
       />
       <button class="search-clear" id="searchClear" aria-label="Clear search">
