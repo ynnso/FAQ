@@ -400,8 +400,8 @@
   }
 
   .cat-pill.active {
-    background: var(--black);
-    border-color: var(--black);
+    background: var(--red);
+    border-color: var(--red);
     color: var(--white);
     animation: pulse 0.5s ease-out;
   }
@@ -586,6 +586,10 @@
     stroke-linecap: round;
     fill: none;
     transition: stroke 0.22s ease;
+  }
+
+  .accordion-trigger:hover .accordion-icon svg {
+    stroke: var(--red);
   }
 
   .accordion-item.open .accordion-icon {
