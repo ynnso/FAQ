@@ -134,6 +134,8 @@
     text-transform: uppercase;
     color: var(--gray-500);
     margin: 0 auto 28px;
+    position: relative;
+    z-index: 1;
   }
 
   .hero-eyebrow-dot {
@@ -144,15 +146,21 @@
     flex-shrink: 0;
   }
 
-  /* ── ROW 2: H1 ── */
+  /* ── ROW 2: H1 (overlaid on image) ── */
   h1 {
-    font-size: clamp(56px, 5.5vw, 64px);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(48px, 5vw, 56px);
     font-weight: 800;
     letter-spacing: -1.2%;
-    line-height: 1.05;
-    color: var(--black);
-    margin: 0 auto 40px;
+    line-height: 1.1;
+    color: var(--white);
     text-align: center;
+    z-index: 10;
+    width: 85%;
+    margin: 0;
   }
 
   h1 em {
@@ -160,59 +168,69 @@
     color: var(--red);
   }
 
-  /* ── ROW 3: Subtitle ── */
+  /* ── ROW 3: Subtitle (overlaid on image) ── */
   .hero-sub {
-    font-size: 17px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, calc(-50% + 70px));
+    font-size: 16px;
     font-weight: 400;
-    color: var(--gray-500);
+    color: rgba(255, 255, 255, 0.85);
     line-height: 1.6;
-    margin: 0 auto 48px;
     max-width: 520px;
     letter-spacing: -0.01em;
     text-align: center;
+    z-index: 10;
+    margin: 0;
+    width: 85%;
   }
 
-  /* ── ROW 4: Hero image ── */
+  /* ── ROW 4: Hero image with dark overlay ── */
   .hero-img-row {
     margin-top: 48px;
-    margin-bottom: 64px;
+    margin-bottom: 0;
     position: relative;
+    height: 400px;
+    overflow: hidden;
+    border-radius: 16px;
   }
 
   .hero-image {
     width: 100%;
-    aspect-ratio: 3 / 2;
+    height: 100%;
     object-fit: cover;
     object-position: center 42%;
     border-radius: 16px;
     display: block;
-    border: 1px solid var(--gray-200);
+    border: none;
   }
 
-  /* Subtle gradient overlay — bottom fade to white */
-  .hero-img-row::after {
+  /* Dark semi-transparent overlay */
+  .hero-img-row::before {
     content: '';
     position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 120px;
-    background: linear-gradient(to top, rgba(255,255,255,0.55) 0%, transparent 100%);
-    border-radius: 0 0 16px 16px;
+    inset: 0;
+    background: rgba(10, 10, 10, 0.55);
+    border-radius: 16px;
+    z-index: 5;
     pointer-events: none;
   }
 
-  /* ── ROW 5: Search ── */
+  /* ── ROW 5: Search (below hero) ── */
   .hero-actions {
     padding-bottom: 52px;
+    margin-top: 64px;
   }
-
 
   /* ── SEARCH ── */
   .search-wrap {
     max-width: 100%;
-    margin: 0;
+    margin: 0 auto;
     position: relative;
     padding: 0;
     box-sizing: border-box;
+    z-index: 15;
   }
 
   .search-left-bar {
