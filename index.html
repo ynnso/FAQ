@@ -284,7 +284,7 @@
     font-weight: 500;
     color: var(--black);
     background: var(--white);
-    padding: 16px 20px 16px 52px;
+    padding: 16px 52px 16px 52px;
     outline: none;
     transition: border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     letter-spacing: -0.1px;
@@ -348,6 +348,44 @@
     flex-shrink: 0;
   }
 
+  .search-mic {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    box-sizing: border-box;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background var(--transition), transform var(--transition);
+    z-index: 4;
+    padding: 0;
+    flex-shrink: 0;
+    color: var(--gray-500);
+  }
+
+  .search-mic.visible { display: flex; }
+  .search-mic:hover { background: rgba(0,0,0,0.08); color: var(--black); }
+
+  .search-mic svg { width: 18px; height: 18px; }
+
+  .search-mic.listening {
+    color: var(--red);
+    background: rgba(200, 16, 46, 0.1);
+    animation: mic-pulse 1.2s ease-in-out infinite;
+  }
+
+  @keyframes mic-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(200, 16, 46, 0.3); }
+    50% { box-shadow: 0 0 0 8px rgba(200, 16, 46, 0); }
+  }
+
   .search-clear:hover {
     opacity: 1;
     background: rgba(0, 0, 0, 0.08);
@@ -387,12 +425,27 @@
   .search-suggest.open { display: block; }
 
   .search-suggest-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 1.2px;
     text-transform: uppercase;
     color: var(--gray-500);
     padding: 14px 20px 8px;
+  }
+
+  .search-suggest-clear {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: none;
+    color: var(--red);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
   }
 
   .search-suggest-row {
@@ -1273,6 +1326,15 @@
         </svg>
       </button>
 
+      <button class="search-mic" id="searchMic" aria-label="Search by voice" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="2" width="6" height="12" rx="3"/>
+          <path d="M5 11a7 7 0 0 0 14 0"/>
+          <line x1="12" y1="18" x2="12" y2="22"/>
+          <line x1="8" y1="22" x2="16" y2="22"/>
+        </svg>
+      </button>
+
       <div class="search-suggest" id="searchSuggest"></div>
     </div>
 
@@ -1849,15 +1911,49 @@
   searchInput.addEventListener('input', function() {
     const val = this.value.trim();
     searchClear.classList.toggle('visible', val.length > 0);
+    searchMic.classList.toggle('visible', val.length === 0);
     filterContent();
   });
 
   searchClear.addEventListener('click', function() {
     searchInput.value = '';
     this.classList.remove('visible');
+    searchMic.classList.add('visible');
     filterContent();
     searchInput.focus();
   });
+
+  // ── Voice search ── feature-detected; the mic button simply doesn't
+  // appear on browsers without the Web Speech API instead of erroring.
+  const searchMic = document.getElementById('searchMic');
+  const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (SpeechRecognitionAPI) {
+    searchMic.classList.add('visible');
+    const recognition = new SpeechRecognitionAPI();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US';
+
+    recognition.addEventListener('result', (e) => {
+      const transcript = e.results[0][0].transcript;
+      searchInput.value = transcript;
+      searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+      renderSuggest(transcript);
+    });
+    recognition.addEventListener('end', () => searchMic.classList.remove('listening'));
+    recognition.addEventListener('error', () => searchMic.classList.remove('listening'));
+
+    searchMic.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (searchMic.classList.contains('listening')) {
+        recognition.stop();
+      } else {
+        searchMic.classList.add('listening');
+        recognition.start();
+      }
+    });
+  }
 
   function highlightText(el, query) {
     const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
@@ -1980,10 +2076,19 @@
   // and opens it — no need to hunt through a category first.
   const searchSuggest = document.getElementById('searchSuggest');
 
+  // One icon per category, reused from the pills already on the page so the
+  // dropdown always matches whatever icon set is defined there.
+  const catIcons = {};
+  document.querySelectorAll('.cat-pill').forEach(p => {
+    const svg = p.querySelector('svg');
+    if (svg) catIcons[p.dataset.cat] = svg.outerHTML;
+  });
+
   const faqIndex = [];
   document.querySelectorAll('.accordion-item').forEach(item => {
     const qEl = item.querySelector('.accordion-q');
-    faqIndex.push({ item, q: qEl.textContent.trim() });
+    const cat = item.closest('.faq-block') ? item.closest('.faq-block').dataset.cat : '';
+    faqIndex.push({ item, q: qEl.textContent.trim(), cat });
   });
 
   const trendingQuestions = [
@@ -1996,6 +2101,23 @@
   const trending = trendingQuestions
     .map(q => faqIndex.find(f => f.q === q))
     .filter(Boolean);
+
+  // Recent searches — a device preference, not quote/session data, so it's
+  // kept in localStorage the same way the rest of the page treats settings.
+  const RECENT_KEY = 'faqRecentSearches';
+  function getRecent() {
+    try { return JSON.parse(localStorage.getItem(RECENT_KEY)) || []; }
+    catch (e) { return []; }
+  }
+  function addRecent(q) {
+    let recent = getRecent().filter(r => r !== q);
+    recent.unshift(q);
+    recent = recent.slice(0, 5);
+    try { localStorage.setItem(RECENT_KEY, JSON.stringify(recent)); } catch (e) {}
+  }
+  function clearRecent() {
+    try { localStorage.removeItem(RECENT_KEY); } catch (e) {}
+  }
 
   let suggestItems = [];
   let suggestFocusedIndex = -1;
@@ -2012,22 +2134,36 @@
   }
 
   const suggestRowIcon = '<svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke-width="1.8"/><line x1="20" y1="20" x2="16.2" y2="16.2" stroke-width="1.8" stroke-linecap="round"/></svg>';
+  const recentRowIcon = '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>';
+
+  function suggestRowHtml(r, i, query, isRecent) {
+    const icon = isRecent ? recentRowIcon : (catIcons[r.cat] || suggestRowIcon);
+    return '<button type="button" class="search-suggest-row" data-index="' + i + '">' +
+      icon + '<span>' + highlightMatch(r.q, query) + '</span></button>';
+  }
 
   function renderSuggest(query) {
     const q = query.trim();
     let rows = [];
-    let label = '';
+    let sectionsHtml = '';
 
     if (!q) {
-      rows = trending;
-      label = 'Popular Questions';
+      const recentQs = getRecent();
+      const recentRows = recentQs.map(rq => faqIndex.find(f => f.q === rq)).filter(Boolean);
+      rows = [...recentRows, ...trending.filter(t => !recentRows.includes(t))].slice(0, 6);
+
+      if (recentRows.length) {
+        sectionsHtml += '<div class="search-suggest-label">Recent Searches<button type="button" class="search-suggest-clear" id="suggestClearRecent">Clear</button></div>';
+      } else {
+        sectionsHtml += '<div class="search-suggest-label">Popular Questions</div>';
+      }
     } else if (q.length >= 2) {
       const lower = q.toLowerCase();
       rows = faqIndex.filter(f => f.q.toLowerCase().includes(lower)).slice(0, 6);
       if (!rows.length) {
         rows = faqIndex.filter(f => fuzzyMatch(lower, f.q.toLowerCase())).slice(0, 6);
       }
-      label = rows.length ? 'Matching Questions' : '';
+      if (rows.length) sectionsHtml += '<div class="search-suggest-label">Matching Questions</div>';
     } else {
       searchSuggest.classList.remove('open');
       suggestItems = [];
@@ -2040,14 +2176,19 @@
     if (!rows.length) {
       searchSuggest.innerHTML = '<div class="search-suggest-empty">No matching questions — try a different word.</div>';
     } else {
-      searchSuggest.innerHTML =
-        '<div class="search-suggest-label">' + label + '</div>' +
-        rows.map((r, i) =>
-          '<button type="button" class="search-suggest-row" data-index="' + i + '">' +
-          suggestRowIcon + '<span>' + highlightMatch(r.q, q) + '</span></button>'
-        ).join('');
+      searchSuggest.innerHTML = sectionsHtml +
+        rows.map((r, i) => suggestRowHtml(r, i, q, !q && getRecent().includes(r.q))).join('');
     }
     searchSuggest.classList.add('open');
+
+    const clearBtn = document.getElementById('suggestClearRecent');
+    if (clearBtn) {
+      clearBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        clearRecent();
+        renderSuggest(searchInput.value);
+      });
+    }
   }
 
   function closeSuggest() {
@@ -2059,6 +2200,7 @@
   function pickSuggestion(entry) {
     searchInput.value = entry.q;
     filterContent();
+    addRecent(entry.q);
     closeSuggest();
     searchInput.blur();
     entry.item.scrollIntoView({ behavior: 'smooth', block: 'center' });
