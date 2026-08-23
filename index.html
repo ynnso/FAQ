@@ -615,25 +615,8 @@
     color: inherit;
   }
 
-  .section-count {
-    font-family: var(--font);
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--gray-400);
-    background: var(--gray-100);
-    border-radius: 100px;
-    padding: 2px 9px;
-    margin-left: 2px;
-  }
-
-  .section-header-shelf.active .section-count {
-    color: var(--red);
-    background: var(--red-muted);
-  }
-
-  /* Count + chevron live outside the title's own wrapping flex row now —
-     structural, not a media-query hide, so a long/wrapped title can never
-     shove the count onto its own extra row on any screen size. */
+  /* Chevron lives outside the title's own wrapping flex row, so a long
+     title wrapping to two lines never disturbs it. */
   .section-header-right {
     display: flex;
     align-items: center;
@@ -1738,7 +1721,6 @@
         <h2>Services &amp; Pricing</h2>
         </div>
       <span class="section-header-right">
-        <span class="section-count">9</span>
         <span class="section-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
       </span>
     </button>
@@ -1853,7 +1835,6 @@
         <h2>Virtual Staging</h2>
         </div>
       <span class="section-header-right">
-        <span class="section-count">5</span>
         <span class="section-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
       </span>
     </button>
@@ -1924,7 +1905,6 @@
         <h2>Booking &amp; Scheduling</h2>
         </div>
       <span class="section-header-right">
-        <span class="section-count">10</span>
         <span class="section-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
       </span>
     </button>
@@ -2050,7 +2030,6 @@
         <h2>Company &amp; Policies</h2>
         </div>
       <span class="section-header-right">
-        <span class="section-count">7</span>
         <span class="section-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
       </span>
     </button>
@@ -2143,7 +2122,6 @@
         <h2>Your Dashboard</h2>
         </div>
       <span class="section-header-right">
-        <span class="section-count">12</span>
         <span class="section-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
       </span>
     </button>
@@ -2291,7 +2269,6 @@
         <h2>Account &amp; Login</h2>
         </div>
       <span class="section-header-right">
-        <span class="section-count">9</span>
         <span class="section-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
       </span>
     </button>
@@ -2525,7 +2502,7 @@
       } else {
         collapseAllSections(targetBlock);
         setSectionOpen(targetBlock, true);
-        targetBlock.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => targetBlock.scrollIntoView({ behavior: 'smooth', block: 'start' }), SECTION_TRANSITION_MS);
       }
     });
   });
@@ -2945,12 +2922,24 @@
     });
   }
 
+  // Section collapse/expand runs on a 0.4s max-height transition (see
+  // .faq-block-items in CSS). Scrolling to a target immediately, while
+  // OTHER sections are still mid-collapse, calculates the scroll distance
+  // against a page that's momentarily taller than its settled height —
+  // once those sections finish shrinking, the page ends up shorter than
+  // where the scroll landed, and the header meant to be revealed ends up
+  // scrolled past, off the top of the screen. Waiting for the transition
+  // to actually finish before scrolling fixes it.
+  const SECTION_TRANSITION_MS = 420;
+
   function toggleSection(block) {
     const shelf = block.querySelector('.section-header-shelf');
     const isOpen = shelf.classList.contains('active');
     collapseAllSections(block);
     setSectionOpen(block, !isOpen);
-    if (!isOpen) block.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!isOpen) {
+      setTimeout(() => block.scrollIntoView({ behavior: 'smooth', block: 'start' }), SECTION_TRANSITION_MS);
+    }
   }
 
   sectionHeaders.forEach(shelf => {
