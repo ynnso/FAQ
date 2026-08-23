@@ -1022,10 +1022,13 @@
   }
 
   @media (max-width: 768px) {
+    /* Search bar, pills, and section headers were running almost edge to
+       edge (~20px each side, ~5% of the screen) — enough to read as
+       "bleeding" off the sides. Roughly 15% more inset on both sides. */
     .hero {
       padding-top: 20px;
-      padding-left: 20px;
-      padding-right: 20px;
+      padding-left: 36px;
+      padding-right: 36px;
     }
 
     h1 { letter-spacing: -0.03em; }
@@ -1062,7 +1065,7 @@
     .categories-grid {
       gap: 8px;
       margin: 0;
-      padding: 12px 20px;
+      padding: 12px 36px;
     }
 
     .cat-pill {
@@ -1085,9 +1088,9 @@
       stroke: var(--black);
     }
 
-    .faq-block { padding-left: 20px; padding-right: 20px; margin-bottom: 40px; }
+    .faq-block { padding-left: 36px; padding-right: 36px; margin-bottom: 40px; }
     .faq-block:first-of-type { padding-top: 32px; margin-top: 0; }
-    .faq-block:not(:first-of-type) { padding-top: 40px; border-top: 1px solid var(--gray-200); }
+    .faq-block:not(:first-of-type) { padding-top: 40px; }
 
     /* ── MOBILE ACCORDION OPTIMIZATION ── */
     .accordion-trigger {
