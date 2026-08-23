@@ -472,7 +472,10 @@
      with no dependency on a screen-size rule actually being applied. */
   .categories-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, max-content));
+    /* 1fr, not max-content — max-content let whichever pill had the
+       longest label win a wider column than its neighbors, so a row could
+       come out visibly uneven. 1fr splits each row's columns equally. */
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
     gap: 10px;
     width: 100%;
     max-width: 100%;
@@ -584,7 +587,10 @@
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     border: 1.5px solid var(--gray-300);
-    border-radius: 100px;
+    /* A full pill (100px) reads fine on a short label but stretches oddly
+       around a longer one like "Company & Policies" — a normal rounded
+       rectangle keeps the same weight without the odd proportions. */
+    border-radius: 20px;
     margin: 0;
     padding: 0;
     display: flex;
@@ -963,6 +969,27 @@
     letter-spacing: 0.02em;
   }
 
+  /* A quiet way out if the FAQ genuinely didn't answer the question —
+     not a big CTA block, just a plain, honest line. */
+  .still-questions {
+    text-align: center;
+    margin-top: 56px;
+    padding-top: 32px;
+    border-top: 1px solid var(--gray-200);
+    font-size: 15px;
+    color: var(--gray-500);
+  }
+
+  .still-questions a {
+    color: var(--red);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .still-questions a:hover {
+    text-decoration: underline;
+  }
+
   /* ── FOOTER ── */
   footer {
     background: var(--black);
@@ -1024,11 +1051,11 @@
   @media (max-width: 768px) {
     /* Search bar, pills, and section headers were running almost edge to
        edge (~20px each side, ~5% of the screen) — enough to read as
-       "bleeding" off the sides. Roughly 15% more inset on both sides. */
+       "bleeding" off the sides. Roughly 15%+ more inset on both sides. */
     .hero {
       padding-top: 20px;
-      padding-left: 36px;
-      padding-right: 36px;
+      padding-left: 42px;
+      padding-right: 42px;
     }
 
     h1 { letter-spacing: -0.03em; }
@@ -1050,6 +1077,13 @@
       white-space: normal;
     }
 
+    /* The count badge was a 3rd item competing for room with the title on
+       the same wrapping flex row — on a two-line title that pushed the
+       badge onto its own extra row. Not worth the fight on a narrow screen. */
+    .section-count {
+      display: none;
+    }
+
     .categories-wrap {
       position: sticky;
       top: 68px;
@@ -1065,7 +1099,7 @@
     .categories-grid {
       gap: 8px;
       margin: 0;
-      padding: 12px 36px;
+      padding: 12px 42px;
     }
 
     .cat-pill {
@@ -1088,7 +1122,7 @@
       stroke: var(--black);
     }
 
-    .faq-block { padding-left: 36px; padding-right: 36px; margin-bottom: 40px; }
+    .faq-block { padding-left: 42px; padding-right: 42px; margin-bottom: 40px; }
     .faq-block:first-of-type { padding-top: 32px; margin-top: 0; }
     .faq-block:not(:first-of-type) { padding-top: 40px; }
 
@@ -1181,6 +1215,430 @@
     .sticky-header-logo { font-size: 0; width: 22px; overflow: hidden; }
   }
 </style>
+<script type="application/ld+json">
+{
+   "@context" : "https://schema.org",
+   "@type" : "FAQPage",
+   "mainEntity" : [
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "We offer professional photography, HD video tours, aerial drone photography and video, Matterport 3D virtual tours, 2D and 3D floor plans, virtual staging, digital twilight, blue sky and green grass enhancements, and short-form property reels. All services are available across DFW, Houston, Austin, and San Antonio."
+         },
+         "name" : "What services does Shoot2Sell offer?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "No. We offer two styles: agent on-camera (a quick 10-second intro where you welcome viewers to the listing) and property-only (a clean, cinematic walkthrough with no face time required). Most agents try both and see which gets more engagement with their audience."
+         },
+         "name" : "Do I need to be on camera?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "You submit your order with the real estate photography images you'd like staged and any style preferences (modern, traditional, minimalist, farmhouse — whatever fits the home). We confirm the details and pricing, then begin work once you approve. This ensures no surprises, no unexpected charges, and gives you control over the project scope before we put hours into it."
+         },
+         "name" : "How does the approval process work?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Unfortunately, we cannot hold multiple time slots for one property as we rely on them to maintain an efficient calendar for our clients and photographers. However, we automatically hold one appointment for ~4 hours so that you can coordinate with your team/clients. For the best service, please provide your availability and all relevant details when booking and we will try to accommodate you."
+         },
+         "name" : "Can I call and hold more than one appointment time?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Start with photography — it's the foundation of every listing. From there, add services based on the property type, price point, and marketing goals. Aerial works well for homes with large lots or great locations. Video and 3D tours help buyers explore remotely. Your service page for each property type shows recommended combinations."
+         },
+         "name" : "How do I know which services my listing needs?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Most agents order 2–4 key rooms: living room, primary bedroom, and one or two flex spaces like an office, dining room, or bonus room. Focus on rooms where buyers struggle to see function or scale. You don't need to stage every room — just the ones that need help telling the story."
+         },
+         "name" : "How many images should I order for virtual staging?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Yes! We will be happy to accommodate you Monday morning (or any other morning)."
+         },
+         "name" : "Can I request a Monday morning appointment over the weekend?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Each reel is between 10 and 20 seconds. This is the sweet spot for Instagram Reels, TikTok, and Facebook Stories — long enough to show the property, short enough to hold attention in the feed."
+         },
+         "name" : "How long are the reels?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Yes. Most clients bundle photography with aerial, video, floor plans, or 3D tours in a single visit. It saves time, keeps the media consistent, and means fewer disruptions at the property."
+         },
+         "name" : "Can I bundle multiple services into one appointment?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "If there's an error on our end — furniture scale is wrong, lighting doesn't match, or the staging doesn't reflect what you requested — we'll fix it at no charge. If you change your mind about the style after approval, additional revisions are available for a fee. That's why we ask you to review and approve the scope before we start."
+         },
+         "name" : "What if I need changes to the staging?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Yes! If you like a photographer's style, we encourage you to add them to your requested list of photographers for this and future shoots. We will try to book you with them but if you need a specific date, we might suggest other photographers if your requested photographers are unavailable."
+         },
+         "name" : "Can I request a particular photographer?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Most services are delivered within 24 hours after the end of the shoot, including photography, video, aerial, and floor plans. Virtual staging is delivered within 24–48 hours after you select your photos and design style."
+         },
+         "name" : "How quickly will I receive my media?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "24–48 hours after you select your photos and design style. If you need it faster for a hot listing or a time-sensitive situation, reach out to our team — we can sometimes accommodate rush requests depending on our current workload."
+         },
+         "name" : "What's the turnaround time for virtual staging?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Yes. If you'd like an earlier appointment, please let us know and we will add you to the waitlist. If a spot opens up due to reschedules or cancellations, we will call or email you."
+         },
+         "name" : "Can I get an earlier appointment or get on a waitlist?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "We serve 100+ cities across four major Texas metros: Dallas-Fort Worth, Houston, Austin, and San Antonio. If you're in or near one of those markets, we can get a photographer to your property."
+         },
+         "name" : "Do you serve my area?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Every photography package includes professionally edited, high-resolution images delivered to your dashboard within 24 hours. You can add aerial, video, floor plans, 3D tours, or virtual staging to the same appointment."
+         },
+         "name" : "What's included in a real estate photography package?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Yes — when you book property photography and virtual staging with us, every order includes both the staged image and the original unstaged photo. Use staged versions in your MLS listing to help buyers envision the space, and include unstaged versions for transparency and compliance. Both versions are clearly labeled in file names. If you're providing your own photography from another source, you'll receive the staged version only."
+         },
+         "name" : "Can I get both staged and unstaged versions?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Photographers are available voluntarily on weekends with an added weekend rate charge. Images will be delivered by noon on the following Monday."
+         },
+         "name" : "Do you schedule on the weekends?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "We serve real estate agents, property managers, leasing teams, and multifamily owners across all major Texas metros: Dallas-Fort Worth (Plano, Frisco, McKinney, Allen, Prosper, Southlake, Flower Mound, Arlington, Rockwall, Denton, Celina, and more), Houston (The Woodlands, Katy, Sugar Land, Pearland, Cypress, Spring, League City, and more), Austin (Round Rock, Cedar Park, Georgetown, Pflugerville, Leander, Lakeway, Dripping Springs, and more), and San Antonio (New Braunfels, Boerne, Schertz, Cibolo, and more)."
+         },
+         "name" : "What areas does Shoot2Sell serve?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "In most cases, yes. We have photographers across each market, so next-day availability is standard. Same-day shoots may be available depending on your area — call us to check."
+         },
+         "name" : "Can I book a photographer for tomorrow?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Free rescheduling is available up to 4 hours before your scheduled appointment. Cancellations within 4 hours may incur a late cancellation fee because it becomes difficult to reassign that time slot to another client. If you need to reschedule, contact us as early as possible."
+         },
+         "name" : "What is your cancellation policy?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Same-day service may be available for an additional rush fee, subject to photographer availability and scheduling."
+         },
+         "name" : "Can you do same-day service?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Light drizzle and overcast skies are usually workable for ground photography, and Texas weather can flip in an hour. Make the call early. If you contact us at least 4 hours before your scheduled shoot, we'll reschedule at no charge. Closer to shoot time, the crew may already be dispatched and a trip fee can apply. If we're already on site and conditions turn, we'll reschedule at no fee."
+         },
+         "name" : "What happens if it rains on my shoot day?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Yes. Same-day rush delivery is available for most services. Standard turnaround is 24 hours after the end of the shoot, but if you need files faster, let us know when you book."
+         },
+         "name" : "Do you offer same-day rush delivery?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Photo approval happens on-site. Your photographer walks each frame with you before leaving the property — flag any concerns then and we'll re-take while we're still there."
+         },
+         "name" : "Can I request a reshoot if I don't like the photos?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Pricing depends on square footage, services selected (photography, video, drone, 3D tours, floor plans, virtual staging), and your metro market. Most residential listings fall between $159 and $549 per shoot; add-ons like aerial, twilight, virtual staging, and Matterport 3D are priced per service."
+         },
+         "name" : "How much does Shoot2Sell cost?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Yes — and the data is clear. According to Redfin (2024), homes with professional photos sell 32% faster and spend 34 fewer days on market compared to listings with amateur photos (89 vs. 123 days). NAR reports that 87% of buyers say photos are the most useful feature on listing websites. Professional images also receive 61% more online views, which translates directly to more showings and faster offers."
+         },
+         "name" : "Does professional photography actually help sell homes faster?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Absolutely. Each service page includes a portfolio of recent work. You can also browse by property type — residential, multifamily, commercial, builder, or rental — to see examples relevant to your market."
+         },
+         "name" : "Can I see examples of your work before booking?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "We accept online payment via website, phone credit/debit card payment, and keeping a card on file for day-of-service charging."
+         },
+         "name" : "What payment methods do you accept?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Shoot2Sell owns the copyright. MLS shoots have Temporary Usage Rights until the property sells and for 90 days after, for \"Just Sold\" marketing. Portfolio shoots have Permanent Usage Rights. Images cannot be transferred or sold."
+         },
+         "name" : "Do I own the images?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Digital payments only. You can pay online, by phone with a card, by Zelle, or by ACH bank transfer. We can also keep a card on file and charge it on the day of the shoot. Full payment instructions are on your invoice."
+         },
+         "name" : "How do I pay?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "You'll receive a delivery email with a dashboard link. Click on Hi-Res or Low-Res download buttons, then save the ZIP file and extract."
+         },
+         "name" : "How do I download my images?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Go to client.shoot2sell.com or click the \"Download Images, Virtual Tour\" link in the delivery email. That direct link takes you to the Listing Page; use the \"Home\" button at top right to return to the Dashboard home."
+         },
+         "name" : "How do I get to my Shoot2Sell Dashboard?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Honest, quality service is paramount to us. We regularly work with our clients and collaborate on individual solutions."
+         },
+         "name" : "What should I do if I'm not satisfied?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Scroll past the Property Info area on your listing page to the Sharing Tools section. You can also share your Virtual Tour anywhere by copying and pasting the URL."
+         },
+         "name" : "How do I share my images or Virtual Tour with my homeowner?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Your Dashboard includes both versions of every tour. The branded Virtual Tour includes your agent contact information, headshot, website link, and a Lead Collection form that lets prospects reach you by phone, email, or Facebook Messenger."
+         },
+         "name" : "What is the difference between branded and unbranded Virtual Tours?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "For simple viewing, use the Sharing Tools on the listing page. For team members who need to edit listings or download media, they will need to log in with their own account."
+         },
+         "name" : "How do I add my Listing Coordinator or another team member?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "You'll receive a default password in your Image Delivery email. When you log in for the first time, we recommend setting a secure password of your choosing."
+         },
+         "name" : "How do I log in for the first time and set my password?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Use the Reset Password link on the login screen. Enter your email address and follow the instructions we send you. If the reset doesn't work, contact Shoot2Sell support."
+         },
+         "name" : "What if I forgot my password?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "The most common reason for a 403 or 400 error is logging in with the wrong email address. Make sure you're using the email you use to do business with Shoot2Sell."
+         },
+         "name" : "Why did I get a 403 or 400 error message?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Both Owners and Editors can access listings to change information and download media."
+         },
+         "name" : "How do I make changes to listing info or move my photos?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Yes — but if you change the Marketing Address of a listing, the URL to share the Virtual Tour will also change. Verify the Marketing Address is correct before you share your Virtual Tours."
+         },
+         "name" : "Can I change the Marketing Address after sharing?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Click the listing name or first photo in the Listing Feed to open the Listing Page. Scroll to the Property Media section and click \"Download Images\" to save your images as a .ZIP file."
+         },
+         "name" : "How do I download my photos?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Matterport 3D Spaces cannot be downloaded from the Dashboard. Contact the Front Office for direct Matterport access. Click the listing to view the Listing Page; the Property Media section has the links to your 360° content."
+         },
+         "name" : "How do I download my Matterport 3D tour?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "On the Dashboard Home Page, click \"Edit Info\", then select \"Edit Headshot\". The recommended photo size is 1000 x 1000 px. Square photos work best."
+         },
+         "name" : "How do I change my headshot or personal photo?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "On the Dashboard Home Page, click \"Edit Info\" and use the password field at the bottom to change it."
+         },
+         "name" : "How do I change my password?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Use the Search bar at the top of the Dashboard to filter listings by address, agent, or listing information. It's especially helpful for brokers managing multiple listings."
+         },
+         "name" : "How do I search for a specific listing?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Click the listing name or first photo in the Listing Feed to reach the Listing Page. Drag and drop images to reorder them."
+         },
+         "name" : "How do I show, hide, or reorder my photos?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Click the listing name or first photo in the Listing Feed. Scroll to the Property Media section and click the Branded or Unbranded Vimeo button to open the video page."
+         },
+         "name" : "How do I download my video?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "Click the listing name or first photo in the Listing Feed to open the Listing Page. You can edit the Virtual Tour copy and basic listing information such as layout and price in the Property Info section."
+         },
+         "name" : "How do I edit info and copy for a listing?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "On the Dashboard Home Page, click \"Edit Info\" to update your contact and company information. Some fields — such as the email address on your account — must be changed by the Shoot2Sell team."
+         },
+         "name" : "How do I edit my contact info or company info?"
+      },
+      {
+         "@type" : "Question",
+         "acceptedAnswer" : {
+            "@type" : "Answer",
+            "text" : "You can rearrange the order of your images and hide any image on demand. On your dashboard link, click Edit Virtual Tour to view all the images. To rearrange the image order, click and drag the images to the desired order. To hide an image, click the orange button with the \"eye\" icon and the image will gray out. Click the eye icon again to un-hide it. You can also zoom on a particular image by clicking the blue zoom button."
+         },
+         "name" : "Can I edit my slideshow?"
+      }
+   ]
+}
+</script>
 </head>
 <body>
 
@@ -1282,7 +1740,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>We offer professional photography, HD video tours, aerial drone photography and video, Matterport 3D virtual tours, 2D and 3D floor plans, virtual staging, digital twilight, blue sky and green grass enhancements, and short-form property reels. All services are available across DFW, Houston, Austin, and San Antonio.</p>
-        <span class="qa-tag">services</span>
+        <span class="qa-tag" data-source-tag="services">Services</span>
       </div></div>
     </div>
 
@@ -1292,8 +1750,8 @@
         <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
-        <p>No. We offer two styles: agent on-camera (a quick 10-second intro where you welcome viewers to the listing) and property-only (a clean, cinematic walkthrough with no face time required). Most agents try both and see which gets more engagement with their audience.</p>
-        <span class="qa-tag">services</span>
+        <p><strong>No</strong>. We offer two styles: agent on-camera (a quick 10-second intro where you welcome viewers to the listing) and property-only (a clean, cinematic walkthrough with no face time required). Most agents try both and see which gets more engagement with their audience.</p>
+        <span class="qa-tag" data-source-tag="services">Services</span>
       </div></div>
     </div>
 
@@ -1304,7 +1762,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Start with photography — it's the foundation of every listing. From there, add services based on the property type, price point, and marketing goals. Aerial works well for homes with large lots or great locations. Video and 3D tours help buyers explore remotely. Your service page for each property type shows recommended combinations.</p>
-        <span class="qa-tag">services</span>
+        <span class="qa-tag" data-source-tag="services">Services</span>
       </div></div>
     </div>
 
@@ -1315,7 +1773,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Each reel is between 10 and 20 seconds. This is the sweet spot for Instagram Reels, TikTok, and Facebook Stories — long enough to show the property, short enough to hold attention in the feed.</p>
-        <span class="qa-tag">services</span>
+        <span class="qa-tag" data-source-tag="services">Services</span>
       </div></div>
     </div>
 
@@ -1325,8 +1783,8 @@
         <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
-        <p>Most services are delivered within 24 hours after the end of the shoot, including photography, video, aerial, and floor plans. Virtual staging is delivered within 24–48 hours after you select your photos and design style.</p>
-        <span class="qa-tag">services</span>
+        <p>Most services are delivered within <strong>24 hours</strong> after the end of the shoot, including photography, video, aerial, and floor plans. Virtual staging is delivered within <strong>24–48 hours</strong> after you select your photos and design style.</p>
+        <span class="qa-tag" data-source-tag="services">Services</span>
       </div></div>
     </div>
 
@@ -1336,8 +1794,8 @@
         <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
-        <p>Every photography package includes professionally edited, high-resolution images delivered to your dashboard within 24 hours. You can add aerial, video, floor plans, 3D tours, or virtual staging to the same appointment.</p>
-        <span class="qa-tag">services</span>
+        <p>Every photography package includes professionally edited, high-resolution images delivered to your dashboard within <strong>24 hours</strong>. You can add aerial, video, floor plans, 3D tours, or virtual staging to the same appointment.</p>
+        <span class="qa-tag" data-source-tag="services">Services</span>
       </div></div>
     </div>
 
@@ -1347,8 +1805,8 @@
         <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
-        <p>Yes. Same-day rush delivery is available for most services. Standard turnaround is 24 hours after the end of the shoot, but if you need files faster, let us know when you book.</p>
-        <span class="qa-tag">services</span>
+        <p><strong>Yes</strong>. Same-day rush delivery is available for most services. Standard turnaround is <strong>24 hours</strong> after the end of the shoot, but if you need files faster, let us know when you book.</p>
+        <span class="qa-tag" data-source-tag="services">Services</span>
       </div></div>
     </div>
 
@@ -1359,7 +1817,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Photo approval happens on-site. Your photographer walks each frame with you before leaving the property — flag any concerns then and we'll re-take while we're still there.</p>
-        <span class="qa-tag">services</span>
+        <span class="qa-tag" data-source-tag="services">Services</span>
       </div></div>
     </div>
 
@@ -1369,8 +1827,8 @@
         <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
-        <p>Pricing depends on square footage, services selected (photography, video, drone, 3D tours, floor plans, virtual staging), and your metro market. Most residential listings fall between $159 and $549 per shoot; add-ons like aerial, twilight, virtual staging, and Matterport 3D are priced per service.</p>
-        <span class="qa-tag">services</span>
+        <p>Pricing depends on square footage, services selected (photography, video, drone, 3D tours, floor plans, virtual staging), and your metro market. Most residential listings fall between <strong>$159</strong> and <strong>$549</strong> per shoot; add-ons like aerial, twilight, virtual staging, and Matterport 3D are priced per service.</p>
+        <span class="qa-tag" data-source-tag="services">Services</span>
       </div></div>
     </div>
 
@@ -1395,7 +1853,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>You submit your order with the real estate photography images you'd like staged and any style preferences (modern, traditional, minimalist, farmhouse — whatever fits the home). We confirm the details and pricing, then begin work once you approve. This ensures no surprises, no unexpected charges, and gives you control over the project scope before we put hours into it.</p>
-        <span class="qa-tag">mls</span>
+        <span class="qa-tag" data-source-tag="mls">Staging</span>
       </div></div>
     </div>
 
@@ -1406,7 +1864,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Most agents order 2–4 key rooms: living room, primary bedroom, and one or two flex spaces like an office, dining room, or bonus room. Focus on rooms where buyers struggle to see function or scale. You don't need to stage every room — just the ones that need help telling the story.</p>
-        <span class="qa-tag">mls</span>
+        <span class="qa-tag" data-source-tag="mls">Staging</span>
       </div></div>
     </div>
 
@@ -1417,7 +1875,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>If there's an error on our end — furniture scale is wrong, lighting doesn't match, or the staging doesn't reflect what you requested — we'll fix it at no charge. If you change your mind about the style after approval, additional revisions are available for a fee. That's why we ask you to review and approve the scope before we start.</p>
-        <span class="qa-tag">mls</span>
+        <span class="qa-tag" data-source-tag="mls">Staging</span>
       </div></div>
     </div>
 
@@ -1427,8 +1885,8 @@
         <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
-        <p>24–48 hours after you select your photos and design style. If you need it faster for a hot listing or a time-sensitive situation, reach out to our team — we can sometimes accommodate rush requests depending on our current workload.</p>
-        <span class="qa-tag">mls</span>
+        <p><strong>24–48 hours</strong> after you select your photos and design style. If you need it faster for a hot listing or a time-sensitive situation, reach out to our team — we can sometimes accommodate rush requests depending on our current workload.</p>
+        <span class="qa-tag" data-source-tag="mls">Staging</span>
       </div></div>
     </div>
 
@@ -1439,7 +1897,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Yes — when you book property photography and virtual staging with us, every order includes both the staged image and the original unstaged photo. Use staged versions in your MLS listing to help buyers envision the space, and include unstaged versions for transparency and compliance. Both versions are clearly labeled in file names. If you're providing your own photography from another source, you'll receive the staged version only.</p>
-        <span class="qa-tag">mls</span>
+        <span class="qa-tag" data-source-tag="mls">Staging</span>
       </div></div>
     </div>
 
@@ -1463,8 +1921,8 @@
         <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
-        <p>Unfortunately, we cannot hold multiple time slots for one property as we rely on them to maintain an efficient calendar for our clients and photographers. However, we automatically hold one appointment for ~4 hours so that you can coordinate with your team/clients. For the best service, please provide your availability and all relevant details when booking and we will try to accommodate you.</p>
-        <span class="qa-tag">booking</span>
+        <p>Unfortunately, we cannot hold multiple time slots for one property as we rely on them to maintain an efficient calendar for our clients and photographers. However, we automatically hold one appointment for ~<strong>4 hours</strong> so that you can coordinate with your team/clients. For the best service, please provide your availability and all relevant details when booking and we will try to accommodate you.</p>
+        <span class="qa-tag" data-source-tag="booking">Booking</span>
       </div></div>
     </div>
 
@@ -1474,8 +1932,8 @@
         <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
-        <p>Yes! We will be happy to accommodate you Monday morning (or any other morning).</p>
-        <span class="qa-tag">booking</span>
+        <p><strong>Yes</strong>! We will be happy to accommodate you Monday morning (or any other morning).</p>
+        <span class="qa-tag" data-source-tag="booking">Booking</span>
       </div></div>
     </div>
 
@@ -1485,8 +1943,8 @@
         <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
-        <p>Yes. Most clients bundle photography with aerial, video, floor plans, or 3D tours in a single visit. It saves time, keeps the media consistent, and means fewer disruptions at the property.</p>
-        <span class="qa-tag">booking</span>
+        <p><strong>Yes</strong>. Most clients bundle photography with aerial, video, floor plans, or 3D tours in a single visit. It saves time, keeps the media consistent, and means fewer disruptions at the property.</p>
+        <span class="qa-tag" data-source-tag="booking">Booking</span>
       </div></div>
     </div>
 
@@ -1496,8 +1954,8 @@
         <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
-        <p>Yes! If you like a photographer's style, we encourage you to add them to your requested list of photographers for this and future shoots. We will try to book you with them but if you need a specific date, we might suggest other photographers if your requested photographers are unavailable.</p>
-        <span class="qa-tag">booking</span>
+        <p><strong>Yes</strong>! If you like a photographer's style, we encourage you to add them to your requested list of photographers for this and future shoots. We will try to book you with them but if you need a specific date, we might suggest other photographers if your requested photographers are unavailable.</p>
+        <span class="qa-tag" data-source-tag="booking">Booking</span>
       </div></div>
     </div>
 
@@ -1507,8 +1965,8 @@
         <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
-        <p>Yes. If you'd like an earlier appointment, please let us know and we will add you to the waitlist. If a spot opens up due to reschedules or cancellations, we will call or email you.</p>
-        <span class="qa-tag">booking</span>
+        <p><strong>Yes</strong>. If you'd like an earlier appointment, please let us know and we will add you to the waitlist. If a spot opens up due to reschedules or cancellations, we will call or email you.</p>
+        <span class="qa-tag" data-source-tag="booking">Booking</span>
       </div></div>
     </div>
 
@@ -1519,7 +1977,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Photographers are available voluntarily on weekends with an added weekend rate charge. Images will be delivered by noon on the following Monday.</p>
-        <span class="qa-tag">booking</span>
+        <span class="qa-tag" data-source-tag="booking">Booking</span>
       </div></div>
     </div>
 
@@ -1530,7 +1988,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>In most cases, yes. We have photographers across each market, so next-day availability is standard. Same-day shoots may be available depending on your area — call us to check.</p>
-        <span class="qa-tag">booking</span>
+        <span class="qa-tag" data-source-tag="booking">Booking</span>
       </div></div>
     </div>
 
@@ -1540,8 +1998,8 @@
         <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
-        <p>Free rescheduling is available up to 4 hours before your scheduled appointment. Cancellations within 4 hours may incur a late cancellation fee because it becomes difficult to reassign that time slot to another client. If you need to reschedule, contact us as early as possible.</p>
-        <span class="qa-tag">booking</span>
+        <p>Free rescheduling is available up to <strong>4 hours</strong> before your scheduled appointment. Cancellations within <strong>4 hours</strong> may incur a late cancellation fee because it becomes difficult to reassign that time slot to another client. If you need to reschedule, contact us as early as possible.</p>
+        <span class="qa-tag" data-source-tag="booking">Booking</span>
       </div></div>
     </div>
 
@@ -1552,7 +2010,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Same-day service may be available for an additional rush fee, subject to photographer availability and scheduling.</p>
-        <span class="qa-tag">booking</span>
+        <span class="qa-tag" data-source-tag="booking">Booking</span>
       </div></div>
     </div>
 
@@ -1562,8 +2020,8 @@
         <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
-        <p>Light drizzle and overcast skies are usually workable for ground photography, and Texas weather can flip in an hour. Make the call early. If you contact us at least 4 hours before your scheduled shoot, we'll reschedule at no charge. Closer to shoot time, the crew may already be dispatched and a trip fee can apply. If we're already on site and conditions turn, we'll reschedule at no fee.</p>
-        <span class="qa-tag">weather</span>
+        <p>Light drizzle and overcast skies are usually workable for ground photography, and Texas weather can flip in an hour. Make the call early. If you contact us at least <strong>4 hours</strong> before your scheduled shoot, we'll reschedule at no charge. Closer to shoot time, the crew may already be dispatched and a trip fee can apply. If we're already on site and conditions turn, we'll reschedule at no fee.</p>
+        <span class="qa-tag" data-source-tag="weather">Weather</span>
       </div></div>
     </div>
 
@@ -1588,7 +2046,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>We serve 100+ cities across four major Texas metros: Dallas-Fort Worth, Houston, Austin, and San Antonio. If you're in or near one of those markets, we can get a photographer to your property.</p>
-        <span class="qa-tag">general</span>
+        <span class="qa-tag" data-source-tag="general">Company Info</span>
       </div></div>
     </div>
 
@@ -1599,7 +2057,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>We serve real estate agents, property managers, leasing teams, and multifamily owners across all major Texas metros: Dallas-Fort Worth (Plano, Frisco, McKinney, Allen, Prosper, Southlake, Flower Mound, Arlington, Rockwall, Denton, Celina, and more), Houston (The Woodlands, Katy, Sugar Land, Pearland, Cypress, Spring, League City, and more), Austin (Round Rock, Cedar Park, Georgetown, Pflugerville, Leander, Lakeway, Dripping Springs, and more), and San Antonio (New Braunfels, Boerne, Schertz, Cibolo, and more).</p>
-        <span class="qa-tag">general</span>
+        <span class="qa-tag" data-source-tag="general">Company Info</span>
       </div></div>
     </div>
 
@@ -1609,8 +2067,8 @@
         <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
-        <p>Yes — and the data is clear. According to Redfin (2024), homes with professional photos sell 32% faster and spend 34 fewer days on market compared to listings with amateur photos (89 vs. 123 days). NAR reports that 87% of buyers say photos are the most useful feature on listing websites. Professional images also receive 61% more online views, which translates directly to more showings and faster offers.</p>
-        <span class="qa-tag">general</span>
+        <p>Yes — and the data is clear. According to Redfin (2024), homes with professional photos sell <strong>32%</strong> faster and spend 34 fewer days on market compared to listings with amateur photos (89 vs. <strong>123 days</strong>). NAR reports that <strong>87%</strong> of buyers say photos are the most useful feature on listing websites. Professional images also receive <strong>61%</strong> more online views, which translates directly to more showings and faster offers.</p>
+        <span class="qa-tag" data-source-tag="general">Company Info</span>
       </div></div>
     </div>
 
@@ -1621,7 +2079,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Absolutely. Each service page includes a portfolio of recent work. You can also browse by property type — residential, multifamily, commercial, builder, or rental — to see examples relevant to your market.</p>
-        <span class="qa-tag">general</span>
+        <span class="qa-tag" data-source-tag="general">Company Info</span>
       </div></div>
     </div>
 
@@ -1632,7 +2090,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>We accept online payment via website, phone credit/debit card payment, and keeping a card on file for day-of-service charging.</p>
-        <span class="qa-tag">payments</span>
+        <span class="qa-tag" data-source-tag="payments">Payments</span>
       </div></div>
     </div>
 
@@ -1642,8 +2100,8 @@
         <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
       </button>
       <div class="accordion-body"><div class="accordion-answer">
-        <p>Shoot2Sell owns the copyright. MLS shoots have Temporary Usage Rights until the property sells and for 90 days after, for "Just Sold" marketing. Portfolio shoots have Permanent Usage Rights. Images cannot be transferred or sold.</p>
-        <span class="qa-tag">copyright</span>
+        <p>Shoot2Sell owns the copyright. MLS shoots have Temporary Usage Rights until the property sells and for <strong>90 days</strong> after, for "Just Sold" marketing. Portfolio shoots have Permanent Usage Rights. Images cannot be transferred or sold.</p>
+        <span class="qa-tag" data-source-tag="copyright">Copyright</span>
       </div></div>
     </div>
 
@@ -1654,7 +2112,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Digital payments only. You can pay online, by phone with a card, by Zelle, or by ACH bank transfer. We can also keep a card on file and charge it on the day of the shoot. Full payment instructions are on your invoice.</p>
-        <span class="qa-tag">payments</span>
+        <span class="qa-tag" data-source-tag="payments">Payments</span>
       </div></div>
     </div>
 
@@ -1679,7 +2137,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>You'll receive a delivery email with a dashboard link. Click on Hi-Res or Low-Res download buttons, then save the ZIP file and extract.</p>
-        <span class="qa-tag">technical</span>
+        <span class="qa-tag" data-source-tag="technical">Dashboard</span>
       </div></div>
     </div>
 
@@ -1690,7 +2148,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Go to client.shoot2sell.com or click the "Download Images, Virtual Tour" link in the delivery email. That direct link takes you to the Listing Page; use the "Home" button at top right to return to the Dashboard home.</p>
-        <span class="qa-tag">technical</span>
+        <span class="qa-tag" data-source-tag="technical">Dashboard</span>
       </div></div>
     </div>
 
@@ -1701,7 +2159,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Scroll past the Property Info area on your listing page to the Sharing Tools section. You can also share your Virtual Tour anywhere by copying and pasting the URL.</p>
-        <span class="qa-tag">technical</span>
+        <span class="qa-tag" data-source-tag="technical">Dashboard</span>
       </div></div>
     </div>
 
@@ -1712,7 +2170,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Your Dashboard includes both versions of every tour. The branded Virtual Tour includes your agent contact information, headshot, website link, and a Lead Collection form that lets prospects reach you by phone, email, or Facebook Messenger.</p>
-        <span class="qa-tag">technical</span>
+        <span class="qa-tag" data-source-tag="technical">Dashboard</span>
       </div></div>
     </div>
 
@@ -1723,7 +2181,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Yes — but if you change the Marketing Address of a listing, the URL to share the Virtual Tour will also change. Verify the Marketing Address is correct before you share your Virtual Tours.</p>
-        <span class="qa-tag">technical</span>
+        <span class="qa-tag" data-source-tag="technical">Dashboard</span>
       </div></div>
     </div>
 
@@ -1734,7 +2192,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Click the listing name or first photo in the Listing Feed to open the Listing Page. Scroll to the Property Media section and click "Download Images" to save your images as a .ZIP file.</p>
-        <span class="qa-tag">technical</span>
+        <span class="qa-tag" data-source-tag="technical">Dashboard</span>
       </div></div>
     </div>
 
@@ -1745,7 +2203,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Matterport 3D Spaces cannot be downloaded from the Dashboard. Contact the Front Office for direct Matterport access. Click the listing to view the Listing Page; the Property Media section has the links to your 360° content.</p>
-        <span class="qa-tag">technical</span>
+        <span class="qa-tag" data-source-tag="technical">Dashboard</span>
       </div></div>
     </div>
 
@@ -1756,7 +2214,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Use the Search bar at the top of the Dashboard to filter listings by address, agent, or listing information. It's especially helpful for brokers managing multiple listings.</p>
-        <span class="qa-tag">technical</span>
+        <span class="qa-tag" data-source-tag="technical">Dashboard</span>
       </div></div>
     </div>
 
@@ -1767,7 +2225,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Click the listing name or first photo in the Listing Feed to reach the Listing Page. Drag and drop images to reorder them.</p>
-        <span class="qa-tag">technical</span>
+        <span class="qa-tag" data-source-tag="technical">Dashboard</span>
       </div></div>
     </div>
 
@@ -1778,7 +2236,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Click the listing name or first photo in the Listing Feed. Scroll to the Property Media section and click the Branded or Unbranded Vimeo button to open the video page.</p>
-        <span class="qa-tag">technical</span>
+        <span class="qa-tag" data-source-tag="technical">Dashboard</span>
       </div></div>
     </div>
 
@@ -1789,7 +2247,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Click the listing name or first photo in the Listing Feed to open the Listing Page. You can edit the Virtual Tour copy and basic listing information such as layout and price in the Property Info section.</p>
-        <span class="qa-tag">technical</span>
+        <span class="qa-tag" data-source-tag="technical">Dashboard</span>
       </div></div>
     </div>
 
@@ -1800,7 +2258,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>You can rearrange the order of your images and hide any image on demand. On your dashboard link, click Edit Virtual Tour to view all the images. To rearrange the image order, click and drag the images to the desired order. To hide an image, click the orange button with the "eye" icon and the image will gray out. Click the eye icon again to un-hide it. You can also zoom on a particular image by clicking the blue zoom button.</p>
-        <span class="qa-tag">virtual-tour</span>
+        <span class="qa-tag" data-source-tag="virtual-tour">Virtual Tours</span>
       </div></div>
     </div>
 
@@ -1825,7 +2283,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Honest, quality service is paramount to us. We regularly work with our clients and collaborate on individual solutions.</p>
-        <span class="qa-tag">support</span>
+        <span class="qa-tag" data-source-tag="support">Support</span>
       </div></div>
     </div>
 
@@ -1836,7 +2294,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>For simple viewing, use the Sharing Tools on the listing page. For team members who need to edit listings or download media, they will need to log in with their own account.</p>
-        <span class="qa-tag">technical</span>
+        <span class="qa-tag" data-source-tag="technical">Dashboard</span>
       </div></div>
     </div>
 
@@ -1847,7 +2305,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>You'll receive a default password in your Image Delivery email. When you log in for the first time, we recommend setting a secure password of your choosing.</p>
-        <span class="qa-tag">technical</span>
+        <span class="qa-tag" data-source-tag="technical">Dashboard</span>
       </div></div>
     </div>
 
@@ -1858,7 +2316,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Use the Reset Password link on the login screen. Enter your email address and follow the instructions we send you. If the reset doesn't work, contact Shoot2Sell support.</p>
-        <span class="qa-tag">technical</span>
+        <span class="qa-tag" data-source-tag="technical">Dashboard</span>
       </div></div>
     </div>
 
@@ -1869,7 +2327,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>The most common reason for a 403 or 400 error is logging in with the wrong email address. Make sure you're using the email you use to do business with Shoot2Sell.</p>
-        <span class="qa-tag">technical</span>
+        <span class="qa-tag" data-source-tag="technical">Dashboard</span>
       </div></div>
     </div>
 
@@ -1880,7 +2338,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>Both Owners and Editors can access listings to change information and download media.</p>
-        <span class="qa-tag">technical</span>
+        <span class="qa-tag" data-source-tag="technical">Dashboard</span>
       </div></div>
     </div>
 
@@ -1891,7 +2349,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>On the Dashboard Home Page, click "Edit Info", then select "Edit Headshot". The recommended photo size is 1000 x 1000 px. Square photos work best.</p>
-        <span class="qa-tag">technical</span>
+        <span class="qa-tag" data-source-tag="technical">Dashboard</span>
       </div></div>
     </div>
 
@@ -1902,7 +2360,7 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>On the Dashboard Home Page, click "Edit Info" and use the password field at the bottom to change it.</p>
-        <span class="qa-tag">technical</span>
+        <span class="qa-tag" data-source-tag="technical">Dashboard</span>
       </div></div>
     </div>
 
@@ -1913,12 +2371,14 @@
       </button>
       <div class="accordion-body"><div class="accordion-answer">
         <p>On the Dashboard Home Page, click "Edit Info" to update your contact and company information. Some fields — such as the email address on your account — must be changed by the Shoot2Sell team.</p>
-        <span class="qa-tag">technical</span>
+        <span class="qa-tag" data-source-tag="technical">Dashboard</span>
       </div></div>
     </div>
 
     </div>
   </div>
+
+  <p class="still-questions">Still have a question? <a href="https://shoot2sell.com/contact">Contact us</a>.</p>
 
 </main>
 
