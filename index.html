@@ -336,6 +336,13 @@
     display: none;
     max-height: 360px;
     overflow-y: auto;
+    /* Forces its own compositing layer so content underneath (the page
+       content behind it) can't get mis-painted into it as a stale frame —
+       a known class of WebKit blur/layer ghosting bug. */
+    isolation: isolate;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: transform;
   }
 
   .search-suggest.open { display: block; }
@@ -426,13 +433,17 @@
     display: none;
   }
 
+  /* Auto-fit grid, not a media-query breakpoint — this reflows purely off
+     real available width (6-across on wide screens, 3-across on a phone)
+     with no dependency on a screen-size rule actually being applied. */
   .categories-grid {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 12px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, max-content));
+    gap: 10px;
     width: 100%;
-    overflow: visible;
+    max-width: 100%;
     justify-content: center;
+    box-sizing: border-box;
   }
 
   /* ── MAIN ── */
@@ -940,31 +951,18 @@
 
     .categories-label { display: none; }
 
-    /* 3 x 2 grid — the old single scrolling row spilled pills off both
-       edges of the screen with no hint there was more to scroll. A fixed
-       grid shows all 6 categories at once, nothing hidden. */
     .categories-grid {
-      display: grid;
-      /* minmax(0, 1fr), not plain 1fr — a bare 1fr track refuses to shrink
-         below its content's natural width, which is exactly what pushed
-         the whole page sideways when a label didn't fit. */
-      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
-      width: 100%;
-      max-width: 100%;
       margin: 0;
       padding: 12px 20px;
-      box-sizing: border-box;
     }
 
     .cat-pill {
       font-size: 10px;
       font-weight: 600;
       letter-spacing: 0.3px;
-      padding: 7px 8px;
+      padding: 7px 10px;
       gap: 4px;
-      white-space: nowrap;
-      width: 100%;
       min-width: 0;
       box-sizing: border-box;
     }
@@ -1674,11 +1672,14 @@
     pill.addEventListener('click', function() {
       const wasActive = this.classList.contains('active');
       catPills.forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.section-header-shelf.active').forEach(h => h.classList.remove('active'));
 
       if (!wasActive) {
         this.classList.add('active');
         const targetCat = this.dataset.cat;
         const targetBlock = document.getElementById('block-' + targetCat);
+        const targetHeader = categoryToHeader[targetCat];
+        if (targetHeader) targetHeader.classList.add('active');
         if (targetBlock) {
           targetBlock.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
@@ -2049,6 +2050,9 @@
     }
   });
 
+  // Section highlight is click-driven only now, not scroll-driven — scrolling
+  // near a section used to auto-light it up, which read as "active for no
+  // reason" the moment the page loaded near the first one.
   const sectionHeaders = document.querySelectorAll('.section-header-shelf');
   const faqBlockElements = document.querySelectorAll('.faq-block');
 
@@ -2056,50 +2060,7 @@
   faqBlockElements.forEach(block => {
     const cat = block.dataset.cat;
     const header = block.querySelector('.section-header-shelf');
-    if (header) {
-      categoryToHeader[cat] = header;
-    }
-  });
-
-  const observerOptions = {
-    root: null,
-    rootMargin: '-80px 0px -66% 0px',
-    threshold: 0
-  };
-
-  // The hero is short enough now that "Services & Pricing" already sits in
-  // the observer's trigger zone at the very top of the page — without this
-  // guard it lit up as active before the visitor ever scrolled anywhere.
-  let userHasScrolled = false;
-  window.addEventListener('scroll', () => { userHasScrolled = true; }, { once: true, passive: true });
-
-  const sectionObserver = new IntersectionObserver((entries) => {
-    if (!userHasScrolled) return;
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const faqBlock = entry.target.closest('.faq-block');
-        if (faqBlock) {
-          const cat = faqBlock.dataset.cat;
-          
-          sectionHeaders.forEach(h => h.classList.remove('active'));
-          
-          const header = categoryToHeader[cat];
-          if (header) {
-            header.classList.add('active');
-          }
-          
-          catPills.forEach(p => p.classList.remove('active'));
-          const matchingPill = document.querySelector(`.cat-pill[data-cat="${cat}"]`);
-          if (matchingPill) {
-            matchingPill.classList.add('active');
-          }
-        }
-      }
-    });
-  }, observerOptions);
-
-  faqBlockElements.forEach(block => {
-    sectionObserver.observe(block);
+    if (header) categoryToHeader[cat] = header;
   });
 
 })();
