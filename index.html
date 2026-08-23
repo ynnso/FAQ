@@ -450,10 +450,10 @@
   }
 
   .section-header-shelf {
-    background: rgba(10,10,10,0.92);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255,255,255,0.06);
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: 1.5px solid var(--gray-300);
     border-radius: 100px;
     margin: 0;
     padding: 0;
@@ -475,24 +475,24 @@
     min-height: 64px;
     border-radius: 0;
     border: none;
-    background: var(--black);
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    border-right: 1px solid rgba(255,255,255,0.06);
+    border-right: 1.5px solid var(--gray-300);
     transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .section-header-shelf.active .section-icon-box {
     background: var(--red);
-    border-right-color: rgba(200, 16, 46, 0.4);
+    border-right-color: var(--red);
   }
 
   .section-icon-box svg {
     width: 24px;
     height: 24px;
-    stroke: var(--white);
+    stroke: var(--black);
     stroke-width: 1.8;
     fill: none;
   }
@@ -502,6 +502,15 @@
   .section-icon-box svg line,
   .section-icon-box svg rect,
   .section-icon-box svg polyline {
+    stroke: var(--black);
+  }
+
+  .section-header-shelf.active .section-icon-box svg,
+  .section-header-shelf.active .section-icon-box svg path,
+  .section-header-shelf.active .section-icon-box svg circle,
+  .section-header-shelf.active .section-icon-box svg line,
+  .section-header-shelf.active .section-icon-box svg rect,
+  .section-header-shelf.active .section-icon-box svg polyline {
     stroke: var(--white);
   }
 
@@ -516,10 +525,14 @@
   .section-header-text h2 {
     font-size: 24px;
     font-weight: 700;
-    color: var(--white);
+    color: var(--black);
     letter-spacing: -0.6px;
     line-height: 1.1;
     white-space: nowrap;
+  }
+
+  .section-header-shelf.active .section-header-text h2 {
+    color: var(--white);
   }
 
   .section-header-text p {
