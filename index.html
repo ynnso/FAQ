@@ -27,7 +27,14 @@
     --stat-source-color: #a3a3a3;
   }
 
-  html { scroll-behavior: smooth; overflow-x: hidden; width: 100%; }
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+    width: 100%;
+    /* Stops the browser's own rubber-band/edge-swipe "page slides around"
+       feel — separate from and in addition to fixing real overflow. */
+    overscroll-behavior: none;
+  }
 
   body {
     font-family: var(--font);
@@ -35,6 +42,7 @@
     color: var(--black);
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
+    overscroll-behavior: none;
   }
 
   /* ── NAV ── */
@@ -336,13 +344,8 @@
     display: none;
     max-height: 360px;
     overflow-y: auto;
-    /* Forces its own compositing layer so content underneath (the page
-       content behind it) can't get mis-painted into it as a stale frame —
-       a known class of WebKit blur/layer ghosting bug. */
+    /* Its own stacking context, so nothing behind it can paint through. */
     isolation: isolate;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    will-change: transform;
   }
 
   .search-suggest.open { display: block; }
@@ -1592,6 +1595,16 @@
 
 <script>
 (function() {
+  // The entrance animations use transform/opacity, which can leave an
+  // element promoted to its own GPU layer indefinitely even after the
+  // animation finishes — a likely contributor to the search dropdown
+  // ghosting bug (an unrelated section header visually leaking through
+  // it). Dropping the animation once it's done lets the browser release
+  // that layer.
+  document.querySelectorAll('.section-header-shelf, h1, .hero-sub, .search-wrap, .categories-wrap, .accordion-item').forEach(el => {
+    el.addEventListener('animationend', () => { el.style.animation = 'none'; }, { once: true });
+  });
+
   const searchInput = document.getElementById('searchInput');
   const searchClear = document.getElementById('searchClear');
   const searchCursor = document.getElementById('searchCursor');
