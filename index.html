@@ -589,11 +589,67 @@
     padding: 0;
     display: flex;
     align-items: stretch;
+    justify-content: space-between;
     gap: 0;
     overflow: hidden;
     max-width: 100%;
+    width: 100%;
     box-sizing: border-box;
     animation: sectionEnter 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+    /* It's a <button> now (whole section collapses/expands), so undo the
+       browser's own button styling and make it read exactly like the div
+       it replaced. */
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    color: inherit;
+  }
+
+  .section-count {
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gray-400);
+    background: var(--gray-100);
+    border-radius: 100px;
+    padding: 2px 9px;
+    margin-left: 2px;
+  }
+
+  .section-header-shelf.active .section-count {
+    color: var(--red);
+    background: var(--red-muted);
+  }
+
+  .section-chevron {
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    flex-shrink: 0;
+    color: var(--gray-400);
+  }
+
+  .section-chevron svg {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .section-header-shelf.active .section-chevron {
+    color: var(--red);
+  }
+
+  .section-header-shelf.active .section-chevron svg {
+    transform: rotate(180deg);
+  }
+
+  /* The whole section's question list — collapsed by default so a visitor
+     isn't scrolling past every closed question in every category just to
+     find the one they want. */
+  .faq-block-items {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .section-header-shelf.active {
@@ -957,11 +1013,11 @@
   .categories-wrap { animation: fadeUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.60s both; }
 
   #block-services .section-header-shelf { animation-delay: 0s; }
-  #block-booking .section-header-shelf { animation-delay: 0.08s; }
-  #block-delivery .section-header-shelf { animation-delay: 0.16s; }
-  #block-floor-plans .section-header-shelf { animation-delay: 0.24s; }
-  #block-media .section-header-shelf { animation-delay: 0.32s; }
-  #block-account .section-header-shelf { animation-delay: 0.40s; }
+  #block-staging .section-header-shelf { animation-delay: 0.06s; }
+  #block-booking .section-header-shelf { animation-delay: 0.12s; }
+  #block-company .section-header-shelf { animation-delay: 0.18s; }
+  #block-dashboard .section-header-shelf { animation-delay: 0.24s; }
+  #block-account .section-header-shelf { animation-delay: 0.30s; }
     .hero { padding-left: 20px; padding-right: 20px; }
   }
 
@@ -1187,8 +1243,7 @@
         <button class="cat-pill" data-cat="services"><svg viewBox="0 0 24 24" fill="none"><path d="M12 16C13.6569 16 15 14.6569 15 13C15 11.3431 13.6569 10 12 10C10.3431 10 9 11.3431 9 13C9 14.6569 10.3431 16 12 16Z" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 16.8V9.2C3 8.0799 3 7.51984 3.21799 7.09202C3.40973 6.71569 3.71569 6.40973 4.09202 6.21799C4.51984 6 5.0799 6 6.2 6H7.25464C7.37758 6 7.43905 6 7.49576 5.9935C7.79166 5.95961 8.05705 5.79559 8.21969 5.54609C8.25086 5.49827 8.27836 5.44328 8.33333 5.33333C8.44329 5.11342 8.49827 5.00346 8.56062 4.90782C8.8859 4.40882 9.41668 4.08078 10.0085 4.01299C10.1219 4 10.2448 4 10.4907 4H13.5093C13.7552 4 13.8781 4 13.9915 4.01299C14.5833 4.08078 15.1141 4.40882 15.4394 4.90782C15.5017 5.00345 15.5567 5.11345 15.6667 5.33333C15.7216 5.44329 15.7491 5.49827 15.7803 5.54609C15.943 5.79559 16.2083 5.95961 16.5042 5.9935C16.561 6 16.6224 6 16.7454 6H17.8C18.9201 6 19.4802 6 19.908 6.21799C20.2843 6.40973 20.5903 6.71569 20.782 7.09202C21 7.51984 21 8.0799 21 9.2V16.8C21 17.9201 21 18.4802 20.782 18.908C20.5903 19.2843 20.2843 19.5903 19.908 19.782C19.4802 20 18.9201 20 17.8 20H6.2C5.0799 20 4.51984 20 4.09202 19.782C3.71569 19.5903 3.40973 19.2843 3.21799 18.908C3 18.4802 3 17.9201 3 16.8Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Services</span></button>
         <button class="cat-pill" data-cat="staging"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 15.5l-5-5-9.5 9.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Staging</span></button>
         <button class="cat-pill" data-cat="booking"><svg viewBox="0 0 24 24" fill="none"><path d="M3 10H21M7 3V5M17 3V5M6.2 21H17.8C18.9201 21 19.4802 21 19.908 20.782C20.2843 20.5903 20.5903 20.2843 20.782 19.908C21 19.4802 21 18.9201 21 17.8V8.2C21 7.07989 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V17.8C3 18.9201 3 19.4802 3.21799 19.908C3.40973 20.2843 3.71569 20.5903 4.09202 20.782C4.51984 21 5.07989 21 6.2 21Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Booking</span></button>
-        <button class="cat-pill" data-cat="payments"><svg viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="2" y1="10" x2="22" y2="10" stroke-linecap="round"/></svg><span>Payments</span></button>
-        <button class="cat-pill" data-cat="about"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-7.5 7-12a7 7 0 1 0-14 0c0 4.5 7 12 7 12z" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="9" r="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>About</span></button>
+        <button class="cat-pill" data-cat="company"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="10.5" x2="12" y2="16" stroke-linecap="round"/><line x1="12" y1="7.5" x2="12" y2="7.51" stroke-linecap="round" stroke-width="2.6"/></svg><span>Company</span></button>
         <button class="cat-pill" data-cat="dashboard"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20.5H16M12 20.5H8M12 20.5V16.5M12 16.5C16 16.5 19.5 16.1667 20 15.8333C20.5 15.5 21 12.6667 21 10C21 7.33333 20.5 4.5 20 4.16667C19.5 3.83333 16 3.5 12 3.5C8 3.5 4.5 3.83333 4 4.16667C3.5 4.5 3 7.33333 3 10C3 12.6667 3.5 15.5 4 15.8333C4.5 16.1667 8 16.5 12 16.5Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Dashboard</span></button>
         <button class="cat-pill" data-cat="account"><svg viewBox="0 0 24 24" fill="none"><path d="M5 20V19C5 16.2386 7.23858 14 10 14H14C16.7614 14 19 16.2386 19 19V20M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Account</span></button>
 </div>
@@ -1207,13 +1262,16 @@
   </div>
 
   <div class="faq-block visible" id="block-services" data-cat="services">
-    <div class="section-header-shelf">
+    <button class="section-header-shelf" type="button" aria-expanded="false">
       <div class="section-header-text">
         <svg class="section-header-icon" viewBox="0 0 24 24" fill="none"><path d="M12 16C13.6569 16 15 14.6569 15 13C15 11.3431 13.6569 10 12 10C10.3431 10 9 11.3431 9 13C9 14.6569 10.3431 16 12 16Z" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 16.8V9.2C3 8.0799 3 7.51984 3.21799 7.09202C3.40973 6.71569 3.71569 6.40973 4.09202 6.21799C4.51984 6 5.0799 6 6.2 6H7.25464C7.37758 6 7.43905 6 7.49576 5.9935C7.79166 5.95961 8.05705 5.79559 8.21969 5.54609C8.25086 5.49827 8.27836 5.44328 8.33333 5.33333C8.44329 5.11342 8.49827 5.00346 8.56062 4.90782C8.8859 4.40882 9.41668 4.08078 10.0085 4.01299C10.1219 4 10.2448 4 10.4907 4H13.5093C13.7552 4 13.8781 4 13.9915 4.01299C14.5833 4.08078 15.1141 4.40882 15.4394 4.90782C15.5017 5.00345 15.5567 5.11345 15.6667 5.33333C15.7216 5.44329 15.7491 5.49827 15.7803 5.54609C15.943 5.79559 16.2083 5.95961 16.5042 5.9935C16.561 6 16.6224 6 16.7454 6H17.8C18.9201 6 19.4802 6 19.908 6.21799C20.2843 6.40973 20.5903 6.71569 20.782 7.09202C21 7.51984 21 8.0799 21 9.2V16.8C21 17.9201 21 18.4802 20.782 18.908C20.5903 19.2843 20.2843 19.5903 19.908 19.782C19.4802 20 18.9201 20 17.8 20H6.2C5.0799 20 4.51984 20 4.09202 19.782C3.71569 19.5903 3.40973 19.2843 3.21799 18.908C3 18.4802 3 17.9201 3 16.8Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <h2>Services &amp; Pricing</h2>
+        <span class="section-count">9</span>
       </div>
-    </div>
+      <span class="section-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+    </button>
 
+    <div class="faq-block-items">
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">What services does Shoot2Sell offer?</span>
@@ -1313,16 +1371,20 @@
       </div></div>
     </div>
 
+    </div>
   </div>
 
   <div class="faq-block visible" id="block-staging" data-cat="staging">
-    <div class="section-header-shelf">
+    <button class="section-header-shelf" type="button" aria-expanded="false">
       <div class="section-header-text">
         <svg class="section-header-icon" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 15.5l-5-5-9.5 9.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <h2>Virtual Staging</h2>
+        <span class="section-count">5</span>
       </div>
-    </div>
+      <span class="section-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+    </button>
 
+    <div class="faq-block-items">
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">How does the approval process work?</span>
@@ -1378,16 +1440,20 @@
       </div></div>
     </div>
 
+    </div>
   </div>
 
   <div class="faq-block visible" id="block-booking" data-cat="booking">
-    <div class="section-header-shelf">
+    <button class="section-header-shelf" type="button" aria-expanded="false">
       <div class="section-header-text">
         <svg class="section-header-icon" viewBox="0 0 24 24" fill="none"><path d="M3 10H21M7 3V5M17 3V5M6.2 21H17.8C18.9201 21 19.4802 21 19.908 20.782C20.2843 20.5903 20.5903 20.2843 20.782 19.908C21 19.4802 21 18.9201 21 17.8V8.2C21 7.07989 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V17.8C3 18.9201 3 19.4802 3.21799 19.908C3.40973 20.2843 3.71569 20.5903 4.09202 20.782C4.51984 21 5.07989 21 6.2 21Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <h2>Booking &amp; Scheduling</h2>
+        <span class="section-count">10</span>
       </div>
-    </div>
+      <span class="section-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+    </button>
 
+    <div class="faq-block-items">
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">Can I call and hold more than one appointment time?</span>
@@ -1498,59 +1564,20 @@
       </div></div>
     </div>
 
+    </div>
   </div>
 
-  <div class="faq-block visible" id="block-payments" data-cat="payments">
-    <div class="section-header-shelf">
+  <div class="faq-block visible" id="block-company" data-cat="company">
+    <button class="section-header-shelf" type="button" aria-expanded="false">
       <div class="section-header-text">
-        <svg class="section-header-icon" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="2" y1="10" x2="22" y2="10" stroke-linecap="round"/></svg>
-        <h2>Payments &amp; Copyright</h2>
+        <svg class="section-header-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="10.5" x2="12" y2="16" stroke-linecap="round"/><line x1="12" y1="7.5" x2="12" y2="7.51" stroke-linecap="round" stroke-width="2.6"/></svg>
+        <h2>Company &amp; Policies</h2>
+        <span class="section-count">7</span>
       </div>
-    </div>
+      <span class="section-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+    </button>
 
-    <div class="accordion-item">
-      <button class="accordion-trigger" aria-expanded="false">
-        <span class="accordion-q">What payment methods do you accept?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
-      </button>
-      <div class="accordion-body"><div class="accordion-answer">
-        <p>We accept online payment via website, phone credit/debit card payment, and keeping a card on file for day-of-service charging.</p>
-        <span class="qa-tag">payments</span>
-      </div></div>
-    </div>
-
-    <div class="accordion-item">
-      <button class="accordion-trigger" aria-expanded="false">
-        <span class="accordion-q">Do I own the images?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
-      </button>
-      <div class="accordion-body"><div class="accordion-answer">
-        <p>Shoot2Sell owns the copyright. MLS shoots have Temporary Usage Rights until the property sells and for 90 days after, for "Just Sold" marketing. Portfolio shoots have Permanent Usage Rights. Images cannot be transferred or sold.</p>
-        <span class="qa-tag">copyright</span>
-      </div></div>
-    </div>
-
-    <div class="accordion-item">
-      <button class="accordion-trigger" aria-expanded="false">
-        <span class="accordion-q">How do I pay?</span>
-        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
-      </button>
-      <div class="accordion-body"><div class="accordion-answer">
-        <p>Digital payments only. You can pay online, by phone with a card, by Zelle, or by ACH bank transfer. We can also keep a card on file and charge it on the day of the shoot. Full payment instructions are on your invoice.</p>
-        <span class="qa-tag">payments</span>
-      </div></div>
-    </div>
-
-  </div>
-
-  <div class="faq-block visible" id="block-about" data-cat="about">
-    <div class="section-header-shelf">
-      <div class="section-header-text">
-        <svg class="section-header-icon" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-7.5 7-12a7 7 0 1 0-14 0c0 4.5 7 12 7 12z" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="9" r="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <h2>About &amp; Coverage</h2>
-      </div>
-    </div>
-
+    <div class="faq-block-items">
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">Do you serve my area?</span>
@@ -1595,16 +1622,53 @@
       </div></div>
     </div>
 
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">What payment methods do you accept?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>We accept online payment via website, phone credit/debit card payment, and keeping a card on file for day-of-service charging.</p>
+        <span class="qa-tag">payments</span>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">Do I own the images?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>Shoot2Sell owns the copyright. MLS shoots have Temporary Usage Rights until the property sells and for 90 days after, for "Just Sold" marketing. Portfolio shoots have Permanent Usage Rights. Images cannot be transferred or sold.</p>
+        <span class="qa-tag">copyright</span>
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <button class="accordion-trigger" aria-expanded="false">
+        <span class="accordion-q">How do I pay?</span>
+        <span class="accordion-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
+      </button>
+      <div class="accordion-body"><div class="accordion-answer">
+        <p>Digital payments only. You can pay online, by phone with a card, by Zelle, or by ACH bank transfer. We can also keep a card on file and charge it on the day of the shoot. Full payment instructions are on your invoice.</p>
+        <span class="qa-tag">payments</span>
+      </div></div>
+    </div>
+
+    </div>
   </div>
 
   <div class="faq-block visible" id="block-dashboard" data-cat="dashboard">
-    <div class="section-header-shelf">
+    <button class="section-header-shelf" type="button" aria-expanded="false">
       <div class="section-header-text">
         <svg class="section-header-icon" viewBox="0 0 24 24" fill="none"><path d="M12 20.5H16M12 20.5H8M12 20.5V16.5M12 16.5C16 16.5 19.5 16.1667 20 15.8333C20.5 15.5 21 12.6667 21 10C21 7.33333 20.5 4.5 20 4.16667C19.5 3.83333 16 3.5 12 3.5C8 3.5 4.5 3.83333 4 4.16667C3.5 4.5 3 7.33333 3 10C3 12.6667 3.5 15.5 4 15.8333C4.5 16.1667 8 16.5 12 16.5Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <h2>Your Dashboard</h2>
+        <span class="section-count">12</span>
       </div>
-    </div>
+      <span class="section-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+    </button>
 
+    <div class="faq-block-items">
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">How do I download my images?</span>
@@ -1737,16 +1801,20 @@
       </div></div>
     </div>
 
+    </div>
   </div>
 
   <div class="faq-block visible" id="block-account" data-cat="account">
-    <div class="section-header-shelf">
+    <button class="section-header-shelf" type="button" aria-expanded="false">
       <div class="section-header-text">
         <svg class="section-header-icon" viewBox="0 0 24 24" fill="none"><path d="M5 20V19C5 16.2386 7.23858 14 10 14H14C16.7614 14 19 16.2386 19 19V20M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <h2>Account &amp; Login</h2>
+        <span class="section-count">9</span>
       </div>
-    </div>
+      <span class="section-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+    </button>
 
+    <div class="faq-block-items">
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">What should I do if I'm not satisfied?</span>
@@ -1846,6 +1914,7 @@
       </div></div>
     </div>
 
+    </div>
   </div>
 
 </main>
@@ -1929,6 +1998,23 @@
       trigger.setAttribute('aria-expanded', 'true');
       body.style.maxHeight = body.scrollHeight + 'px';
     }
+
+    // The enclosing section's own collapse height was measured with this
+    // question closed — growing (or shrinking) it now needs a re-measure,
+    // or the answer ends up clipped by its own section's outer edge. Has
+    // to wait for the question's OWN open/close transition to actually
+    // finish first — scrollHeight mid-transition reports the size it's
+    // animating from, not the size it's animating to.
+    const parentItems = item.closest('.faq-block-items');
+    if (parentItems) {
+      body.addEventListener('transitionend', function onDone(e) {
+        if (e.propertyName !== 'max-height') return;
+        body.removeEventListener('transitionend', onDone);
+        if (parentItems.style.maxHeight !== '0px' && parentItems.style.maxHeight !== '') {
+          parentItems.style.maxHeight = parentItems.scrollHeight + 'px';
+        }
+      });
+    }
   }
 
   document.querySelectorAll('.accordion-trigger').forEach(trigger => {
@@ -1947,18 +2033,15 @@
   catPills.forEach(pill => {
     pill.addEventListener('click', function() {
       const wasActive = this.classList.contains('active');
-      catPills.forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.section-header-shelf.active').forEach(h => h.classList.remove('active'));
+      const targetBlock = document.getElementById('block-' + this.dataset.cat);
+      if (!targetBlock) return;
 
-      if (!wasActive) {
-        this.classList.add('active');
-        const targetCat = this.dataset.cat;
-        const targetBlock = document.getElementById('block-' + targetCat);
-        const targetHeader = categoryToHeader[targetCat];
-        if (targetHeader) targetHeader.classList.add('active');
-        if (targetBlock) {
-          targetBlock.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+      if (wasActive) {
+        setSectionOpen(targetBlock, false);
+      } else {
+        collapseAllSections(targetBlock);
+        setSectionOpen(targetBlock, true);
+        targetBlock.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });
   });
@@ -2114,6 +2197,14 @@
         if (blockHasResults) { anyVisible = true; usedFuzzy = true; }
       });
     }
+
+    // A search should surface every matching section at once — expand
+    // each one with a result, collapse the rest, and drop the "only one
+    // section open" rule for as long as there's an active query.
+    faqBlocks.forEach(block => {
+      const hasResults = block.classList.contains('visible');
+      setSectionOpen(block, !!query && hasResults);
+    });
 
     noResults.classList.toggle('visible', !anyVisible);
 
@@ -2347,6 +2438,39 @@
     const cat = block.dataset.cat;
     const header = block.querySelector('.section-header-shelf');
     if (header) categoryToHeader[cat] = header;
+  });
+
+  // ── Whole-section collapse ── 52 questions across 6 sections was a lot
+  // of closed rows to scroll past before reaching the one you wanted.
+  // Sections now behave like the questions inside them: closed by default,
+  // one open at a time, click to expand.
+  function setSectionOpen(block, isOpen) {
+    const shelf = block.querySelector('.section-header-shelf');
+    const items = block.querySelector('.faq-block-items');
+    if (!shelf || !items) return;
+    shelf.classList.toggle('active', isOpen);
+    shelf.setAttribute('aria-expanded', String(isOpen));
+    items.style.maxHeight = isOpen ? items.scrollHeight + 'px' : '0';
+    const pill = document.querySelector(`.cat-pill[data-cat="${block.dataset.cat}"]`);
+    if (pill) pill.classList.toggle('active', isOpen);
+  }
+
+  function collapseAllSections(exceptBlock) {
+    faqBlockElements.forEach(block => {
+      if (block !== exceptBlock) setSectionOpen(block, false);
+    });
+  }
+
+  function toggleSection(block) {
+    const shelf = block.querySelector('.section-header-shelf');
+    const isOpen = shelf.classList.contains('active');
+    collapseAllSections(block);
+    setSectionOpen(block, !isOpen);
+    if (!isOpen) block.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  sectionHeaders.forEach(shelf => {
+    shelf.addEventListener('click', () => toggleSection(shelf.closest('.faq-block')));
   });
 
 })();
