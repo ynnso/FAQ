@@ -373,6 +373,39 @@
     pointer-events: auto;
   }
 
+  /* Appears once you've scrolled down a real distance — a quick way back
+     to search and the category pills without a long manual scroll up. */
+  .back-to-top {
+    position: fixed;
+    right: 20px;
+    bottom: 24px;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--black);
+    color: var(--white);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    cursor: pointer;
+    z-index: 90;
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+
+  .back-to-top.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .back-to-top:hover { background: var(--gray-900); }
+  .back-to-top svg { width: 20px; height: 20px; }
+
   .search-suggest.open { display: block; }
 
   .search-suggest-label {
@@ -664,9 +697,9 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    flex-wrap: wrap;
-    padding: 20px 24px;
+    padding: 20px 0 20px 24px;
     min-width: 0;
+    flex: 1 1 auto;
   }
 
   /* Clean, crisp category icon — no background stripe, just the outline mark
@@ -695,6 +728,13 @@
        line was wide enough to push the page sideways on a real phone
        even when the equivalent breakpoint rule tested fine here. */
     white-space: normal;
+    /* Flexbox decides whether an item fits its row using its UNWRAPPED
+       width, not the width it would end up at once actually wrapped —
+       so even short titles like "Virtual Staging" were dropping to their
+       own line below the icon. min-width:0 lets it shrink and wrap in
+       place instead of bailing to a new flex line. */
+    flex: 1 1 auto;
+    min-width: 0;
   }
 
   .section-header-shelf.active .section-header-text h2 {
@@ -717,10 +757,11 @@
     padding-top: 0;
     display: none;
     /* Jumping here via a category pill used to land the section's top
-       edge exactly at the viewport top — which is right where the sticky
-       search header (and, on a narrow screen, the sticky category bar
-       below it) sit, burying the header it was supposed to reveal. */
-    scroll-margin-top: 140px;
+       edge exactly at the viewport top — right where the sticky search
+       header sits, burying the header it was supposed to reveal. Just
+       enough to clear that one always-on bar (64px) plus a little air —
+       more than this just eats into the room left for the question list. */
+    scroll-margin-top: 84px;
   }
 
   .faq-block.visible {
@@ -1689,6 +1730,10 @@
     </div>
 
     <div class="search-backdrop" id="searchBackdrop"></div>
+
+    <button class="back-to-top" id="backToTop" type="button" aria-label="Back to top">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+    </button>
 
     <div class="categories-wrap">
       <p class="categories-label">Browse By Category</p>
@@ -2945,6 +2990,21 @@
   sectionHeaders.forEach(shelf => {
     shelf.addEventListener('click', () => toggleSection(shelf.closest('.faq-block')));
   });
+
+  // ── Back to top ── shows once you've scrolled a real distance, not on
+  // the first nudge — clicking it also collapses any open section, so
+  // you land back on a clean, short page instead of a long open list.
+  const backToTop = document.getElementById('backToTop');
+  if (backToTop) {
+    window.addEventListener('scroll', () => {
+      backToTop.classList.toggle('visible', window.scrollY > 600);
+    }, { passive: true });
+
+    backToTop.addEventListener('click', () => {
+      collapseAllSections(null);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
 
 })();
 </script>
