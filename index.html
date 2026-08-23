@@ -43,6 +43,10 @@
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
     overscroll-behavior: none;
+    /* overscroll-behavior only tames the bounce-back at the edges — this
+       is the actual gesture-level lock that stops sideways dragging in
+       the first place, on every mobile browser including older iOS Safari. */
+    touch-action: pan-y;
   }
 
   /* ── NAV ── */
@@ -348,6 +352,23 @@
     isolation: isolate;
   }
 
+  /* Dims the page behind the dropdown so it reads as a floating panel
+     rather than blending straight into the accordion content below it. */
+  .search-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(10,10,10,0.28);
+    z-index: 45;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .search-backdrop.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
   .search-suggest.open { display: block; }
 
   .search-suggest-label {
@@ -358,7 +379,9 @@
     font-weight: 700;
     letter-spacing: 0.2px;
     color: var(--gray-500);
-    padding: 14px 20px 8px;
+    /* 48px left = 20px row padding + 16px icon + 12px gap, so the label
+       lines up over the question text, not the icon column. */
+    padding: 14px 20px 8px 48px;
   }
 
   .search-suggest-clear {
@@ -388,6 +411,14 @@
     color: var(--black);
     cursor: pointer;
     transition: background 0.15s ease;
+  }
+
+  /* Zebra striping — makes six lookalike rows scannable at a glance
+     instead of reading as one long, undifferentiated block. nth-of-type
+     counts siblings of the same tag (button), so the label div above
+     doesn't throw off which rows land on the stripe. */
+  .search-suggest-row:nth-of-type(even) {
+    background: var(--gray-100);
   }
 
   .search-suggest-row:hover,
@@ -560,6 +591,8 @@
     align-items: stretch;
     gap: 0;
     overflow: hidden;
+    max-width: 100%;
+    box-sizing: border-box;
     animation: sectionEnter 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
   }
 
@@ -574,6 +607,7 @@
     gap: 12px;
     flex-wrap: wrap;
     padding: 20px 24px;
+    min-width: 0;
   }
 
   /* Clean, crisp category icon — no background stripe, just the outline mark
@@ -1129,6 +1163,8 @@
 
       <div class="search-suggest" id="searchSuggest"></div>
     </div>
+
+    <div class="search-backdrop" id="searchBackdrop"></div>
 
     <div class="categories-wrap">
       <p class="categories-label">Browse By Category</p>
@@ -1988,9 +2024,19 @@
   // edges — simplest, most robust fix is to just hide the pills while the
   // dropdown is open rather than fight it with z-index alone.
   const categoriesWrapEl = document.querySelector('.categories-wrap');
+  const searchBackdrop = document.getElementById('searchBackdrop');
+
   function setSuggestOpen(isOpen) {
     searchSuggest.classList.toggle('open', isOpen);
     if (categoriesWrapEl) categoriesWrapEl.classList.toggle('hidden-by-suggest', isOpen);
+    if (searchBackdrop) searchBackdrop.classList.toggle('visible', isOpen);
+  }
+
+  if (searchBackdrop) {
+    searchBackdrop.addEventListener('click', () => {
+      closeSuggest();
+      searchInput.blur();
+    });
   }
 
   function closeSuggest() {
