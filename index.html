@@ -347,13 +347,21 @@
     border: 1.5px solid var(--gray-200);
     border-radius: 20px;
     box-shadow: 0 16px 40px rgba(0,0,0,0.14);
-    overflow: hidden;
     z-index: 50;
-    display: none;
     max-height: 360px;
     overflow-y: auto;
+    overflow-x: hidden;
     /* Its own stacking context, so nothing behind it can paint through. */
     isolation: isolate;
+    /* Materializes instead of snapping into existence — scale/opacity/
+       lift only (no width/height animated), so it stays cheap. visibility
+       is delayed on close so it isn't keyboard/mouse-reachable mid-fade. */
+    opacity: 0;
+    transform: scale(0.98) translateY(-4px);
+    visibility: hidden;
+    transition: opacity 0.18s cubic-bezier(0.4, 0, 1, 1),
+                transform 0.18s cubic-bezier(0.4, 0, 1, 1),
+                visibility 0s linear 0.18s;
   }
 
   /* Dims the page behind the dropdown so it reads as a floating panel
@@ -404,9 +412,19 @@
   }
 
   .back-to-top:hover { background: var(--gray-900); }
+  .back-to-top.visible:active {
+    transform: translateY(0) scale(0.9);
+    transition: transform 0.1s cubic-bezier(0.4, 0, 1, 1);
+  }
   .back-to-top svg { width: 20px; height: 20px; }
 
-  .search-suggest.open { display: block; }
+  .search-suggest.open {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    visibility: visible;
+    transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  }
 
   .search-suggest-label {
     display: flex;
@@ -574,6 +592,14 @@
     box-shadow: 0 4px 20px rgba(10,10,10,0.08);
   }
 
+  /* Real tactile feedback — the pill dips under the tap the instant you
+     press it, before anything else happens, instead of only reacting
+     once the click has already registered. */
+  .cat-pill:active {
+    transform: scale(0.95);
+    transition: transform 0.1s cubic-bezier(0.4, 0, 1, 1);
+  }
+
   .cat-pill.active {
     background: var(--red);
     border-color: var(--red);
@@ -646,6 +672,11 @@
     text-align: left;
     cursor: pointer;
     color: inherit;
+    transition: transform 0.15s cubic-bezier(0.4, 0, 1, 1);
+  }
+
+  .section-header-shelf:active {
+    transform: scale(0.99);
   }
 
   /* Chevron lives outside the title's own wrapping flex row, so a long
@@ -685,7 +716,15 @@
   .faq-block-items {
     overflow: hidden;
     max-height: 0;
-    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Closing curve (accelerate-in) is the default; opening (below) swaps
+       in a decelerate-out curve — same two-curve trick real apps use so
+       a panel snaps open quick and settles closed smooth, not identical
+       both ways. */
+    transition: max-height 0.38s cubic-bezier(0.7, 0, 0.84, 0);
+  }
+
+  .faq-block.section-open .faq-block-items {
+    transition: max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .section-header-shelf.active {
@@ -787,6 +826,18 @@
     background: transparent;
   }
 
+  /* One-shot entrance, not a persistent hidden state — an item is opacity:1
+     by default so a search result (which never gets this class) is never
+     accidentally left invisible; only a just-opened section's rows get
+     the staggered step-in, each a beat behind the last. */
+  @keyframes rowIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .accordion-item.row-in {
+    animation: rowIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
   .accordion-item:nth-child(even) {
     background: rgba(10, 10, 10, 0.02);
   }
@@ -814,6 +865,11 @@
 
   .accordion-trigger:hover {
     transform: scale(1.01);
+  }
+
+  .accordion-trigger:active {
+    transform: scale(0.99);
+    transition: transform 0.1s cubic-bezier(0.4, 0, 1, 1);
   }
 
   .accordion-item:hover {
@@ -888,7 +944,11 @@
   .accordion-body {
     overflow: hidden;
     max-height: 0;
-    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: max-height 0.32s cubic-bezier(0.7, 0, 0.84, 0);
+  }
+
+  .accordion-item.open .accordion-body {
+    transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .accordion-answer {
@@ -1241,6 +1301,10 @@
   }
 
   .sticky-header-search:hover { border-color: var(--gray-400); }
+  .sticky-header-search:active {
+    transform: scale(0.97);
+    transition: transform 0.1s cubic-bezier(0.4, 0, 1, 1);
+  }
   .sticky-header-search svg { width: 16px; height: 16px; flex-shrink: 0; stroke: var(--gray-500); }
 
   @media (max-width: 600px) {
@@ -2955,10 +3019,24 @@
     const items = block.querySelector('.faq-block-items');
     if (!shelf || !items) return;
     shelf.classList.toggle('active', isOpen);
+    block.classList.toggle('section-open', isOpen);
     shelf.setAttribute('aria-expanded', String(isOpen));
     items.style.maxHeight = isOpen ? items.scrollHeight + 'px' : '0';
     const pill = document.querySelector(`.cat-pill[data-cat="${block.dataset.cat}"]`);
     if (pill) pill.classList.toggle('active', isOpen);
+
+    // The rows inside don't just appear with the panel — each one steps
+    // in a beat after the last, like a real staggered reveal instead of
+    // the whole list popping in at once.
+    if (isOpen) {
+      const rows = items.querySelectorAll('.accordion-item');
+      rows.forEach((row, i) => {
+        row.style.animationDelay = Math.min(i * 35, 280) + 'ms';
+        row.classList.remove('row-in');
+        void row.offsetWidth;
+        row.classList.add('row-in');
+      });
+    }
   }
 
   function collapseAllSections(exceptBlock) {
