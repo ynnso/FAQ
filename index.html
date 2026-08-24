@@ -497,10 +497,18 @@
   /* Punches the top search match's own section above the dim backdrop
      (z-index 45) -- see filterContent() in JS. It's the one real answer
      being handed straight to you while search is active; it shouldn't
-     fade along with the rest of the page like everything else does. */
+     fade along with the rest of the page like everything else does.
+     Confirmed live: z-index alone wasn't enough -- .faq-block and
+     .section-header-shelf are both transparent (no background of their
+     own, they just let the page's white show through normally), so even
+     painted above the backdrop in stacking order, that transparency let
+     the backdrop's dark tint bleed straight through anyway. An explicit
+     opaque background is what actually blocks it. */
   .faq-block.search-top-match {
     position: relative;
     z-index: 46;
+    background: var(--white);
+    border-radius: 24px;
   }
 
   .search-backdrop.visible {
@@ -1373,6 +1381,17 @@
       right: 16px;
       max-width: none;
       z-index: 500;
+    }
+
+    /* Solid white takeover behind the pinned bar -- see the focus listener
+       on searchInput in JS. Without this the fixed-position bar just
+       floated on top of whatever page content was already there (its own
+       hero heading, in the confirmed live bug), since removing it from
+       flow doesn't push anything else out of the way. z-index sits just
+       below the pinned bar (500) but above literally everything else. */
+    .search-backdrop.mobile-full {
+      background: var(--white);
+      z-index: 490;
     }
     /* padding-top/bottom only — touching the shorthand here would reset
        left/right to 0 and silently cancel the clamp() inset above. That
@@ -2792,10 +2811,22 @@
   // space above the keyboard instead. Only applies on narrow (phone-width)
   // viewports -- desktop has no on-screen keyboard to make room for.
   searchInput.addEventListener('focus', () => {
-    if (window.innerWidth <= 768) heroSearchWrap.classList.add('mobile-pinned');
+    // Real bug, confirmed live: the pinned bar removes itself from normal
+    // page flow (position: fixed), so the rest of the page doesn't make
+    // room for it -- it just floated on top of whatever content was
+    // already there, with the page's own hero text visibly showing
+    // through/behind the dropdown. searchBackdrop already covers the
+    // full screen behind it; opaquing it to solid white here (see
+    // .search-backdrop.mobile-full) turns this into a real full-screen
+    // takeover instead of an overlapping mess.
+    if (window.innerWidth <= 768) {
+      heroSearchWrap.classList.add('mobile-pinned');
+      if (searchBackdrop) searchBackdrop.classList.add('mobile-full');
+    }
   });
   searchInput.addEventListener('blur', () => {
     heroSearchWrap.classList.remove('mobile-pinned');
+    if (searchBackdrop) searchBackdrop.classList.remove('mobile-full');
   });
   searchInput.addEventListener('input', () => {
     if (searchInput.value.length > 0) searchCursor.classList.add('hidden');
@@ -2915,10 +2946,19 @@
     });
   });
 
-  searchInput.addEventListener('input', function() {
-    const val = this.value.trim();
+  // Shared so pickSuggestion (setting searchInput.value directly, which
+  // fires no native 'input' event) can put the bar in the same visible
+  // state a real keystroke would -- confirmed live this was the actual
+  // bug behind "Clear (X) missing after picking a Top 5 Trending row":
+  // the value changed but nothing ever re-ran this toggle.
+  function updateSearchButtonsVisibility() {
+    const val = searchInput.value.trim();
     searchClear.classList.toggle('visible', val.length > 0);
     searchMic.classList.toggle('visible', val.length === 0);
+  }
+
+  searchInput.addEventListener('input', function() {
+    updateSearchButtonsVisibility();
     // Typing for real overrides the "picked a suggestion" flag below --
     // this is a fresh, intentional search now, not a leftover to clear.
     delete this.dataset.picked;
@@ -3238,8 +3278,23 @@
   // though they were exactly as correct as a typo-corrected result.
   function correctedQueryDisplay(query, matchedTexts) {
     const textWords = new Set();
+    // Real, confirmed bug this replaces: canonicalWord("foto") correctly
+    // returns "photo", but the actual FAQ text never contains the literal
+    // word "photo" -- it says "photography". Checking textWords.has(canon)
+    // against the raw words that appear in the text always failed here,
+    // so the notice never showed even though the match itself (smartMatch,
+    // which compares CANONICAL forms on both sides) was working fine. This
+    // maps each real word to its own canonical form too, so "photography"
+    // is findable as a match for canon "photo" -- and uses that real word
+    // ("photography") in the displayed correction, which reads better
+    // than the abstract canonical stem anyway.
+    const canonicalToRealWord = new Map();
     matchedTexts.forEach(t => {
-      t.split(/\W+/).filter(w => w.length > 2).forEach(w => textWords.add(w));
+      t.split(/\W+/).filter(w => w.length > 2).forEach(w => {
+        textWords.add(w);
+        const c = canonicalWord(w);
+        if (!canonicalToRealWord.has(c)) canonicalToRealWord.set(c, w);
+      });
     });
     let changed = false;
     const corrected = query.split(/\s+/).map(qw => {
@@ -3250,7 +3305,10 @@
       // one letter off.
       if (qw.length <= 2 || SEARCH_STOPWORDS.has(qw) || textWords.has(qw)) return qw;
       const canon = canonicalWord(qw);
-      if (canon !== qw && textWords.has(canon)) { changed = true; return canon; }
+      if (canon !== qw && canonicalToRealWord.has(canon)) {
+        changed = true;
+        return canonicalToRealWord.get(canon);
+      }
       let best = null, bestDist = Infinity;
       textWords.forEach(tw => {
         const d = editDistance(qw, tw);
@@ -3612,6 +3670,7 @@
 
   function pickSuggestion(entry) {
     searchInput.value = entry.q;
+    updateSearchButtonsVisibility();
     filterContent();
     addRecent(entry.q);
     closeSuggest();
