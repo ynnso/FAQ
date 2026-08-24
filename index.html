@@ -3103,11 +3103,15 @@
       // just looked like an arbitrary extra row tacked on.
       rows = [...recentRows, ...trending.filter(t => !recentRows.includes(t))].slice(0, 5);
 
-      if (recentRows.length) {
-        sectionsHtml += '<div class="search-suggest-label">Recent Searches<button type="button" class="search-suggest-clear" id="suggestClearRecent">Clear</button></div>';
-      } else {
-        sectionsHtml += '<div class="search-suggest-label">Top 5 Trending</div>';
-      }
+      // Always "Top 5 Trending" now, whether or not any of the 5 happen to
+      // be recent searches -- the label used to swap to "Recent Searches"
+      // whenever there was any history at all, which read as a bug (the
+      // rename to "Top 5 Trending" appeared to not have worked) rather
+      // than a second, separate state. The Clear button still shows
+      // whenever a recent search is actually mixed in.
+      sectionsHtml += '<div class="search-suggest-label">Top 5 Trending' +
+        (recentRows.length ? '<button type="button" class="search-suggest-clear" id="suggestClearRecent">Clear</button>' : '') +
+        '</div>';
     } else if (q.length >= 2) {
       const lower = q.toLowerCase();
       rows = faqIndex.filter(f => f.q.toLowerCase().includes(lower)).slice(0, 6);
