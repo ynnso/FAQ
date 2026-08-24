@@ -900,18 +900,26 @@
     background: transparent;
   }
 
-  /* One-shot entrance, not a persistent hidden state — an item is opacity:1
-     by default so a search result (which never gets this class) is never
-     accidentally left invisible; only a just-opened section's rows get
-     the staggered step-in, each a beat behind the last. */
-  @keyframes rowIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+  /* Shared staggered-reveal pair, used for both a just-opened section's
+     question rows and the search dropdown's own row list (see
+     staggerReveal() in JS). Plain transitions driven entirely by JS
+     timers, not CSS keyframes/animation-delay -- the previous keyframe
+     version was fragile in two confirmed ways: animation-delay + fill-mode
+     "backwards" is easy to accidentally break (see the animationend
+     bubbling bug that used to poison it), and a fixed CSS delay can't be
+     retimed or debugged as easily as a JS setTimeout can. An item is
+     opacity:1 by default (no .stagger-row class) so anything that never
+     goes through the reveal -- a search result, for instance -- is never
+     accidentally left invisible. */
+  .stagger-row {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .accordion-item.row-in {
-    /* 2x slower than the original 0.4s, so the cascade reads as rows
-       stepping in one by one, not everything popping in near-instantly. */
-    animation: rowIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  .stagger-row.stagger-in {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .accordion-item:nth-child(even) {
@@ -2590,17 +2598,18 @@
   // ghosting bug (an unrelated section header visually leaking through
   // it). Dropping the animation once it's done lets the browser release
   // that layer.
-  // .accordion-item is deliberately NOT in this list (see below) -- it used
-  // to be, which was a real, confirmed bug: this cleanup is only correct for
-  // a one-time page-load entrance. .accordion-item's own animation (row-in,
-  // the section-open stagger) is meant to REPLAY every time a section
-  // opens, so setting style.animation = 'none' the first time it ever
-  // completed permanently killed the stagger on every open after the
-  // first. Worse, animationend also BUBBLES -- some accordion answers have
-  // their own staggered bulleted list inside them (.accordion-answer ul li)
-  // that animates on page load even while closed and clipped, so that
-  // child's animationend could trigger this early and poison the parent
-  // item before it was ever even opened once.
+  // .accordion-item is deliberately NOT in this list -- it used to be,
+  // which was a real, confirmed bug: this cleanup is only correct for a
+  // one-time page-load entrance, but the section-open stagger (now
+  // staggerReveal()) is meant to REPLAY every time a section opens, so
+  // setting style.animation = 'none' the first time it ever completed
+  // permanently killed it on every open after the first. Worse, animationend
+  // also BUBBLES -- some accordion answers have their own staggered
+  // bulleted list inside them (.accordion-answer ul li) that animates on
+  // page load even while closed and clipped, so that child's animationend
+  // could trigger this early and poison the parent item before it was ever
+  // even opened once. (staggerReveal() sidesteps the whole category of bug
+  // by using plain transitions + setTimeout instead of animation-delay.)
   document.querySelectorAll('.section-header-shelf, h1, .hero-sub, .search-wrap, .categories-wrap').forEach(el => {
     // e.target === el guards against a bubbled child animation finishing
     // first; removeEventListener (instead of { once: true }) makes sure
@@ -2832,6 +2841,33 @@
     micErrorTimer = setTimeout(() => bubble.classList.remove('visible'), 3200);
   }
 
+  // Shared staggered-reveal: used for a just-opened section's question rows
+  // and the search dropdown's own row list. `lead` holds everything back
+  // until whatever container is opening (a section, the dropdown) has
+  // actually finished its own motion first -- so the container visibly
+  // settles into place BEFORE anything inside it starts stepping in, rather
+  // than both happening on top of each other. Driven by real setTimeouts
+  // rather than CSS animation-delay, so the timing is exact and debuggable
+  // and immune to animation/fill-mode edge cases (see the .stagger-row CSS
+  // comment for why the previous keyframe version broke).
+  function staggerReveal(elements, { lead = 0, step = 140, cap = 980 } = {}) {
+    const list = Array.from(elements);
+    list.forEach(el => {
+      el.classList.remove('stagger-in');
+      el.classList.add('stagger-row');
+    });
+    // Force layout before any class add below -- without this, the browser
+    // can coalesce the remove+add above with the very first stagger-in add
+    // into a single style recalc, and the "from" state never actually
+    // paints, so the first row (or all of them, on a fast re-open) skips
+    // straight to its end state instead of transitioning into it.
+    if (list.length) void list[0].offsetWidth;
+    list.forEach((el, i) => {
+      const delay = lead + Math.min(i * step, cap);
+      setTimeout(() => el.classList.add('stagger-in'), delay);
+    });
+  }
+
   function highlightText(el, query) {
     const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
     const nodes = [];
@@ -3045,7 +3081,7 @@
       if (recentRows.length) {
         sectionsHtml += '<div class="search-suggest-label">Recent Searches<button type="button" class="search-suggest-clear" id="suggestClearRecent">Clear</button></div>';
       } else {
-        sectionsHtml += '<div class="search-suggest-label">Popular Questions</div>';
+        sectionsHtml += '<div class="search-suggest-label">Top 5 Trending</div>';
       }
     } else if (q.length >= 2) {
       const lower = q.toLowerCase();
@@ -3069,7 +3105,21 @@
       searchSuggest.innerHTML = sectionsHtml +
         rows.map((r, i) => suggestRowHtml(r, i, q, !q && getRecent().includes(r.q))).join('');
     }
-    setSuggestOpen(true);
+    // Zero-state (Top 5 Trending / Recent Searches) cascades in one row at
+    // a time, same as a section's own question list -- live "Matching
+    // Questions" while typing stays instant, since a 140ms-per-row wait on
+    // every keystroke would read as the search lagging behind you.
+    if (!q && rows.length) {
+      const wasAlreadyOpen = searchSuggest.classList.contains('open');
+      setSuggestOpen(true);
+      staggerReveal(searchSuggest.querySelectorAll('.search-suggest-row'), {
+        lead: wasAlreadyOpen ? 0 : 220,
+        step: 140,
+        cap: 980,
+      });
+    } else {
+      setSuggestOpen(true);
+    }
 
     const clearBtn = document.getElementById('suggestClearRecent');
     if (clearBtn) {
@@ -3169,11 +3219,16 @@
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.search-wrap')) {
       closeSuggest();
-      // The backdrop used to do this itself on click -- now that it never
-      // intercepts clicks (see setSuggestOpen), this is the one place that
-      // needs to blur the input, e.g. to drop the keyboard on mobile when
-      // tapping the dimmed area away from the bar.
-      searchInput.blur();
+      // Deliberately does NOT blur the input here. It used to (both here
+      // and via the old backdrop's own click handler) -- forcing blur on
+      // any outside tap fights the on-screen keyboard on mobile: the
+      // keyboard's own dismiss animation and the dropdown's close animation
+      // would run at the same time, competing with each other, which read
+      // as janky/broken even though each one individually was fine. The
+      // search bar is a persistent, always-available component; closing
+      // the dropdown is enough. It still blurs on Escape and after picking
+      // a suggestion (see pickSuggestion), where dropping focus is the
+      // actual intent, not a side effect of dismissing something else.
       // A picked question left sitting in the bar (and the page still
       // filtered down to it) reads as "stuck" -- clear it back to normal
       // once you've clicked away from the search bar entirely.
@@ -3241,15 +3296,11 @@
     // results appear would read as the search being slow to respond.
     if (isOpen) {
       const lead = immediate ? 0 : SECTION_OPEN_MS;
-      const rows = items.querySelectorAll('.accordion-item');
-      rows.forEach((row, i) => {
-        // 2x the original per-row beat (35ms -> 70ms, cap 280ms -> 480ms) so
-        // the cascade actually reads as one-by-one instead of all-at-once.
-        row.style.animationDelay = (lead + Math.min(i * 70, 480)) + 'ms';
-        row.classList.remove('row-in');
-        void row.offsetWidth;
-        row.classList.add('row-in');
-      });
+      // 2x the previous per-row beat (70ms -> 140ms) -- at 70ms the gap
+      // between rows was too small to actually perceive as one-by-one for
+      // the first several rows; it only read as a real cascade by the time
+      // enough delay had accumulated near the end of a long list.
+      staggerReveal(items.querySelectorAll('.accordion-item'), { lead, step: 140, cap: 980 });
     }
   }
 
