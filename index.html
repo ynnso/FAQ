@@ -975,13 +975,20 @@
 
   /* When a question inside a section is open, the rest of that section's
      questions get out of the way instead of sitting there as a wall of
-     unrelated rows below the answer you actually asked for. Used to be a
-     plain CSS rule keyed off .has-open-item (instant display:none, no
-     transition) -- now driven by staggerHide()/staggerShow() in JS
-     instead, so siblings fade out and back in one at a time rather than
-     vanishing and reappearing all at once. .has-open-item itself is no
-     longer used for hiding; openAccordionItem/closeAll call the stagger
-     functions directly on the sibling list.*/
+     unrelated rows below the answer you actually asked for.
+     REVERTED back to plain, instant display:none -- a staggered
+     fade version was tried and confirmed broken live: the outer section's
+     max-height (set once, based on the ORIGINAL full-list scrollHeight)
+     never got re-measured after the staggered hide actually finished
+     shrinking the content, so the open answer sat in leftover empty space
+     and then visibly snapped/got pulled up whenever something else finally
+     forced a re-measure. Fixing that properly means re-measuring the
+     section after every row's hide animation completes, which is real
+     scope, not a quick patch -- reverted to the known-stable version
+     instead of shipping another half-fix. */
+  .faq-block-items.has-open-item .accordion-item:not(.open) {
+    display: none;
+  }
 
   /* ── ACCORDION ── */
   .accordion-item {
@@ -2838,12 +2845,10 @@
       item.querySelector('.accordion-trigger').setAttribute('aria-expanded', 'false');
       item.querySelector('.accordion-body').style.maxHeight = '0';
     });
-    // Bring back every section's full question list, cascading each row
-    // back in the same way a freshly-opened section does -- isolate mode
-    // only ever applies while a question in that list is actually open.
+    // Bring back every section's full question list -- isolate mode only
+    // ever applies while a question in that list is actually open.
     document.querySelectorAll('.faq-block-items.has-open-item').forEach(list => {
       list.classList.remove('has-open-item');
-      staggerShow(list.querySelectorAll('.accordion-item'));
     });
   }
 
@@ -2860,15 +2865,11 @@
       item.classList.add('open');
       trigger.setAttribute('aria-expanded', 'true');
       body.style.maxHeight = body.scrollHeight + 'px';
-      // Isolate: the rest of this section's questions fade out one at a
-      // time (staggerHide) instead of vanishing together, so the answer
-      // you asked for isn't left buried under a wall of unrelated rows.
+      // Isolate: the rest of this section's questions get out of the way
+      // while this one's open, so the answer you asked for isn't buried
+      // under a wall of unrelated rows.
       const list = item.closest('.faq-block-items');
-      if (list) {
-        list.classList.add('has-open-item');
-        const siblings = Array.from(list.querySelectorAll('.accordion-item')).filter(el => el !== item);
-        staggerHide(siblings);
-      }
+      if (list) list.classList.add('has-open-item');
     }
 
     // The enclosing section's own collapse height was measured with this
@@ -3091,33 +3092,6 @@
       const delay = lead + Math.min(i * step, cap);
       setTimeout(() => el.classList.add('stagger-in'), delay);
     });
-  }
-
-  // The reverse of staggerReveal -- fades rows out one by one (same
-  // .stagger-row transition, just running backwards: remove .stagger-in),
-  // then actually pulls them out of layout via display:none once each
-  // one's own fade has had time to finish, so the section still collapses
-  // down to fit just the item that's staying open instead of leaving
-  // blank space where the faded-out rows used to be.
-  function staggerHide(elements, { step = 60 } = {}) {
-    const list = Array.from(elements);
-    list.forEach((el, i) => {
-      setTimeout(() => el.classList.remove('stagger-in'), i * step);
-    });
-    const lastFadeStarts = Math.max(0, list.length - 1) * step;
-    setTimeout(() => {
-      list.forEach(el => { el.style.display = 'none'; });
-    }, lastFadeStarts + 500);
-  }
-
-  // The show-side counterpart -- brings hidden siblings back into layout
-  // first (so there's something for the fade-in to animate into), then
-  // cascades them back in with the same rhythm a section uses when it
-  // first opens.
-  function staggerShow(elements) {
-    const list = Array.from(elements);
-    list.forEach(el => { el.style.display = ''; });
-    staggerReveal(list, { lead: 0, step: 70, cap: 700 });
   }
 
   function highlightText(el, query) {
