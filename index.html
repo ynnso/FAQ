@@ -214,11 +214,9 @@
     font-weight: 500;
     color: var(--black);
     background: var(--gray-100);
-    /* Right padding cleared the actual .search-actions cluster width
-       incorrectly at first (mic icon + button, ~82px, plus its own edge
-       inset) -- confirmed live, placeholder text was running under the
-       mic icon. 104px actually clears it with a little breathing room. */
-    padding: 16px 104px 16px 24px;
+    /* Left padding clears the mic icon (now inside the input, left-aligned
+       -- see .search-mic); right clears the squircle submit button. */
+    padding: 16px 68px 16px 52px;
     outline: none;
     transition: border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
                 background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
@@ -253,9 +251,9 @@
 
   .search-cursor {
     position: absolute;
-    /* Was 52px, lined up with the old left-side icon -- that icon's gone
-       now, text starts near the left edge instead. */
-    left: 24px;
+    /* Lines up with text start now that the mic sits left-aligned inside
+       the input again. */
+    left: 52px;
     top: 50%;
     transform: translateY(-50%);
     width: 1.5px;
@@ -306,6 +304,10 @@
   }
 
   .search-mic {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    translate: 0 -50%;
     width: 32px;
     height: 32px;
     box-sizing: border-box;
@@ -320,16 +322,11 @@
     padding: 0;
     flex-shrink: 0;
     color: var(--gray-500);
+    z-index: 4;
   }
 
   .search-mic.visible { display: flex; }
   .search-mic:hover { background: rgba(0,0,0,0.08); color: var(--black); }
-
-  /* Mic stays visible and anchored at the far right through focus -- it's
-     the last child in .search-actions, so the submit button expanding
-     into its pill (an earlier sibling) never displaces it; mic and clear
-     are mutually exclusive anyway (JS only shows one at a time based on
-     whether the input is empty), so there's never real crowding. */
 
   .search-mic svg { width: 18px; height: 18px; }
 
@@ -1938,11 +1935,15 @@
         autocomplete="off"
       />
 
-      <!-- Order matters: mic is last so it stays pinned at the bar's true
-           right edge (the container is anchored via `right`, not `left`,
-           so a LATER sibling growing pushes EARLIER ones, never the other
-           way around) -- the submit button grows into its pill between
-           clear and mic without ever displacing mic's position. -->
+      <button class="search-mic" id="searchMic" aria-label="Search by voice" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="2" width="6" height="12" rx="3"/>
+          <path d="M5 11a7 7 0 0 0 14 0"/>
+          <line x1="12" y1="18" x2="12" y2="22"/>
+          <line x1="8" y1="22" x2="16" y2="22"/>
+        </svg>
+      </button>
+
       <div class="search-actions">
         <button class="search-clear" id="searchClear" aria-label="Clear search">
           <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
@@ -1956,15 +1957,6 @@
             <line x1="22.5" y1="22.5" x2="14.39" y2="14.39" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
           </svg>
           <span class="search-submit-label">Search</span>
-        </button>
-
-        <button class="search-mic" id="searchMic" aria-label="Search by voice" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="9" y="2" width="6" height="12" rx="3"/>
-            <path d="M5 11a7 7 0 0 0 14 0"/>
-            <line x1="12" y1="18" x2="12" y2="22"/>
-            <line x1="8" y1="22" x2="16" y2="22"/>
-          </svg>
         </button>
       </div>
 
