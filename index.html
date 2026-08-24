@@ -32,8 +32,12 @@
     overflow-x: hidden;
     width: 100%;
     /* Stops the browser's own rubber-band/edge-swipe "page slides around"
-       feel — separate from and in addition to fixing real overflow. */
-    overscroll-behavior: none;
+       feel — separate from and in addition to fixing real overflow. Scoped
+       to the X axis only: the plain "none" shorthand also blocks Y, which
+       in some Chromium builds suppresses normal mouse-wheel scrolling on
+       desktop entirely (confirmed live — only the scrollbar still worked).
+       -x alone stops the sideways bounce without touching vertical scroll. */
+    overscroll-behavior-x: none;
   }
 
   body {
@@ -42,7 +46,7 @@
     color: var(--black);
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
-    overscroll-behavior: none;
+    overscroll-behavior-x: none;
     /* overscroll-behavior only tames the bounce-back at the edges — this
        is the actual gesture-level lock that stops sideways dragging in
        the first place, on every mobile browser including older iOS Safari. */
@@ -720,11 +724,14 @@
        in a decelerate-out curve — same two-curve trick real apps use so
        a panel snaps open quick and settles closed smooth, not identical
        both ways. */
-    transition: max-height 0.38s cubic-bezier(0.7, 0, 0.84, 0);
+    /* 2x slower than the original 0.38s -- the fast version read as
+       whiplash-fast instead of a real settle. */
+    transition: max-height 0.76s cubic-bezier(0.7, 0, 0.84, 0);
   }
 
   .faq-block.section-open .faq-block-items {
-    transition: max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    /* 2x slower than the original 0.45s, to match the closing curve above. */
+    transition: max-height 0.9s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .section-header-shelf.active {
@@ -736,19 +743,24 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 20px 0 20px 24px;
+    /* Vertical padding trimmed from 20px to 9px so the row's total height
+       (~62px) stays the same now that the icon inside it is 2x bigger —
+       the shelf itself has no fixed height, it's driven entirely by this
+       padding + icon size. */
+    padding: 9px 0 9px 24px;
     min-width: 0;
     flex: 1 1 auto;
   }
 
   /* Clean, crisp category icon — no background stripe, just the outline mark
-     sitting inline with the heading. */
+     sitting inline with the heading. Doubled from 22px so it actually reads
+     at a glance instead of disappearing next to the bold heading text. */
   .section-header-icon {
-    width: 22px;
-    height: 22px;
+    width: 44px;
+    height: 44px;
     flex-shrink: 0;
     stroke: var(--black);
-    stroke-width: 1.8;
+    stroke-width: 1.4;
     fill: none;
     transition: stroke 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -816,13 +828,25 @@
     padding-top: 48px;
   }
 
+  /* When a question inside a section is open, the rest of that section's
+     questions get out of the way instead of sitting there as a wall of
+     unrelated rows below the answer you actually asked for. Scoped to the
+     immediate list (.faq-block-items.has-open-item), not global, so opening
+     a question in one section never touches any other section's rows. */
+  .faq-block-items.has-open-item .accordion-item:not(.open) {
+    display: none;
+  }
+
   /* ── ACCORDION ── */
   .accordion-item {
     border-bottom: 1px solid var(--gray-200);
     border-top: 1px solid var(--gray-200);
     transition: background var(--transition);
     margin-bottom: 0;
-    padding: 24px 0;
+    /* Vertical padding moved onto .accordion-trigger below -- it's the
+       actual <button>, so the whole visible row (border to border) is now
+       really clickable, not just the text's own line height in the middle. */
+    padding: 0;
     background: transparent;
   }
 
@@ -835,7 +859,9 @@
     to { opacity: 1; transform: translateY(0); }
   }
   .accordion-item.row-in {
-    animation: rowIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    /* 2x slower than the original 0.4s, so the cascade reads as rows
+       stepping in one by one, not everything popping in near-instantly. */
+    animation: rowIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   .accordion-item:nth-child(even) {
@@ -856,7 +882,12 @@
     align-items: center;
     justify-content: space-between;
     gap: 20px;
-    padding: 0 28px;
+    /* Was 0 28px -- the button itself was only ever as tall as its own text,
+       so tapping near the top/bottom of a row (which visually looks like
+       part of that row) missed the button entirely. Vertical padding now
+       lives here instead of on .accordion-item, so the full row is one
+       real tap target. */
+    padding: 24px 28px;
     text-align: left;
     font-family: var(--font);
     transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), opacity var(--transition);
@@ -944,11 +975,13 @@
   .accordion-body {
     overflow: hidden;
     max-height: 0;
-    transition: max-height 0.32s cubic-bezier(0.7, 0, 0.84, 0);
+    /* 2x slower than the original 0.32s. */
+    transition: max-height 0.64s cubic-bezier(0.7, 0, 0.84, 0);
   }
 
   .accordion-item.open .accordion-body {
-    transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    /* 2x slower than the original 0.4s. */
+    transition: max-height 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .accordion-answer {
@@ -1220,14 +1253,17 @@
     .faq-block:not(:first-of-type) { padding-top: 40px; }
 
     /* ── MOBILE ACCORDION OPTIMIZATION ── */
+    /* Same fix as the base rule -- vertical padding lives on the button
+       (.accordion-trigger) so the full row is clickable, not just centered
+       text with dead space above/below it. */
     .accordion-trigger {
-      padding: 0 20px;
+      padding: 16px 20px;
       gap: 12px;
       min-height: 44px;
     }
 
     .accordion-item {
-      padding: 16px 0;
+      padding: 0;
     }
 
     .accordion-q {
@@ -2552,6 +2588,11 @@
       item.querySelector('.accordion-trigger').setAttribute('aria-expanded', 'false');
       item.querySelector('.accordion-body').style.maxHeight = '0';
     });
+    // Bring back every section's full question list -- isolate mode only
+    // ever applies while a question in that list is actually open.
+    document.querySelectorAll('.faq-block-items.has-open-item').forEach(list => {
+      list.classList.remove('has-open-item');
+    });
   }
 
   // Opens a single accordion item (closing any other open one first) — shared
@@ -2567,6 +2608,11 @@
       item.classList.add('open');
       trigger.setAttribute('aria-expanded', 'true');
       body.style.maxHeight = body.scrollHeight + 'px';
+      // Isolate: the rest of this section's questions get out of the way
+      // while this one's open, so the answer you asked for isn't buried
+      // under a wall of unrelated rows.
+      const list = item.closest('.faq-block-items');
+      if (list) list.classList.add('has-open-item');
     }
 
     // The enclosing section's own collapse height was measured with this
@@ -2597,6 +2643,15 @@
   document.addEventListener('click', function(e) {
     if (!e.target.closest('.accordion-item.open')) {
       closeAll();
+    }
+    // A click outside the currently open section entirely collapses it too,
+    // instead of leaving it sitting open after you've moved on to something
+    // else on the page. Pills and section headers are exempt -- they already
+    // have their own open/close logic and would otherwise fight this.
+    const openBlock = document.querySelector('.faq-block.section-open');
+    if (openBlock && !e.target.closest('.faq-block.section-open') &&
+        !e.target.closest('.cat-pill') && !e.target.closest('.section-header-shelf')) {
+      setSectionOpen(openBlock, false);
     }
   });
 
@@ -3031,7 +3086,9 @@
     if (isOpen) {
       const rows = items.querySelectorAll('.accordion-item');
       rows.forEach((row, i) => {
-        row.style.animationDelay = Math.min(i * 35, 280) + 'ms';
+        // 2x the original per-row beat (35ms -> 70ms, cap 280ms -> 480ms) so
+        // the cascade actually reads as one-by-one instead of all-at-once.
+        row.style.animationDelay = Math.min(i * 70, 480) + 'ms';
         row.classList.remove('row-in');
         void row.offsetWidth;
         row.classList.add('row-in');
@@ -3045,15 +3102,16 @@
     });
   }
 
-  // Section collapse/expand runs on a 0.4s max-height transition (see
+  // Section collapse/expand runs on a 0.76s max-height transition (see
   // .faq-block-items in CSS). Scrolling to a target immediately, while
   // OTHER sections are still mid-collapse, calculates the scroll distance
   // against a page that's momentarily taller than its settled height —
   // once those sections finish shrinking, the page ends up shorter than
   // where the scroll landed, and the header meant to be revealed ends up
   // scrolled past, off the top of the screen. Waiting for the transition
-  // to actually finish before scrolling fixes it.
-  const SECTION_TRANSITION_MS = 420;
+  // to actually finish before scrolling fixes it. Kept in sync with the
+  // slower (2x) collapse duration above.
+  const SECTION_TRANSITION_MS = 760;
 
   function toggleSection(block) {
     const shelf = block.querySelector('.section-header-shelf');
