@@ -21,4 +21,10 @@ Vanilla HTML/CSS/JS. No framework, no build step. One `<script>` IIFE.
 - Push only after local verification passes: sync `FAQ.html`→`index.html`, commit, push, poll the live URL.
 - Make the exact edit asked for — no incidental scope, no revisiting things not flagged.
 
+## Verification protocol — required before every push
+1. Test at three widths, not one: mobile (375px), tablet (~768px), desktop (~1280px+). A fix confirmed only at one width is not confirmed.
+2. Test the actual user flow, not just the new code path in isolation — open a question, close it, open a different one, search, clear search. Side effects on existing behavior are the real risk, not the new code itself.
+3. New animation/motion work is the highest-risk category in this file's history — three separate regressions came from custom stagger/fade mechanisms that didn't re-measure a parent's height after finishing. Before shipping any new hide/show/collapse animation: confirm what re-measures the container afterward, not just that the new animation itself looks right.
+4. State plainly what was and wasn't checked. "Confirmed via computed style, not a real screenshot" is a fine thing to say — a false "verified" is not.
+
 Replaces `FAQ MD.txt`, the original design brief — now stale against the live build.
