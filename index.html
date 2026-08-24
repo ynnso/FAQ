@@ -1199,6 +1199,25 @@
   }
 
   /* ── NO RESULTS ── */
+  /* Shown only when the typo-tolerant fuzzy tier is what actually found
+     the results -- see usedFuzzy in filterContent(). Tells you your typo
+     got corrected instead of silently substituting it, so results that
+     don't literally match what you typed don't read as a bug. */
+  .search-correction-notice {
+    display: none;
+    text-align: center;
+    font-size: 14px;
+    color: var(--gray-500);
+    padding: 16px 24px 0;
+  }
+
+  .search-correction-notice.visible { display: block; }
+
+  .search-correction-notice strong {
+    color: var(--black);
+    font-weight: 600;
+  }
+
   .no-results {
     display: none;
     text-align: center;
@@ -1986,6 +2005,8 @@
 
 <!-- MAIN -->
 <main class="main">
+
+  <p class="search-correction-notice" id="searchCorrectionNotice"></p>
 
   <div class="no-results" id="noResults">
     <svg class="no-results-icon" viewBox="0 0 48 48"><circle cx="20" cy="20" r="14"/><path d="M31 31 L43 43" stroke-linecap="round" stroke-width="2.5"/><path d="M15 20h10M20 15v10" stroke-linecap="round" stroke-width="2"/></svg>
@@ -3022,14 +3043,49 @@
     return dp[m][n];
   }
 
+  function fuzzyMaxDist(word) {
+    // Tried loosening this for short words (<=6 chars -> 2) to catch
+    // "foto" for "photo" -- confirmed live that also matched "foto"
+    // against dozens of unrelated short words by pure coincidence, since
+    // edit distance 2 is a low bar on a 4-letter word. "foto" is now
+    // covered as an explicit synonym instead (zero collateral risk); kept
+    // this back near its original, tighter shape so short words stay
+    // precise. Longer words (>6) get a little more room since a
+    // 2-character slip matters proportionally less on a longer word.
+    if (word.length <= 4) return 1;
+    if (word.length <= 8) return 2;
+    return 3;
+  }
+
+  // Catches a different kind of typo than editDistance can: dropped
+  // letters spread through a longer word ("materp" for "matterport"),
+  // where the real edit distance is too large for any threshold that
+  // wouldn't also match unrelated words. Requires every letter of the
+  // (shorter) query word to appear in the text word IN ORDER -- a much
+  // stronger constraint than edit distance for a word this length, so it
+  // stays safe as a fuzzy-tier-only fallback. Gated to qw.length >= 4 so
+  // short words don't trivially subsequence-match everything.
+  function isAbbreviation(qw, tw) {
+    // Confirmed live: at >=4 this let a 4-letter word like "foto" match
+    // dozens of unrelated words purely by coincidental subsequence (a
+    // 4-letter subsequence is easy to find inside many longer words).
+    // >=6 still catches "materp" (6 letters) for "matterport" while
+    // staying meaningfully restrictive.
+    if (qw.length < 6 || tw.length <= qw.length) return false;
+    let i = 0;
+    for (let j = 0; j < tw.length && i < qw.length; j++) {
+      if (tw[j] === qw[i]) i++;
+    }
+    return i === qw.length;
+  }
+
   function fuzzyMatch(query, text) {
     const queryWords = query.split(/\s+/).filter(w => w.length > 2);
     if (!queryWords.length) return false;
     const textWords = text.split(/\W+/).filter(w => w.length > 2);
-    return queryWords.every(qw => {
-      const maxDist = qw.length <= 4 ? 1 : 2;
-      return textWords.some(tw => editDistance(qw, tw) <= maxDist);
-    });
+    return queryWords.every(qw => textWords.some(tw =>
+      editDistance(qw, tw) <= fuzzyMaxDist(qw) || isAbbreviation(qw, tw)
+    ));
   }
 
   // Real, confirmed problem: "how much is pricing" found nothing, because
@@ -3051,12 +3107,17 @@
 
   const SEARCH_SYNONYMS = [
     ['cost', 'costs', 'price', 'prices', 'pricing', 'rate', 'rates', 'fee', 'fees', 'charge', 'charges'],
-    ['photography', 'photo', 'photos', 'picture', 'pictures', 'pic', 'pics', 'image', 'images'],
+    // "foto"/"fotos" listed explicitly rather than relying on generic fuzzy
+    // matching -- confirmed live that loosening the general edit-distance
+    // threshold enough to catch "foto" also matched it against dozens of
+    // unrelated short words by coincidence. An explicit synonym entry
+    // matches exactly this spelling with zero collateral risk elsewhere.
+    ['photography', 'photo', 'photos', 'foto', 'fotos', 'picture', 'pictures', 'pic', 'pics', 'image', 'images'],
     ['video', 'videos', 'reel', 'reels'],
     ['staging', 'stage', 'staged', 'stager'],
     ['booking', 'book', 'schedule', 'scheduling', 'appointment', 'appointments'],
     ['delivery', 'deliver', 'turnaround'],
-    ['aerial', 'drone', 'drones'],
+    ['aerial', 'arial', 'aireal', 'drone', 'drones'],
     // "DFW" is the only form that appears in the actual FAQ text -- Dallas
     // and Fort Worth on their own would find nothing without this.
     ['dfw', 'dallas'],
@@ -3099,8 +3160,53 @@
     return qWords.some(w => tWords.has(w));
   }
 
+  // Strips quotes/hyphens and collapses accidental double spaces before a
+  // query ever reaches matching -- a stray `--` or a smart quote pasted in
+  // could otherwise sit inside a "word" and break every comparison against
+  // it, since none of the matching tiers above account for stray
+  // punctuation on their own.
+  function normalizeQuery(s) {
+    return s
+      .replace(/[-_]+/g, ' ')
+      .replace(/['"`‘’“”]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  // Finds the real word each typo'd query word was probably meant to be,
+  // by comparing against the words actually present in whatever the fuzzy
+  // tier just matched. Returns null if nothing was actually corrected
+  // (every query word was already a real word), so callers can tell "no
+  // correction happened" apart from "corrected to the same text".
+  function correctedQueryDisplay(query, matchedTexts) {
+    const textWords = new Set();
+    matchedTexts.forEach(t => {
+      t.split(/\W+/).filter(w => w.length > 2).forEach(w => textWords.add(w));
+    });
+    let changed = false;
+    const corrected = query.split(/\s+/).map(qw => {
+      if (qw.length <= 2 || textWords.has(qw)) return qw;
+      let best = null, bestDist = Infinity;
+      textWords.forEach(tw => {
+        const d = editDistance(qw, tw);
+        const ok = (d > 0 && d <= fuzzyMaxDist(qw)) || isAbbreviation(qw, tw);
+        // Abbreviation matches (edit distance too large to compare
+        // meaningfully) sort last, behind any real close-edit-distance hit.
+        const effectiveDist = d > 0 && d <= fuzzyMaxDist(qw) ? d : 98;
+        if (ok && effectiveDist < bestDist) { bestDist = effectiveDist; best = tw; }
+      });
+      if (best) { changed = true; return best; }
+      return qw;
+    });
+    return changed ? corrected.join(' ') : null;
+  }
+
+  const searchCorrectionNotice = document.getElementById('searchCorrectionNotice');
+
   function filterContent() {
-    const raw = searchInput.value.trim().toLowerCase();
+    // Strips stray hyphens/quotes and collapses double spaces before
+    // anything else runs -- see normalizeQuery().
+    const raw = normalizeQuery(searchInput.value.trim().toLowerCase());
     // A single letter matches almost every question on the page -- read as
     // "everything lights up" instead of a real narrowing search. Wait for
     // at least 2 characters (same threshold the suggest dropdown already
@@ -3174,6 +3280,30 @@
     });
 
     noResults.classList.toggle('visible', !anyVisible);
+
+    // Autocorrect notice: only shown when the typo-tolerant fuzzy tier is
+    // what actually found these results, so results that don't literally
+    // match what was typed don't read as a bug -- e.g. "materp" surfacing
+    // Matterport questions says so, instead of silently substituting it.
+    if (searchCorrectionNotice) {
+      let correctedText = null;
+      if (usedFuzzy) {
+        const matchedTexts = [];
+        faqBlocks.forEach(block => {
+          if (!block.classList.contains('visible')) return;
+          block.querySelectorAll('.accordion-item').forEach(item => {
+            if (item.style.display === 'none') return;
+            matchedTexts.push(item.querySelector('.accordion-q').textContent.toLowerCase());
+            matchedTexts.push(item.querySelector('.accordion-answer').textContent.toLowerCase());
+          });
+        });
+        correctedText = correctedQueryDisplay(query, matchedTexts);
+      }
+      searchCorrectionNotice.classList.toggle('visible', !!correctedText);
+      searchCorrectionNotice.innerHTML = correctedText
+        ? `Showing results for <strong>"${correctedText}"</strong>`
+        : '';
+    }
 
     if (stickyHeaderSearchLabel) {
       stickyHeaderSearchLabel.textContent = query
@@ -3257,7 +3387,7 @@
   }
 
   function renderSuggest(query) {
-    const q = query.trim();
+    const q = normalizeQuery(query.trim());
     let rows = [];
     let sectionsHtml = '';
 
