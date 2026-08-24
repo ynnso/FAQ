@@ -195,32 +195,15 @@
     box-sizing: border-box;
   }
 
-  .search-left-bar {
-    position: absolute;
-    left: 20px;
-    top: 0;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    z-index: 2;
-  }
-
-  .search-left-bar svg {
-    width: 20px;
-    height: 20px;
-    color: var(--black);
-    stroke-width: 1.8;
-    fill: none;
-    flex-shrink: 0;
-    opacity: 0.55;
-  }
-
+  /* Airbnb-style search bar. No left icon anymore -- the search affordance
+     now lives entirely in the red circular button on the right (see
+     .search-submit), matching the reference exactly: inactive is a soft
+     grey pill, active turns white with a raised shadow and the button
+     morphs into a labeled pill. */
   .search-input {
     width: 100%;
     height: 56px;
-    border: 2px solid var(--black);
+    border: 1.5px solid var(--gray-300);
     /* Was a full 100px pill -- unified to the same squircle radius as the
        category pills and section headers below, so the three container
        types on this page read as one consistent shape language instead of
@@ -230,10 +213,17 @@
     font-size: 15px;
     font-weight: 500;
     color: var(--black);
-    background: var(--white);
-    padding: 16px 52px 16px 52px;
+    background: var(--gray-100);
+    /* Right padding cleared the actual .search-actions cluster width
+       incorrectly at first (mic icon + button, ~82px, plus its own edge
+       inset) -- confirmed live, placeholder text was running under the
+       mic icon. 104px actually clears it with a little breathing room. */
+    padding: 16px 104px 16px 24px;
     outline: none;
-    transition: border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                padding-right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     letter-spacing: -0.1px;
     caret-color: var(--black);
     box-sizing: border-box;
@@ -245,10 +235,16 @@
     opacity: 0.55;
   }
 
+  /* Raised/hovering look on focus -- a neutral shadow, not a red glow, so
+     the only red left in the bar is the submit button itself. */
   .search-input:focus {
-    border-color: var(--red);
-    box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.15), 0 2px 8px rgba(200, 16, 46, 0.12);
-    background-color: rgba(200, 16, 46, 0.03);
+    border-color: var(--gray-400);
+    background-color: var(--white);
+    box-shadow: 0 12px 28px rgba(10, 10, 10, 0.12), 0 2px 8px rgba(10, 10, 10, 0.06);
+  }
+
+  .search-wrap:focus-within .search-input {
+    padding-right: 190px;
   }
 
   .search-input:hover:not(:focus) {
@@ -257,7 +253,9 @@
 
   .search-cursor {
     position: absolute;
-    left: 52px;
+    /* Was 52px, lined up with the old left-side icon -- that icon's gone
+       now, text starts near the left edge instead. */
+    left: 24px;
     top: 50%;
     transform: translateY(-50%);
     width: 1.5px;
@@ -275,31 +273,23 @@
     51%, 100% { opacity: 0; }
   }
 
-  .search-clear {
+  /* Right-side button cluster: clear (X) and mic are mutually exclusive
+     (toggled via JS/.visible), the submit button is always there. Being
+     real flex children instead of three independently right:16px-anchored
+     absolute elements means the submit button can grow into its labeled
+     pill and everything else just flows out of its way automatically. */
+  .search-actions {
     position: absolute;
-    right: 16px;
+    right: 8px;
     top: 50%;
     transform: translateY(-50%);
-    width: 32px;
-    height: 32px;
-    box-sizing: border-box;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    display: none;
+    display: flex;
     align-items: center;
-    justify-content: center;
-    transition: opacity var(--transition), background var(--transition), transform var(--transition);
+    gap: 6px;
     z-index: 4;
-    padding: 0;
-    flex-shrink: 0;
   }
 
-  .search-mic {
-    position: absolute;
-    right: 16px;
-    top: 50%;
-    transform: translateY(-50%);
+  .search-clear {
     width: 32px;
     height: 32px;
     box-sizing: border-box;
@@ -310,8 +300,23 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: background var(--transition), transform var(--transition);
-    z-index: 4;
+    transition: opacity var(--transition), background var(--transition), scale var(--transition);
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  .search-mic {
+    width: 32px;
+    height: 32px;
+    box-sizing: border-box;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background var(--transition), transform var(--transition), opacity 0.3s ease;
     padding: 0;
     flex-shrink: 0;
     color: var(--gray-500);
@@ -319,6 +324,12 @@
 
   .search-mic.visible { display: flex; }
   .search-mic:hover { background: rgba(0,0,0,0.08); color: var(--black); }
+
+  /* Mic stays visible and anchored at the far right through focus -- it's
+     the last child in .search-actions, so the submit button expanding
+     into its pill (an earlier sibling) never displaces it; mic and clear
+     are mutually exclusive anyway (JS only shows one at a time based on
+     whether the input is empty), so there's never real crowding. */
 
   .search-mic svg { width: 18px; height: 18px; }
 
@@ -331,6 +342,66 @@
   @keyframes mic-pulse {
     0%, 100% { box-shadow: 0 0 0 0 rgba(200, 16, 46, 0.3); }
     50% { box-shadow: 0 0 0 8px rgba(200, 16, 46, 0); }
+  }
+
+  /* The red circular search button -- idle is icon-only, focus morphs it
+     into a labeled pill with an elastic overshoot (the same spring curve
+     used for sheet/panel motion elsewhere on this page), matching the
+     reference: stretches slightly past its final width before settling
+     back, rather than easing straight to it. */
+  .search-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    width: 44px;
+    border-radius: 50%;
+    background: var(--red);
+    border: none;
+    color: var(--white);
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+    overflow: hidden;
+    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+                border-radius 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+                padding 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .search-submit:hover { background: #a80d26; }
+
+  .search-submit svg {
+    width: 18px;
+    height: 18px;
+    stroke: var(--white);
+    fill: none;
+    flex-shrink: 0;
+  }
+
+  .search-submit-label {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--white);
+    white-space: nowrap;
+    max-width: 0;
+    opacity: 0;
+    margin-left: 0;
+    overflow: hidden;
+    transition: max-width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+                margin-left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+                opacity 0.3s ease 0.15s;
+  }
+
+  .search-wrap:focus-within .search-submit {
+    width: 122px;
+    border-radius: 100px;
+    padding: 0 22px 0 16px;
+  }
+
+  .search-wrap:focus-within .search-submit-label {
+    max-width: 70px;
+    opacity: 1;
+    margin-left: 8px;
   }
 
   /* Voice search failure message -- see showMicError() in JS. Sits below
@@ -364,12 +435,7 @@
     opacity: 1;
     background: rgba(0, 0, 0, 0.08);
     border-radius: 50%;
-    /* Was just scale(1.08), which threw away the translateY(-50%) that
-       vertically centers this button -- on hover it visibly dropped/sagged
-       in the bar instead of growing in place. Grown to 1.33x per request;
-       scale grows symmetrically from center, so it stays inside the bar
-       without needing to move its base position. */
-    transform: translateY(-50%) scale(1.33);
+    scale: 1.33;
   }
   .search-clear.visible { display: flex; }
 
@@ -1863,12 +1929,6 @@
   <div class="hero-actions">
 
     <div class="search-wrap">
-      <div class="search-left-bar" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none">
-          <circle cx="9.14" cy="9.14" r="7.64" stroke="currentColor" stroke-width="1.91" stroke-miterlimit="10"/>
-          <line x1="22.5" y1="22.5" x2="14.39" y2="14.39" stroke="currentColor" stroke-width="1.91" stroke-miterlimit="10" stroke-linecap="round"/>
-        </svg>
-      </div>
       <div class="search-cursor" id="searchCursor"></div>
       <input
         class="search-input"
@@ -1877,20 +1937,36 @@
         placeholder="Search questions about photography, booking, delivery..."
         autocomplete="off"
       />
-      <button class="search-clear" id="searchClear" aria-label="Clear search">
-        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-          <path d="M1 1 L11 11 M11 1 L1 11"/>
-        </svg>
-      </button>
 
-      <button class="search-mic" id="searchMic" aria-label="Search by voice" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="9" y="2" width="6" height="12" rx="3"/>
-          <path d="M5 11a7 7 0 0 0 14 0"/>
-          <line x1="12" y1="18" x2="12" y2="22"/>
-          <line x1="8" y1="22" x2="16" y2="22"/>
-        </svg>
-      </button>
+      <!-- Order matters: mic is last so it stays pinned at the bar's true
+           right edge (the container is anchored via `right`, not `left`,
+           so a LATER sibling growing pushes EARLIER ones, never the other
+           way around) -- the submit button grows into its pill between
+           clear and mic without ever displacing mic's position. -->
+      <div class="search-actions">
+        <button class="search-clear" id="searchClear" aria-label="Clear search">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <path d="M1 1 L11 11 M11 1 L1 11"/>
+          </svg>
+        </button>
+
+        <button class="search-submit" id="searchSubmit" aria-label="Search" type="button">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="9.14" cy="9.14" r="7.64" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"/>
+            <line x1="22.5" y1="22.5" x2="14.39" y2="14.39" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
+          </svg>
+          <span class="search-submit-label">Search</span>
+        </button>
+
+        <button class="search-mic" id="searchMic" aria-label="Search by voice" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="2" width="6" height="12" rx="3"/>
+            <path d="M5 11a7 7 0 0 0 14 0"/>
+            <line x1="12" y1="18" x2="12" y2="22"/>
+            <line x1="8" y1="22" x2="16" y2="22"/>
+          </svg>
+        </button>
+      </div>
 
       <div class="search-suggest" id="searchSuggest"></div>
     </div>
@@ -2790,6 +2866,22 @@
     searchMic.classList.add('visible');
     filterContent();
     searchInput.focus();
+  });
+
+  // The red submit button: if a suggestion is already highlighted (arrow
+  // keys), picking it mirrors what Enter does. Otherwise there's no
+  // separate "results page" to submit to here -- the page is already
+  // filtered live as you type -- so it just confirms the search and gets
+  // out of the way (closes the dropdown, keeps focus so you can keep
+  // refining if you want).
+  const searchSubmit = document.getElementById('searchSubmit');
+  searchSubmit.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (suggestFocusedIndex >= 0 && suggestItems[suggestFocusedIndex]) {
+      pickSuggestion(suggestItems[suggestFocusedIndex]);
+    } else {
+      closeSuggest();
+    }
   });
 
   // ── Voice search ── feature-detected; the mic button simply doesn't
