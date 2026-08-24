@@ -2810,6 +2810,16 @@
     }
   }
 
+  // Unlike openAccordionItem (a toggle -- calling it twice on the same
+  // open item closes it again), this is idempotent: a no-op if the item
+  // is already open. Used by live search's auto-expand, which reruns on
+  // every keystroke and would otherwise flicker the top result closed and
+  // back open each time.
+  function ensureItemOpen(item) {
+    if (item.classList.contains('open')) return;
+    openAccordionItem(item);
+  }
+
   document.querySelectorAll('.accordion-trigger').forEach(trigger => {
     trigger.addEventListener('click', function(e) {
       e.stopPropagation();
@@ -3178,6 +3188,12 @@
   // tier just matched. Returns null if nothing was actually corrected
   // (every query word was already a real word), so callers can tell "no
   // correction happened" apart from "corrected to the same text".
+  // Covers BOTH ways a query word can end up not literally matching what's
+  // on the page: a known misspelling/synonym ("foto" -> "photo", "arial"
+  // -> "aerial", canonicalWord's job) and a real typo (editDistance /
+  // isAbbreviation). Confirmed live these both needed a visible notice --
+  // without it, results for "arial" or "foto" looked unexplained even
+  // though they were exactly as correct as a typo-corrected result.
   function correctedQueryDisplay(query, matchedTexts) {
     const textWords = new Set();
     matchedTexts.forEach(t => {
@@ -3185,7 +3201,14 @@
     });
     let changed = false;
     const corrected = query.split(/\s+/).map(qw => {
-      if (qw.length <= 2 || textWords.has(qw)) return qw;
+      // Filler words ("how", "is", "much"...) never get "corrected" -- a
+      // short generic word is one coincidental edit away from all sorts of
+      // unrelated real words, so trying to fix these produced nonsense
+      // like turning "how" into some unrelated word that happened to be
+      // one letter off.
+      if (qw.length <= 2 || SEARCH_STOPWORDS.has(qw) || textWords.has(qw)) return qw;
+      const canon = canonicalWord(qw);
+      if (canon !== qw && textWords.has(canon)) { changed = true; return canon; }
       let best = null, bestDist = Infinity;
       textWords.forEach(tw => {
         const d = editDistance(qw, tw);
@@ -3215,6 +3238,7 @@
     clearHighlights();
 
     let anyVisible = false;
+    let usedSmart = false;
     let usedFuzzy = false;
 
     // Real, confirmed bug this replaces: exact and smartMatch used to run
@@ -3247,26 +3271,67 @@
       return found;
     };
 
+    // Also tracks a question-only version of whichever tier wins, used
+    // below to rank the top hit -- a query word landing in the QUESTION
+    // itself is a much stronger signal than the same word only showing up
+    // somewhere in a long answer, and picking blindly by DOM order (the
+    // first case caught that: "how much is pricing" auto-opened an
+    // unrelated question purely because it came first on the page, while
+    // the real pricing question was buried further down the same result
+    // set) doesn't reflect that at all.
+    let questionOnlyMatch = () => false;
     if (!query) {
       runPass(() => true);
     } else {
       anyVisible = runPass((qText, aText) => qText.includes(query) || aText.includes(query));
+      questionOnlyMatch = (qText) => qText.includes(query);
       if (!anyVisible) {
         anyVisible = runPass((qText, aText) => smartMatch(query, qText) || smartMatch(query, aText));
+        usedSmart = anyVisible;
+        questionOnlyMatch = (qText) => smartMatch(query, qText);
       }
       if (!anyVisible) {
         anyVisible = runPass((qText, aText) => fuzzyMatch(query, qText) || fuzzyMatch(query, aText));
         usedFuzzy = anyVisible;
+        questionOnlyMatch = (qText) => fuzzyMatch(query, qText);
       }
     }
+
+    // Gather the visible matches once -- used for the top-hit auto-expand,
+    // the highlight term, and the correction notice below. Ranked so a
+    // question-level hit always wins over an answer-only one; DOM order
+    // only breaks ties within the same rank.
+    let topMatch = null;
+    let topMatchRank = -1;
+    const matchedTexts = [];
+    if (query) {
+      faqBlocks.forEach(block => {
+        if (!block.classList.contains('visible')) return;
+        block.querySelectorAll('.accordion-item').forEach(item => {
+          if (item.style.display === 'none') return;
+          const qText = item.querySelector('.accordion-q').textContent.toLowerCase();
+          const rank = questionOnlyMatch(qText) ? 1 : 0;
+          if (rank > topMatchRank) { topMatchRank = rank; topMatch = item; }
+          matchedTexts.push(item.querySelector('.accordion-q').textContent.toLowerCase());
+          matchedTexts.push(item.querySelector('.accordion-answer').textContent.toLowerCase());
+        });
+      });
+    }
+
+    // Corrected term (if the smart or fuzzy tier is what actually found
+    // these results) -- computed before highlighting so a corrected word
+    // ("foto" -> "photo") is what gets marked in the text, not the raw
+    // typo that never literally appears anywhere.
+    const correctedText = (usedSmart || usedFuzzy) ? correctedQueryDisplay(query, matchedTexts) : null;
+    const highlightTerm = correctedText || query;
 
     if (query) {
       faqBlocks.forEach(block => {
         if (!block.classList.contains('visible')) return;
         block.querySelectorAll('.accordion-item').forEach(item => {
-          if (item.style.display !== 'none') {
-            highlightText(item.querySelector('.accordion-q'), query);
-          }
+          if (item.style.display === 'none') return;
+          highlightText(item.querySelector('.accordion-q'), highlightTerm);
+          highlightText(item.querySelector('.accordion-answer'), highlightTerm);
         });
       });
     }
@@ -3279,26 +3344,26 @@
       setSectionOpen(block, !!query && hasResults, /* immediate */ true);
     });
 
+    // Feeds the single most likely answer straight to you instead of
+    // making a list the only option -- the top result opens itself,
+    // highlighted term and all. ensureItemOpen is a no-op if it's already
+    // the open one (so re-running this on every keystroke while typing
+    // doesn't flicker it closed and back open), and switches cleanly to a
+    // new top match if typing further changes which result leads.
+    if (query && topMatch) {
+      ensureItemOpen(topMatch);
+    } else if (!query) {
+      closeAll();
+    }
+
     noResults.classList.toggle('visible', !anyVisible);
 
-    // Autocorrect notice: only shown when the typo-tolerant fuzzy tier is
-    // what actually found these results, so results that don't literally
-    // match what was typed don't read as a bug -- e.g. "materp" surfacing
-    // Matterport questions says so, instead of silently substituting it.
+    // Autocorrect notice: only shown when the smart or fuzzy tier is what
+    // actually found these results, so results that don't literally match
+    // what was typed don't read as a bug -- e.g. "materp" surfacing
+    // Matterport questions, or "foto" surfacing photo questions, says so
+    // instead of silently substituting it.
     if (searchCorrectionNotice) {
-      let correctedText = null;
-      if (usedFuzzy) {
-        const matchedTexts = [];
-        faqBlocks.forEach(block => {
-          if (!block.classList.contains('visible')) return;
-          block.querySelectorAll('.accordion-item').forEach(item => {
-            if (item.style.display === 'none') return;
-            matchedTexts.push(item.querySelector('.accordion-q').textContent.toLowerCase());
-            matchedTexts.push(item.querySelector('.accordion-answer').textContent.toLowerCase());
-          });
-        });
-        correctedText = correctedQueryDisplay(query, matchedTexts);
-      }
       searchCorrectionNotice.classList.toggle('visible', !!correctedText);
       searchCorrectionNotice.innerHTML = correctedText
         ? `Showing results for <strong>"${correctedText}"</strong>`
