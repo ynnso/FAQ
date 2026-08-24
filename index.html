@@ -184,6 +184,13 @@
     max-width: 100%;
     margin: 0;
     position: relative;
+    /* Above .search-backdrop (z-index: 45) on purpose -- the dim/blur
+       treatment is meant to fade out the page BEHIND the dropdown, not the
+       bar itself. Without an explicit z-index here this stacks by source
+       order among positioned siblings, which put it at risk of the
+       backdrop painting over it and making the actual search bar look
+       dimmed/disabled along with everything else. */
+    z-index: 46;
     padding: 0;
     box-sizing: border-box;
   }
@@ -2725,16 +2732,31 @@
     if (!e.target.closest('.accordion-item.open')) {
       closeAll();
     }
-    // A click outside the currently open section entirely collapses it too,
-    // instead of leaving it sitting open after you've moved on to something
-    // else on the page. Pills and section headers are exempt -- they already
-    // have their own open/close logic and would otherwise fight this.
+  });
+
+  // A click outside the currently open section entirely collapses it too,
+  // instead of leaving it sitting open after you've moved on to something
+  // else on the page. Pills and section headers are exempt -- they already
+  // have their own open/close logic and would otherwise fight this.
+  //
+  // Real, confirmed reason this used to be picky/inconsistent: it lived on
+  // a bubble-phase 'click' listener, same as the one above. Several things
+  // on this page call e.stopPropagation() in their own click handler
+  // (accordion questions, the mic button, the "Clear" recent-searches
+  // button, a search suggestion row) -- any of those stop a click from
+  // ever reaching this listener at all, so whether the section collapsed
+  // depended on exactly what you happened to tap, not on where. Capturing
+  // 'pointerdown' instead fires BEFORE any of those click handlers even
+  // run (pointerdown always precedes click, and nothing here stops
+  // pointerdown), so this can no longer be blocked by anything else on the
+  // page, now or in the future.
+  document.addEventListener('pointerdown', function(e) {
     const openBlock = document.querySelector('.faq-block.section-open');
     if (openBlock && !e.target.closest('.faq-block.section-open') &&
         !e.target.closest('.cat-pill') && !e.target.closest('.section-header-shelf')) {
       setSectionOpen(openBlock, false);
     }
-  });
+  }, true);
 
   catPills.forEach(pill => {
     pill.addEventListener('click', function() {
@@ -3076,7 +3098,10 @@
     if (!q) {
       const recentQs = getRecent();
       const recentRows = recentQs.map(rq => faqIndex.find(f => f.q === rq)).filter(Boolean);
-      rows = [...recentRows, ...trending.filter(t => !recentRows.includes(t))].slice(0, 6);
+      // Was capped at 6 -- didn't match either label ("Top 5 Trending" or a
+      // recent-searches list meant to feel like a short, quick list), and
+      // just looked like an arbitrary extra row tacked on.
+      rows = [...recentRows, ...trending.filter(t => !recentRows.includes(t))].slice(0, 5);
 
       if (recentRows.length) {
         sectionsHtml += '<div class="search-suggest-label">Recent Searches<button type="button" class="search-suggest-clear" id="suggestClearRecent">Clear</button></div>';
