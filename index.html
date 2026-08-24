@@ -370,7 +370,10 @@
     width: 13px;
     height: 13px;
     stroke: var(--black);
-    stroke-width: 2.4;
+    /* Halved from 2.4 -- also now scaling up 1.33x on hover (see
+       .search-clear:hover), which was making an already-bold stroke look
+       even heavier/harsher at the enlarged size. */
+    stroke-width: 1.2;
     flex-shrink: 0;
     display: block;
   }
@@ -405,7 +408,12 @@
   }
 
   /* Dims the page behind the dropdown so it reads as a floating panel
-     rather than blending straight into the accordion content below it. */
+     rather than blending straight into the accordion content below it.
+     Deliberately ALWAYS pointer-events: none -- see the setSuggestOpen
+     comment in JS for why making this clickable (even deferred) still
+     wasn't safe on a real touch device. Purely visual; the existing
+     document-level outside-click handler is what actually dismisses the
+     dropdown, and it works correctly with this never intercepting anything. */
   .search-backdrop {
     position: fixed;
     inset: 0;
@@ -418,13 +426,6 @@
 
   .search-backdrop.visible {
     opacity: 1;
-  }
-
-  /* Split from .visible on purpose -- see the setSuggestOpen comment in JS.
-     Becoming clickable is deferred by one tick so it can't intercept the
-     very click that's opening the dropdown in the first place. */
-  .search-backdrop.interactive {
-    pointer-events: auto;
   }
 
   /* Appears once you've scrolled down a real distance — a quick way back
@@ -2589,8 +2590,29 @@
   // ghosting bug (an unrelated section header visually leaking through
   // it). Dropping the animation once it's done lets the browser release
   // that layer.
-  document.querySelectorAll('.section-header-shelf, h1, .hero-sub, .search-wrap, .categories-wrap, .accordion-item').forEach(el => {
-    el.addEventListener('animationend', () => { el.style.animation = 'none'; }, { once: true });
+  // .accordion-item is deliberately NOT in this list (see below) -- it used
+  // to be, which was a real, confirmed bug: this cleanup is only correct for
+  // a one-time page-load entrance. .accordion-item's own animation (row-in,
+  // the section-open stagger) is meant to REPLAY every time a section
+  // opens, so setting style.animation = 'none' the first time it ever
+  // completed permanently killed the stagger on every open after the
+  // first. Worse, animationend also BUBBLES -- some accordion answers have
+  // their own staggered bulleted list inside them (.accordion-answer ul li)
+  // that animates on page load even while closed and clipped, so that
+  // child's animationend could trigger this early and poison the parent
+  // item before it was ever even opened once.
+  document.querySelectorAll('.section-header-shelf, h1, .hero-sub, .search-wrap, .categories-wrap').forEach(el => {
+    // e.target === el guards against a bubbled child animation finishing
+    // first; removeEventListener (instead of { once: true }) makes sure
+    // that guard actually works -- { once: true } would still consume the
+    // listener on that first bubbled event even when the check skips it,
+    // leaving nothing left to catch the element's own animation later.
+    function onAnimEnd(e) {
+      if (e.target !== el) return;
+      el.style.animation = 'none';
+      el.removeEventListener('animationend', onAnimEnd);
+    }
+    el.addEventListener('animationend', onAnimEnd);
   });
 
   const searchInput = document.getElementById('searchInput');
@@ -3069,35 +3091,19 @@
   function setSuggestOpen(isOpen) {
     searchSuggest.classList.toggle('open', isOpen);
     if (categoriesWrapEl) categoriesWrapEl.classList.toggle('hidden-by-suggest', isOpen);
-    if (searchBackdrop) {
-      searchBackdrop.classList.toggle('visible', isOpen);
-      if (isOpen) {
-        // Real bug, confirmed live: opening the dropdown on the very click
-        // that focuses the search bar made it flash open then instantly
-        // close again. The backdrop is a sibling of .search-wrap made
-        // clickable (pointer-events: auto) the instant this runs, which is
-        // mid-way through that SAME click (a click is mousedown -> focus ->
-        // mouseup -> click, and this runs on focus) -- so by mouseup, the
-        // backdrop is already on top and catches it instead of the input.
-        // The browser then resolves the click's target as the nearest
-        // shared ancestor of the two (.hero-actions), which the outside-
-        // click handler below reads as "clicked outside" and closes what
-        // just opened. Deferring interactivity by one tick lets the click
-        // that opened this finish first.
-        clearTimeout(searchBackdrop._interactiveTimer);
-        searchBackdrop._interactiveTimer = setTimeout(() => searchBackdrop.classList.add('interactive'), 0);
-      } else {
-        clearTimeout(searchBackdrop._interactiveTimer);
-        searchBackdrop.classList.remove('interactive');
-      }
-    }
-  }
-
-  if (searchBackdrop) {
-    searchBackdrop.addEventListener('click', () => {
-      closeSuggest();
-      searchInput.blur();
-    });
+    // Purely visual dimming now -- see the comment on .search-backdrop in
+    // CSS for why it never intercepts clicks (pointer-events stays none).
+    // A previous version made it clickable (to dismiss + block the content
+    // behind it) with the interactivity deferred by one JS tick to avoid
+    // catching the very click that opened it -- confirmed live that still
+    // wasn't safe: a real tap synthesizes its "click" well after touchend,
+    // by which point that one-tick defer had already made the backdrop
+    // interactive again, so it intercepted the tap's release anyway (same
+    // failure, just needed a touch device to show up). Only a click that
+    // can never physically land before the backdrop is real is airtight,
+    // so it doesn't intercept anything at all -- the existing document-level
+    // outside-click handler below already closes the dropdown either way.
+    if (searchBackdrop) searchBackdrop.classList.toggle('visible', isOpen);
   }
 
   function closeSuggest() {
@@ -3163,6 +3169,11 @@
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.search-wrap')) {
       closeSuggest();
+      // The backdrop used to do this itself on click -- now that it never
+      // intercepts clicks (see setSuggestOpen), this is the one place that
+      // needs to blur the input, e.g. to drop the keyboard on mobile when
+      // tapping the dimmed area away from the bar.
+      searchInput.blur();
       // A picked question left sitting in the bar (and the page still
       // filtered down to it) reads as "stuck" -- clear it back to normal
       // once you've clicked away from the search bar entirely.
