@@ -800,6 +800,14 @@
     max-width: 100%;
     width: 100%;
     box-sizing: border-box;
+    /* Some titles ("Booking & Scheduling") wrap to 2 lines at narrow
+       widths while shorter ones ("Virtual Staging") stay on 1, and the
+       shelf has no fixed height of its own -- it's sized purely by its
+       content, so those two cases ended up visibly different heights
+       sitting right next to each other. This floor is tall enough for the
+       2-line case; align-items: stretch above then pads every shorter
+       (1-line) header out to match it. */
+    min-height: 82px;
     animation: sectionEnter 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
     /* It's a <button> now (whole section collapses/expands), so undo the
        browser's own button styling and make it read exactly like the div
@@ -967,12 +975,13 @@
 
   /* When a question inside a section is open, the rest of that section's
      questions get out of the way instead of sitting there as a wall of
-     unrelated rows below the answer you actually asked for. Scoped to the
-     immediate list (.faq-block-items.has-open-item), not global, so opening
-     a question in one section never touches any other section's rows. */
-  .faq-block-items.has-open-item .accordion-item:not(.open) {
-    display: none;
-  }
+     unrelated rows below the answer you actually asked for. Used to be a
+     plain CSS rule keyed off .has-open-item (instant display:none, no
+     transition) -- now driven by staggerHide()/staggerShow() in JS
+     instead, so siblings fade out and back in one at a time rather than
+     vanishing and reappearing all at once. .has-open-item itself is no
+     longer used for hiding; openAccordionItem/closeAll call the stagger
+     functions directly on the sibling list.*/
 
   /* ── ACCORDION ── */
   .accordion-item {
@@ -1001,8 +1010,14 @@
   .stagger-row {
     opacity: 0;
     transform: translateY(8px);
-    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    /* Elastic overshoot on the transform (same spring curve used for the
+       search button's morph elsewhere on this page) -- a row settles in
+       with a slight bounce past its resting position instead of easing
+       straight to it. Kept off opacity, which just fades linearly; a
+       bounce reads on movement, not on a value that has no visual
+       "distance" to overshoot. */
+    transition: opacity 0.5s ease,
+                transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   .stagger-row.stagger-in {
     opacity: 1;
@@ -1364,34 +1379,31 @@
     .hero-top { padding: 28px 20px 0; border-radius: 24px; }
     .search-wrap { max-width: 100%; }
 
-    /* Pinned to the very top of the screen while focused -- see the
-       focus/blur listeners on searchInput in JS. On a real phone the
-       keyboard covers roughly the bottom 40% of the viewport; leaving the
-       bar wherever it naturally sits on the page could put its own
-       dropdown list partly or fully behind the keyboard. Fixed positioning
-       here also means the dropdown (absolutely positioned relative to
-       this) automatically hangs right below it at the top, in the space
-       actually left above the keyboard. z-index is well above the sticky
-       header (200) and search backdrop (45) so nothing on the page can
-       sit on top of it while it's pinned. */
-    .search-wrap.mobile-pinned {
-      position: fixed;
-      top: 12px;
-      left: 16px;
-      right: 16px;
-      max-width: none;
-      z-index: 500;
-    }
+    /* Pinned to the top of the screen while focused -- see the focus/blur
+       listeners on searchInput in JS. On a real phone the keyboard covers
+       roughly the bottom 40% of the viewport; leaving the bar wherever it
+       naturally sits on the page could put its own dropdown list partly or
+       fully behind the keyboard.
 
-    /* Solid white takeover behind the pinned bar -- see the focus listener
-       on searchInput in JS. Without this the fixed-position bar just
-       floated on top of whatever page content was already there (its own
-       hero heading, in the confirmed live bug), since removing it from
-       flow doesn't push anything else out of the way. z-index sits just
-       below the pinned bar (500) but above literally everything else. */
-    .search-backdrop.mobile-full {
-      background: var(--white);
-      z-index: 490;
+       This used to be position: fixed with a solid white full-screen cover
+       behind it -- confirmed live that broke something bigger than it
+       fixed: removing the bar (and everything visually "behind" it) from
+       the page entirely also hid the auto-expanded top search match
+       (search-top-match) that lives further down the SAME page, which is
+       exactly why mobile search read as "dumber" than desktop -- desktop
+       shows that answer opened right on the page; mobile's full-screen
+       cover was hiding it completely, leaving only the dropdown list.
+
+       position: sticky fixes both at once: the bar stays in normal
+       document flow (nothing needs covering, because nothing gets
+       displaced), it still sticks to the top of the viewport once you'd
+       scroll past it, and the real page underneath -- backdrop dim,
+       elevated top match, all of it -- stays intact and visible exactly
+       like it already does on desktop. */
+    .search-wrap.mobile-pinned {
+      position: sticky;
+      top: 12px;
+      z-index: 500;
     }
     /* padding-top/bottom only — touching the shorthand here would reset
        left/right to 0 and silently cancel the clamp() inset above. That
@@ -2811,22 +2823,10 @@
   // space above the keyboard instead. Only applies on narrow (phone-width)
   // viewports -- desktop has no on-screen keyboard to make room for.
   searchInput.addEventListener('focus', () => {
-    // Real bug, confirmed live: the pinned bar removes itself from normal
-    // page flow (position: fixed), so the rest of the page doesn't make
-    // room for it -- it just floated on top of whatever content was
-    // already there, with the page's own hero text visibly showing
-    // through/behind the dropdown. searchBackdrop already covers the
-    // full screen behind it; opaquing it to solid white here (see
-    // .search-backdrop.mobile-full) turns this into a real full-screen
-    // takeover instead of an overlapping mess.
-    if (window.innerWidth <= 768) {
-      heroSearchWrap.classList.add('mobile-pinned');
-      if (searchBackdrop) searchBackdrop.classList.add('mobile-full');
-    }
+    if (window.innerWidth <= 768) heroSearchWrap.classList.add('mobile-pinned');
   });
   searchInput.addEventListener('blur', () => {
     heroSearchWrap.classList.remove('mobile-pinned');
-    if (searchBackdrop) searchBackdrop.classList.remove('mobile-full');
   });
   searchInput.addEventListener('input', () => {
     if (searchInput.value.length > 0) searchCursor.classList.add('hidden');
@@ -2838,10 +2838,12 @@
       item.querySelector('.accordion-trigger').setAttribute('aria-expanded', 'false');
       item.querySelector('.accordion-body').style.maxHeight = '0';
     });
-    // Bring back every section's full question list -- isolate mode only
-    // ever applies while a question in that list is actually open.
+    // Bring back every section's full question list, cascading each row
+    // back in the same way a freshly-opened section does -- isolate mode
+    // only ever applies while a question in that list is actually open.
     document.querySelectorAll('.faq-block-items.has-open-item').forEach(list => {
       list.classList.remove('has-open-item');
+      staggerShow(list.querySelectorAll('.accordion-item'));
     });
   }
 
@@ -2858,11 +2860,15 @@
       item.classList.add('open');
       trigger.setAttribute('aria-expanded', 'true');
       body.style.maxHeight = body.scrollHeight + 'px';
-      // Isolate: the rest of this section's questions get out of the way
-      // while this one's open, so the answer you asked for isn't buried
-      // under a wall of unrelated rows.
+      // Isolate: the rest of this section's questions fade out one at a
+      // time (staggerHide) instead of vanishing together, so the answer
+      // you asked for isn't left buried under a wall of unrelated rows.
       const list = item.closest('.faq-block-items');
-      if (list) list.classList.add('has-open-item');
+      if (list) {
+        list.classList.add('has-open-item');
+        const siblings = Array.from(list.querySelectorAll('.accordion-item')).filter(el => el !== item);
+        staggerHide(siblings);
+      }
     }
 
     // The enclosing section's own collapse height was measured with this
@@ -3085,6 +3091,33 @@
       const delay = lead + Math.min(i * step, cap);
       setTimeout(() => el.classList.add('stagger-in'), delay);
     });
+  }
+
+  // The reverse of staggerReveal -- fades rows out one by one (same
+  // .stagger-row transition, just running backwards: remove .stagger-in),
+  // then actually pulls them out of layout via display:none once each
+  // one's own fade has had time to finish, so the section still collapses
+  // down to fit just the item that's staying open instead of leaving
+  // blank space where the faded-out rows used to be.
+  function staggerHide(elements, { step = 60 } = {}) {
+    const list = Array.from(elements);
+    list.forEach((el, i) => {
+      setTimeout(() => el.classList.remove('stagger-in'), i * step);
+    });
+    const lastFadeStarts = Math.max(0, list.length - 1) * step;
+    setTimeout(() => {
+      list.forEach(el => { el.style.display = 'none'; });
+    }, lastFadeStarts + 500);
+  }
+
+  // The show-side counterpart -- brings hidden siblings back into layout
+  // first (so there's something for the fade-in to animate into), then
+  // cascades them back in with the same rhythm a section uses when it
+  // first opens.
+  function staggerShow(elements) {
+    const list = Array.from(elements);
+    list.forEach(el => { el.style.display = ''; });
+    staggerReveal(list, { lead: 0, step: 70, cap: 700 });
   }
 
   function highlightText(el, query) {
