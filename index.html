@@ -494,6 +494,15 @@
     transition: opacity 0.2s ease;
   }
 
+  /* Punches the top search match's own section above the dim backdrop
+     (z-index 45) -- see filterContent() in JS. It's the one real answer
+     being handed straight to you while search is active; it shouldn't
+     fade along with the rest of the page like everything else does. */
+  .faq-block.search-top-match {
+    position: relative;
+    z-index: 46;
+  }
+
   .search-backdrop.visible {
     opacity: 1;
   }
@@ -1346,6 +1355,25 @@
     .hero-sub { font-size: 14px; line-height: 1.6; margin-bottom: 28px; max-width: 100%; }
     .hero-top { padding: 28px 20px 0; border-radius: 24px; }
     .search-wrap { max-width: 100%; }
+
+    /* Pinned to the very top of the screen while focused -- see the
+       focus/blur listeners on searchInput in JS. On a real phone the
+       keyboard covers roughly the bottom 40% of the viewport; leaving the
+       bar wherever it naturally sits on the page could put its own
+       dropdown list partly or fully behind the keyboard. Fixed positioning
+       here also means the dropdown (absolutely positioned relative to
+       this) automatically hangs right below it at the top, in the space
+       actually left above the keyboard. z-index is well above the sticky
+       header (200) and search backdrop (45) so nothing on the page can
+       sit on top of it while it's pinned. */
+    .search-wrap.mobile-pinned {
+      position: fixed;
+      top: 12px;
+      left: 16px;
+      right: 16px;
+      max-width: none;
+      z-index: 500;
+    }
     /* padding-top/bottom only — touching the shorthand here would reset
        left/right to 0 and silently cancel the clamp() inset above. That
        exact silent-zeroing bug was probably why the last spacing fix
@@ -2755,6 +2783,20 @@
   searchInput.addEventListener('blur', () => {
     if (searchInput.value.length === 0) searchCursor.classList.remove('hidden');
   });
+
+  // Mobile keyboard covers roughly the bottom 40% of the screen -- with
+  // the search bar sitting wherever it naturally falls on the page, the
+  // dropdown list underneath it could end up partly or fully hidden
+  // behind the keyboard. Pinning the bar itself to the top of the screen
+  // while focused keeps the whole dropdown in the remaining visible
+  // space above the keyboard instead. Only applies on narrow (phone-width)
+  // viewports -- desktop has no on-screen keyboard to make room for.
+  searchInput.addEventListener('focus', () => {
+    if (window.innerWidth <= 768) heroSearchWrap.classList.add('mobile-pinned');
+  });
+  searchInput.addEventListener('blur', () => {
+    heroSearchWrap.classList.remove('mobile-pinned');
+  });
   searchInput.addEventListener('input', () => {
     if (searchInput.value.length > 0) searchCursor.classList.add('hidden');
   });
@@ -3350,8 +3392,14 @@
     // the open one (so re-running this on every keystroke while typing
     // doesn't flicker it closed and back open), and switches cleanly to a
     // new top match if typing further changes which result leads.
+    // The top match's own section is lifted above the search dropdown's
+    // dim backdrop -- it's the one real answer being fed to you while
+    // everything else on the page fades back, so it shouldn't fade too.
+    document.querySelectorAll('.faq-block.search-top-match').forEach(b => b.classList.remove('search-top-match'));
     if (query && topMatch) {
       ensureItemOpen(topMatch);
+      const topBlock = topMatch.closest('.faq-block');
+      if (topBlock) topBlock.classList.add('search-top-match');
     } else if (!query) {
       closeAll();
     }
@@ -3569,7 +3617,13 @@
     closeSuggest();
     searchInput.blur();
     entry.item.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    openAccordionItem(entry.item);
+    // Real bug, confirmed live: filterContent() above already auto-opens
+    // its own top match (the same question, since the query IS its exact
+    // text) -- calling the TOGGLING openAccordionItem right after that
+    // immediately closed it back down, so picking a suggestion always
+    // landed on the collapsed "+" state instead of the expanded answer.
+    // ensureItemOpen is a no-op if it's already open.
+    ensureItemOpen(entry.item);
     // Flagged so the next click away from the search bar resets it -- a
     // picked question stays sitting in the bar otherwise (and the rest of
     // the page stays filtered down to just that match), which confused
