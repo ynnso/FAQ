@@ -278,7 +278,7 @@
      pill and everything else just flows out of its way automatically. */
   .search-actions {
     position: absolute;
-    right: 4px;
+    right: 10px;
     top: 50%;
     transform: translateY(-50%);
     display: flex;
@@ -391,7 +391,7 @@
 
   .search-wrap:focus-within .search-submit {
     width: 122px;
-    border-radius: 100px;
+    border-radius: 16px;
     padding: 0 22px 0 16px;
   }
 
@@ -3032,6 +3032,67 @@
     });
   }
 
+  // Real, confirmed problem: "how much is pricing" found nothing, because
+  // the old matching required the WHOLE typed phrase (filler words like
+  // "how"/"much"/"is" included) to line up against a question's actual
+  // wording word-for-word (or within 1-2 typo'd letters). None of these
+  // questions ask "how much is" -- they ask "How much does Shoot2Sell
+  // cost?" -- so a query built entirely from filler words plus one word
+  // ("pricing") the question doesn't literally use came up empty. This
+  // strips filler words and maps a handful of real synonyms/phrasings that
+  // actually show up in how people ask vs. how these questions are
+  // written, then matches on any real shared concept instead of requiring
+  // an exact phrase.
+  const SEARCH_STOPWORDS = new Set([
+    'how', 'much', 'many', 'is', 'are', 'do', 'does', 'did', 'the', 'a', 'an',
+    'of', 'for', 'to', 'in', 'on', 'and', 'or', 'what', 'can', 'will', 'it',
+    'this', 'that', 'with', 'about', 'i', 'my', 'you', 'your',
+  ]);
+
+  const SEARCH_SYNONYMS = [
+    ['cost', 'costs', 'price', 'prices', 'pricing', 'rate', 'rates', 'fee', 'fees', 'charge', 'charges'],
+    ['photography', 'photo', 'photos', 'picture', 'pictures', 'pic', 'pics', 'image', 'images'],
+    ['video', 'videos', 'reel', 'reels'],
+    ['staging', 'stage', 'staged', 'stager'],
+    ['booking', 'book', 'schedule', 'scheduling', 'appointment', 'appointments'],
+    ['delivery', 'deliver', 'turnaround'],
+    ['aerial', 'drone', 'drones'],
+  ];
+
+  function canonicalWord(w) {
+    for (const group of SEARCH_SYNONYMS) {
+      if (group.includes(w)) return group[0];
+    }
+    return w;
+  }
+
+  function meaningfulWords(text) {
+    const lower = text.toLowerCase();
+    const words = lower.split(/\W+/)
+      .filter(w => w.length > 2 && !SEARCH_STOPWORDS.has(w))
+      .map(canonicalWord);
+    // "how much" together signals price intent even though "much" alone is
+    // filler -- without this, "how much is photography" only ever finds
+    // photo-related questions, never the pricing one, since "much" gets
+    // stripped as a stopword before it can carry that meaning on its own.
+    if (/\bhow much\b/.test(lower) && !words.includes('cost')) {
+      words.push('cost');
+    }
+    return words;
+  }
+
+  // Matches on shared real-content words/synonyms (e.g. "pricing" ~ "cost",
+  // "pictures" ~ "photos"), ignoring filler words entirely -- sits between
+  // the exact substring check (tried first, still wins when it works) and
+  // the typo-tolerant fuzzyMatch (tried last) in both filterContent and
+  // the search suggest dropdown.
+  function smartMatch(query, text) {
+    const qWords = meaningfulWords(query);
+    if (!qWords.length) return false;
+    const tWords = new Set(meaningfulWords(text));
+    return qWords.some(w => tWords.has(w));
+  }
+
   function filterContent() {
     const raw = searchInput.value.trim().toLowerCase();
     // A single letter matches almost every question on the page -- read as
@@ -3050,7 +3111,14 @@
       block.querySelectorAll('.accordion-item').forEach(item => {
         const qText = item.querySelector('.accordion-q').textContent.toLowerCase();
         const aText = item.querySelector('.accordion-answer').textContent.toLowerCase();
-        const textMatch = !query || qText.includes(query) || aText.includes(query);
+        // smartMatch only checks the QUESTION text, not the (long, multi-
+        // sentence) answer -- checked against the answer too at first and
+        // confirmed live it was way too loose (a single shared word
+        // anywhere in a long answer was enough to surface it, e.g.
+        // "how much is pricing" pulling in "Do you schedule on the
+        // weekends?" because its answer happened to mention a fee).
+        const textMatch = !query || qText.includes(query) || aText.includes(query) ||
+          smartMatch(query, qText);
         item.style.display = textMatch ? '' : 'none';
         if (textMatch) blockHasResults = true;
       });
@@ -3199,6 +3267,9 @@
     } else if (q.length >= 2) {
       const lower = q.toLowerCase();
       rows = faqIndex.filter(f => f.q.toLowerCase().includes(lower)).slice(0, 6);
+      if (!rows.length) {
+        rows = faqIndex.filter(f => smartMatch(lower, f.q.toLowerCase())).slice(0, 6);
+      }
       if (!rows.length) {
         rows = faqIndex.filter(f => fuzzyMatch(lower, f.q.toLowerCase())).slice(0, 6);
       }
