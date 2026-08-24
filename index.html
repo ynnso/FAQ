@@ -214,7 +214,11 @@
     width: 100%;
     height: 56px;
     border: 2px solid var(--black);
-    border-radius: 100px;
+    /* Was a full 100px pill -- unified to the same squircle radius as the
+       category pills and section headers below, so the three container
+       types on this page read as one consistent shape language instead of
+       two full capsules next to a rounded rectangle. */
+    border-radius: 20px;
     font-family: var(--font);
     font-size: 15px;
     font-weight: 500;
@@ -322,11 +326,43 @@
     50% { box-shadow: 0 0 0 8px rgba(200, 16, 46, 0); }
   }
 
+  /* Voice search failure message -- see showMicError() in JS. Sits below
+     the bar so it doesn't cover the input while it's telling you why the
+     mic didn't work. */
+  .mic-error-bubble {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    max-width: 260px;
+    background: var(--black);
+    color: var(--white);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.4;
+    padding: 8px 12px;
+    border-radius: 12px;
+    opacity: 0;
+    transform: translateY(-4px);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 6;
+  }
+
+  .mic-error-bubble.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
   .search-clear:hover {
     opacity: 1;
     background: rgba(0, 0, 0, 0.08);
     border-radius: 50%;
-    transform: scale(1.08);
+    /* Was just scale(1.08), which threw away the translateY(-50%) that
+       vertically centers this button -- on hover it visibly dropped/sagged
+       in the bar instead of growing in place. Grown to 1.33x per request;
+       scale grows symmetrically from center, so it stays inside the bar
+       without needing to move its base position. */
+    transform: translateY(-50%) scale(1.33);
   }
   .search-clear.visible { display: flex; }
 
@@ -382,6 +418,12 @@
 
   .search-backdrop.visible {
     opacity: 1;
+  }
+
+  /* Split from .visible on purpose -- see the setSuggestOpen comment in JS.
+     Becoming clickable is deferred by one tick so it can't intercept the
+     very click that's opening the dropdown in the first place. */
+  .search-backdrop.interactive {
     pointer-events: auto;
   }
 
@@ -555,7 +597,9 @@
     justify-content: center;
     gap: 5px;
     padding: 7px 13px;
-    border-radius: 100px;
+    /* Was a full 100px pill -- unified to the same squircle radius as the
+       search bar and section headers (see .search-input for the full note). */
+    border-radius: 20px;
     border: 1.5px solid var(--gray-300);
     background: transparent;
     font-family: var(--font);
@@ -770,10 +814,15 @@
   }
 
   .section-header-text h2 {
-    font-size: clamp(19px, 4.2vw, 24px);
-    font-weight: 700;
+    /* Bumped up to actually hold its own next to the icon (now 44px) --
+       24px max was reading as small and lightweight beside it. */
+    font-size: clamp(21px, 4.8vw, 27px);
+    /* 700 -> 600: same bold-ish reading, less heavy/bulky -- most
+       noticeable on mobile where every section header sat on the page
+       looking dense and heavy. */
+    font-weight: 600;
     color: var(--black);
-    letter-spacing: -0.6px;
+    letter-spacing: -0.4px;
     line-height: 1.2;
     /* Unconditional, not media-query-gated — a long title held to one
        line was wide enough to push the page sideways on a real phone
@@ -1206,7 +1255,8 @@
     .main { max-width: 100%; padding-top: 0; padding-bottom: 100px; }
     .section-header-shelf {
       margin: 0;
-      border-radius: 10px;
+      /* No longer overridden to 10px here -- was quietly breaking the
+         shared 20px squircle radius on mobile specifically. */
       padding: 16px 20px;
     }
 
@@ -2675,6 +2725,9 @@
     const val = this.value.trim();
     searchClear.classList.toggle('visible', val.length > 0);
     searchMic.classList.toggle('visible', val.length === 0);
+    // Typing for real overrides the "picked a suggestion" flag below --
+    // this is a fresh, intentional search now, not a leftover to clear.
+    delete this.dataset.picked;
     filterContent();
   });
 
@@ -2705,17 +2758,56 @@
       renderSuggest(transcript);
     });
     recognition.addEventListener('end', () => searchMic.classList.remove('listening'));
-    recognition.addEventListener('error', () => searchMic.classList.remove('listening'));
+
+    // Real bug: this used to just silently drop back to the normal mic icon
+    // on ANY failure -- permission denied, no mic, no network (this API
+    // calls out to a speech-to-text service, it's not local) all looked
+    // identical to "nothing happened," which is exactly what "the mic
+    // doesn't work" looks like from the outside. Now it says why.
+    const micErrorMessages = {
+      'not-allowed': "Mic permission blocked — check your browser's site settings",
+      'no-speech': "Didn't catch that — try again",
+      'audio-capture': 'No microphone found',
+      'network': 'Voice search needs an internet connection',
+    };
+    recognition.addEventListener('error', (e) => {
+      searchMic.classList.remove('listening');
+      showMicError(micErrorMessages[e.error] || "Voice search couldn't start");
+    });
 
     searchMic.addEventListener('click', (e) => {
       e.stopPropagation();
       if (searchMic.classList.contains('listening')) {
         recognition.stop();
-      } else {
+        return;
+      }
+      try {
         searchMic.classList.add('listening');
         recognition.start();
+      } catch (err) {
+        // Fires if start() is called while already starting/started (e.g.
+        // a fast double-click) -- without this it throws and the button
+        // never gets a 'listening' class removed, so it looks permanently
+        // stuck on the next real click too.
+        searchMic.classList.remove('listening');
+        showMicError("Voice search couldn't start");
       }
     });
+  }
+
+  let micErrorTimer = null;
+  function showMicError(message) {
+    let bubble = document.getElementById('micErrorBubble');
+    if (!bubble) {
+      bubble = document.createElement('div');
+      bubble.id = 'micErrorBubble';
+      bubble.className = 'mic-error-bubble';
+      document.querySelector('.search-wrap').appendChild(bubble);
+    }
+    bubble.textContent = message;
+    bubble.classList.add('visible');
+    clearTimeout(micErrorTimer);
+    micErrorTimer = setTimeout(() => bubble.classList.remove('visible'), 3200);
   }
 
   function highlightText(el, query) {
@@ -2777,7 +2869,12 @@
   }
 
   function filterContent() {
-    const query = searchInput.value.trim().toLowerCase();
+    const raw = searchInput.value.trim().toLowerCase();
+    // A single letter matches almost every question on the page -- read as
+    // "everything lights up" instead of a real narrowing search. Wait for
+    // at least 2 characters (same threshold the suggest dropdown already
+    // uses) before filtering/highlighting kicks in at all.
+    const query = raw.length >= 2 ? raw : '';
     clearHighlights();
 
     let anyVisible = false;
@@ -2828,7 +2925,7 @@
     // section open" rule for as long as there's an active query.
     faqBlocks.forEach(block => {
       const hasResults = block.classList.contains('visible');
-      setSectionOpen(block, !!query && hasResults);
+      setSectionOpen(block, !!query && hasResults, /* immediate */ true);
     });
 
     noResults.classList.toggle('visible', !anyVisible);
@@ -2972,7 +3069,28 @@
   function setSuggestOpen(isOpen) {
     searchSuggest.classList.toggle('open', isOpen);
     if (categoriesWrapEl) categoriesWrapEl.classList.toggle('hidden-by-suggest', isOpen);
-    if (searchBackdrop) searchBackdrop.classList.toggle('visible', isOpen);
+    if (searchBackdrop) {
+      searchBackdrop.classList.toggle('visible', isOpen);
+      if (isOpen) {
+        // Real bug, confirmed live: opening the dropdown on the very click
+        // that focuses the search bar made it flash open then instantly
+        // close again. The backdrop is a sibling of .search-wrap made
+        // clickable (pointer-events: auto) the instant this runs, which is
+        // mid-way through that SAME click (a click is mousedown -> focus ->
+        // mouseup -> click, and this runs on focus) -- so by mouseup, the
+        // backdrop is already on top and catches it instead of the input.
+        // The browser then resolves the click's target as the nearest
+        // shared ancestor of the two (.hero-actions), which the outside-
+        // click handler below reads as "clicked outside" and closes what
+        // just opened. Deferring interactivity by one tick lets the click
+        // that opened this finish first.
+        clearTimeout(searchBackdrop._interactiveTimer);
+        searchBackdrop._interactiveTimer = setTimeout(() => searchBackdrop.classList.add('interactive'), 0);
+      } else {
+        clearTimeout(searchBackdrop._interactiveTimer);
+        searchBackdrop.classList.remove('interactive');
+      }
+    }
   }
 
   if (searchBackdrop) {
@@ -2996,6 +3114,11 @@
     searchInput.blur();
     entry.item.scrollIntoView({ behavior: 'smooth', block: 'center' });
     openAccordionItem(entry.item);
+    // Flagged so the next click away from the search bar resets it -- a
+    // picked question stays sitting in the bar otherwise (and the rest of
+    // the page stays filtered down to just that match), which confused
+    // people into thinking the search was stuck.
+    searchInput.dataset.picked = '1';
   }
 
   searchSuggest.addEventListener('click', (e) => {
@@ -3038,7 +3161,19 @@
   });
 
   document.addEventListener('click', (e) => {
-    if (!e.target.closest('.search-wrap')) closeSuggest();
+    if (!e.target.closest('.search-wrap')) {
+      closeSuggest();
+      // A picked question left sitting in the bar (and the page still
+      // filtered down to it) reads as "stuck" -- clear it back to normal
+      // once you've clicked away from the search bar entirely.
+      if (searchInput.dataset.picked) {
+        searchInput.value = '';
+        delete searchInput.dataset.picked;
+        searchClear.classList.remove('visible');
+        searchMic.classList.add('visible');
+        filterContent();
+      }
+    }
   });
 
   // Keyboard shortcut: "/" or Cmd/Ctrl+K jumps to the search bar from
@@ -3069,7 +3204,14 @@
   // of closed rows to scroll past before reaching the one you wanted.
   // Sections now behave like the questions inside them: closed by default,
   // one open at a time, click to expand.
-  function setSectionOpen(block, isOpen) {
+  // Matches .faq-block.section-open .faq-block-items's own max-height
+  // duration in CSS -- the domino row reveal (below) waits for this to
+  // finish before starting, so the section visibly opens FIRST, empty,
+  // then the questions step in one at a time -- not all at once, at the
+  // same time the box itself is still growing.
+  const SECTION_OPEN_MS = 900;
+
+  function setSectionOpen(block, isOpen, immediate) {
     const shelf = block.querySelector('.section-header-shelf');
     const items = block.querySelector('.faq-block-items');
     if (!shelf || !items) return;
@@ -3082,13 +3224,17 @@
 
     // The rows inside don't just appear with the panel — each one steps
     // in a beat after the last, like a real staggered reveal instead of
-    // the whole list popping in at once.
+    // the whole list popping in at once. `immediate` skips the "wait for
+    // the section to finish opening" lead-in -- used by search, where
+    // several sections can open together and a 900ms hold before any
+    // results appear would read as the search being slow to respond.
     if (isOpen) {
+      const lead = immediate ? 0 : SECTION_OPEN_MS;
       const rows = items.querySelectorAll('.accordion-item');
       rows.forEach((row, i) => {
         // 2x the original per-row beat (35ms -> 70ms, cap 280ms -> 480ms) so
         // the cascade actually reads as one-by-one instead of all-at-once.
-        row.style.animationDelay = Math.min(i * 70, 480) + 'ms';
+        row.style.animationDelay = (lead + Math.min(i * 70, 480)) + 'ms';
         row.classList.remove('row-in');
         void row.offsetWidth;
         row.classList.add('row-in');
