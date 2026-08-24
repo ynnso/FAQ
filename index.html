@@ -3057,6 +3057,9 @@
     ['booking', 'book', 'schedule', 'scheduling', 'appointment', 'appointments'],
     ['delivery', 'deliver', 'turnaround'],
     ['aerial', 'drone', 'drones'],
+    // "DFW" is the only form that appears in the actual FAQ text -- Dallas
+    // and Fort Worth on their own would find nothing without this.
+    ['dfw', 'dallas'],
   ];
 
   function canonicalWord(w) {
@@ -3067,7 +3070,10 @@
   }
 
   function meaningfulWords(text) {
-    const lower = text.toLowerCase();
+    // "Fort Worth" is two words -- neither "fort" nor "worth" alone means
+    // anything to the word-level synonym map below, so it's folded into
+    // "dfw" (the only form the actual FAQ text uses) before splitting.
+    const lower = text.toLowerCase().replace(/\bfort\s+worth\b|\bft\.?\s*worth\b/g, 'dfw');
     const words = lower.split(/\W+/)
       .filter(w => w.length > 2 && !SEARCH_STOPWORDS.has(w))
       .map(canonicalWord);
@@ -3105,50 +3111,57 @@
     let anyVisible = false;
     let usedFuzzy = false;
 
-    faqBlocks.forEach(block => {
-      let blockHasResults = false;
-
-      block.querySelectorAll('.accordion-item').forEach(item => {
-        const qText = item.querySelector('.accordion-q').textContent.toLowerCase();
-        const aText = item.querySelector('.accordion-answer').textContent.toLowerCase();
-        // smartMatch only checks the QUESTION text, not the (long, multi-
-        // sentence) answer -- checked against the answer too at first and
-        // confirmed live it was way too loose (a single shared word
-        // anywhere in a long answer was enough to surface it, e.g.
-        // "how much is pricing" pulling in "Do you schedule on the
-        // weekends?" because its answer happened to mention a fee).
-        const textMatch = !query || qText.includes(query) || aText.includes(query) ||
-          smartMatch(query, qText);
-        item.style.display = textMatch ? '' : 'none';
-        if (textMatch) blockHasResults = true;
-      });
-
-      block.classList.toggle('visible', blockHasResults);
-      if (blockHasResults) anyVisible = true;
-
-      if (query && blockHasResults) {
-        block.querySelectorAll('.accordion-item').forEach(item => {
-          if (item.style.display !== 'none') {
-            highlightText(item.querySelector('.accordion-q'), query);
-          }
-        });
-      }
-    });
-
-    // Exact search found nothing — retry once with typo tolerance before
-    // giving up and showing "no results."
-    if (query && !anyVisible) {
+    // Real, confirmed bug this replaces: exact and smartMatch used to run
+    // together in one pass, on the SAME tier -- so a query with a good
+    // exact hit (e.g. "cancellation policy") could still get diluted by
+    // unrelated smartMatch noise, which is why smartMatch was previously
+    // restricted to question text only. That in turn broke searches for
+    // anything that only lives in an ANSWER -- "Houston", "DFW" -- because
+    // neither exact nor smart ever looked at answer text for those. Fixed
+    // properly now: three real tiers, each only attempted page-wide if the
+    // one before it found literally nothing anywhere. Exact substring
+    // (question + answer) goes first and wins alone when it finds
+    // anything, so precise queries stay precise; only a truly empty exact
+    // pass falls through to synonym matching (question + answer), and only
+    // an empty synonym pass falls through to typo tolerance.
+    const runPass = (matcher) => {
+      let found = false;
       faqBlocks.forEach(block => {
         let blockHasResults = false;
         block.querySelectorAll('.accordion-item').forEach(item => {
           const qText = item.querySelector('.accordion-q').textContent.toLowerCase();
           const aText = item.querySelector('.accordion-answer').textContent.toLowerCase();
-          const textMatch = fuzzyMatch(query, qText) || fuzzyMatch(query, aText);
+          const textMatch = matcher(qText, aText);
           item.style.display = textMatch ? '' : 'none';
           if (textMatch) blockHasResults = true;
         });
         block.classList.toggle('visible', blockHasResults);
-        if (blockHasResults) { anyVisible = true; usedFuzzy = true; }
+        if (blockHasResults) found = true;
+      });
+      return found;
+    };
+
+    if (!query) {
+      runPass(() => true);
+    } else {
+      anyVisible = runPass((qText, aText) => qText.includes(query) || aText.includes(query));
+      if (!anyVisible) {
+        anyVisible = runPass((qText, aText) => smartMatch(query, qText) || smartMatch(query, aText));
+      }
+      if (!anyVisible) {
+        anyVisible = runPass((qText, aText) => fuzzyMatch(query, qText) || fuzzyMatch(query, aText));
+        usedFuzzy = anyVisible;
+      }
+    }
+
+    if (query) {
+      faqBlocks.forEach(block => {
+        if (!block.classList.contains('visible')) return;
+        block.querySelectorAll('.accordion-item').forEach(item => {
+          if (item.style.display !== 'none') {
+            highlightText(item.querySelector('.accordion-q'), query);
+          }
+        });
       });
     }
 
@@ -3187,8 +3200,9 @@
   const faqIndex = [];
   document.querySelectorAll('.accordion-item').forEach(item => {
     const qEl = item.querySelector('.accordion-q');
+    const aEl = item.querySelector('.accordion-answer');
     const cat = item.closest('.faq-block') ? item.closest('.faq-block').dataset.cat : '';
-    faqIndex.push({ item, q: qEl.textContent.trim(), cat });
+    faqIndex.push({ item, q: qEl.textContent.trim(), a: aEl ? aEl.textContent.trim() : '', cat });
   });
 
   const trendingQuestions = [
@@ -3265,13 +3279,20 @@
         (recentRows.length ? '<button type="button" class="search-suggest-clear" id="suggestClearRecent">Clear</button>' : '') +
         '</div>';
     } else if (q.length >= 2) {
+      // Same three tiers as the page's own filterContent, and checking each
+      // entry's answer text too now, not just its question -- otherwise
+      // this dropdown could (and did) say "no matching questions" for a
+      // term like "Houston" that only ever appears in an answer, while the
+      // real page search found it just fine. Whichever tier finds
+      // anything wins outright, so a precise query never gets diluted by a
+      // looser one.
       const lower = q.toLowerCase();
-      rows = faqIndex.filter(f => f.q.toLowerCase().includes(lower)).slice(0, 6);
+      rows = faqIndex.filter(f => f.q.toLowerCase().includes(lower) || f.a.toLowerCase().includes(lower)).slice(0, 6);
       if (!rows.length) {
-        rows = faqIndex.filter(f => smartMatch(lower, f.q.toLowerCase())).slice(0, 6);
+        rows = faqIndex.filter(f => smartMatch(lower, f.q.toLowerCase()) || smartMatch(lower, f.a.toLowerCase())).slice(0, 6);
       }
       if (!rows.length) {
-        rows = faqIndex.filter(f => fuzzyMatch(lower, f.q.toLowerCase())).slice(0, 6);
+        rows = faqIndex.filter(f => fuzzyMatch(lower, f.q.toLowerCase()) || fuzzyMatch(lower, f.a.toLowerCase())).slice(0, 6);
       }
       if (rows.length) sectionsHtml += '<div class="search-suggest-label">Matching Questions</div>';
     } else {
