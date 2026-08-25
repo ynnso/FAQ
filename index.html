@@ -876,7 +876,6 @@
 
   .section-header-shelf.active {
     border-color: var(--red);
-    box-shadow: 0 4px 16px rgba(200, 16, 46, 0.15);
   }
 
   .section-header-text {
@@ -903,10 +902,6 @@
     stroke-width: 1.4;
     fill: none;
     transition: stroke 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .section-header-shelf.active .section-header-icon {
-    stroke: var(--red);
   }
 
   .section-header-text h2 {
@@ -1088,8 +1083,7 @@
   }
 
   .accordion-item.open {
-    border-left: 3px solid var(--red);
-    padding-left: calc(28px - 3px);
+    border-bottom: none;
   }
 
   .accordion-item.open .accordion-q {
@@ -1131,12 +1125,12 @@
 
   .accordion-item.open .accordion-icon {
     transform: rotate(45deg);
-    background: rgba(200, 16, 46, 0.08);
+    background: rgba(10, 10, 10, 0.06);
     border-radius: 50%;
   }
 
   .accordion-item.open .accordion-icon svg {
-    stroke: var(--red);
+    stroke: var(--black);
   }
 
   .accordion-body {
