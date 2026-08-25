@@ -27,6 +27,43 @@
     --stat-source-color: #a3a3a3;
   }
 
+  /* Dark mode. Three states, not two: an explicit toggle stamps
+     data-theme="dark"/"light" on <html> (see the theme toggle button and
+     its JS below); the default "system" setting stamps nothing, so with
+     no explicit choice only prefers-color-scheme decides. Every color in
+     this file is one of the tokens above, so redefining them here is
+     enough to re-theme the whole page -- the two hardcoded exceptions
+     (hero's red gradient, search backdrop dim) get their own overrides
+     right where they're defined. */
+  @media (prefers-color-scheme: dark) {
+    html:not([data-theme="light"]) {
+      --white: #121212;
+      --black: #f2f2f2;
+      --gray-100: #1e1e1e;
+      --gray-200: #2a2a2a;
+      --gray-300: #3d3d3d;
+      --gray-400: #5c5c5c;
+      --gray-500: #a3a3a3;
+      --gray-700: #cfcfcf;
+      --gray-900: #e8e8e8;
+      --red: #ff2a2a;
+      --red-dark: #ff5c5c;
+    }
+  }
+  html[data-theme="dark"] {
+    --white: #121212;
+    --black: #f2f2f2;
+    --gray-100: #1e1e1e;
+    --gray-200: #2a2a2a;
+    --gray-300: #3d3d3d;
+    --gray-400: #5c5c5c;
+    --gray-500: #a3a3a3;
+    --gray-700: #cfcfcf;
+    --gray-900: #e8e8e8;
+    --red: #ff2a2a;
+    --red-dark: #ff5c5c;
+  }
+
   html {
     scroll-behavior: smooth;
     overflow-x: hidden;
@@ -138,7 +175,21 @@
        media query silently failed to apply. A clamp() is just math, it
        can't fail to "activate." */
     padding: 32px clamp(24px, 8vw, 42px) 0;
-    background: radial-gradient(140% 100% at 50% 0%, rgba(200,16,46,0.08) 0%, rgba(200,16,46,0.03) 35%, rgba(200,16,46,0) 70%);
+    /* rgba() here instead of var(--red) since CSS custom properties can't
+       be split into their r/g/b channels for use inside rgba() -- this is
+       just the brand red's own RGB value written out, kept in sync by
+       hand. Missed during the --red token swap since it's not a var()
+       reference; caught while adding dark mode below. */
+    background: radial-gradient(140% 100% at 50% 0%, rgba(230,0,0,0.08) 0%, rgba(230,0,0,0.03) 35%, rgba(230,0,0,0) 70%);
+  }
+
+  html[data-theme="dark"] .hero {
+    background: radial-gradient(140% 100% at 50% 0%, rgba(255,42,42,0.14) 0%, rgba(255,42,42,0.05) 35%, rgba(255,42,42,0) 70%);
+  }
+  @media (prefers-color-scheme: dark) {
+    html:not([data-theme="light"]) .hero {
+      background: radial-gradient(140% 100% at 50% 0%, rgba(255,42,42,0.14) 0%, rgba(255,42,42,0.05) 35%, rgba(255,42,42,0) 70%);
+    }
   }
 
   .hero-top {
@@ -494,6 +545,19 @@
     transition: opacity 0.2s ease;
   }
 
+  /* A dark dim on an already-dark page barely reads at all -- dark mode
+     dims with a black-leaning overlay that's still visibly darker than
+     the dark surface underneath (a light overlay would look like a spotlight,
+     not a dim). */
+  @media (prefers-color-scheme: dark) {
+    html:not([data-theme="light"]) .search-backdrop {
+      background: rgba(0,0,0,0.55);
+    }
+  }
+  html[data-theme="dark"] .search-backdrop {
+    background: rgba(0,0,0,0.55);
+  }
+
   /* Punches the top search match's own section above the dim backdrop
      (z-index 45) -- see filterContent() in JS. It's the one real answer
      being handed straight to you while search is active; it shouldn't
@@ -517,6 +581,43 @@
 
   /* Appears once you've scrolled down a real distance — a quick way back
      to search and the category pills without a long manual scroll up. */
+  /* Fixed top-right, always visible regardless of scroll -- above the
+     sticky header (z-index 200) so it's never covered once that appears. */
+  .theme-toggle {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gray-300);
+    background: var(--white);
+    color: var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 250;
+    transition: background var(--transition), border-color var(--transition), transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .theme-toggle:hover { border-color: var(--gray-400); }
+  .theme-toggle:active { transform: scale(0.92); }
+
+  .theme-toggle svg { width: 19px; height: 19px; flex-shrink: 0; }
+
+  /* Only one icon shows at a time -- sun when light is active (what you'd
+     switch away from), moon when dark is active. Swapped by JS setting
+     data-theme on <html>; the "system, no explicit choice yet" state reads
+     its icon from prefers-color-scheme the same way the color tokens do. */
+  .theme-icon-moon { display: none; }
+  html[data-theme="dark"] .theme-icon-sun { display: none; }
+  html[data-theme="dark"] .theme-icon-moon { display: flex; }
+  @media (prefers-color-scheme: dark) {
+    html:not([data-theme="light"]) .theme-icon-sun { display: none; }
+    html:not([data-theme="light"]) .theme-icon-moon { display: flex; }
+  }
+
   .back-to-top {
     position: fixed;
     right: 20px;
@@ -1311,7 +1412,7 @@
 
   /* ── FOOTER ── */
   footer {
-    background: var(--black);
+    background: #0a0a0a;
     padding: 32px 48px;
     display: flex;
     align-items: center;
@@ -1509,10 +1610,22 @@
     padding: 0 24px;
     z-index: 200;
     transform: translateY(-100%);
-    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Both transitions in one declaration -- a second transition: shorthand
+       here would silently overwrite this one instead of adding to it. */
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                background var(--transition), border-color var(--transition);
   }
 
   .sticky-header.visible { transform: translateY(0); }
+
+  @media (prefers-color-scheme: dark) {
+    html:not([data-theme="light"]) .sticky-header {
+      background: rgba(18,18,18,0.9);
+    }
+  }
+  html[data-theme="dark"] .sticky-header {
+    background: rgba(18,18,18,0.9);
+  }
 
   .sticky-header-logo {
     font-size: 14px;
@@ -1980,8 +2093,43 @@
    ]
 }
 </script>
+<!-- Runs before <body> renders, not in the main script at the bottom of
+     the page -- setting data-theme after the page has already painted in
+     the wrong theme would show a visible flash. A stored explicit choice
+     always wins; with no stored choice this stamps nothing, matching the
+     "system" default the CSS media queries already key off of. -->
+<script>
+  (function() {
+    try {
+      var stored = localStorage.getItem('faqTheme');
+      if (stored === 'dark' || stored === 'light') {
+        document.documentElement.setAttribute('data-theme', stored);
+      }
+    } catch (e) {}
+  })();
+</script>
 </head>
 <body>
+
+<!-- Fixed regardless of scroll position, unlike the sticky header (which
+     only appears once you've scrolled past the hero) -- theme is a
+     standing preference, not something tied to where you are on the page. -->
+<button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode">
+  <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="4.5"/>
+    <line x1="12" y1="2.5" x2="12" y2="5"/>
+    <line x1="12" y1="19" x2="12" y2="21.5"/>
+    <line x1="4.2" y1="4.2" x2="5.9" y2="5.9"/>
+    <line x1="18.1" y1="18.1" x2="19.8" y2="19.8"/>
+    <line x1="2.5" y1="12" x2="5" y2="12"/>
+    <line x1="19" y1="12" x2="21.5" y2="12"/>
+    <line x1="4.2" y1="19.8" x2="5.9" y2="18.1"/>
+    <line x1="18.1" y1="5.9" x2="19.8" y2="4.2"/>
+  </svg>
+  <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"/>
+  </svg>
+</button>
 
 <!-- PERSISTENT STICKY HEADER — appears once the hero search scrolls away -->
 <header class="sticky-header" id="stickyHeader">
@@ -3848,6 +3996,23 @@
   sectionHeaders.forEach(shelf => {
     shelf.addEventListener('click', () => toggleSection(shelf.closest('.faq-block')));
   });
+
+  // ── Theme toggle ── explicit choice always overrides the system
+  // default. Reflects whichever theme is ACTUALLY active right now
+  // (checking the resolved state, not just "is there a stored value") so
+  // the very first click from an unset "system" state does the right
+  // thing whether the system happens to be in light or dark mode.
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const isDarkNow = window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? document.documentElement.getAttribute('data-theme') !== 'light'
+        : document.documentElement.getAttribute('data-theme') === 'dark';
+      const next = isDarkNow ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('faqTheme', next); } catch (e) {}
+    });
+  }
 
   // ── Back to top ── shows once you've scrolled a real distance, not on
   // the first nudge — clicking it also collapses any open section, so
