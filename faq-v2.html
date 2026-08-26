@@ -5648,6 +5648,19 @@
       const nowOpen = table.style.display === 'none';
       table.style.display = nowOpen ? '' : 'none';
       btn.setAttribute('aria-expanded', nowOpen ? 'true' : 'false');
+
+      // Real bug, confirmed live: the enclosing section (.faq-block-items)
+      // has its own max-height, set once when THAT section opened, based
+      // on its scrollHeight at the time -- with this table still
+      // display:none. Expanding the table now grows the content but not
+      // the parent's max-height, so the new rows render but sit clipped
+      // past the section's own bottom edge, invisible. Same class of bug
+      // as the accordion-question re-measure noted above -- re-measure
+      // here too, only if the parent section is actually open right now.
+      const parentItems = btn.closest('.faq-block-items');
+      if (parentItems && parentItems.style.maxHeight && parentItems.style.maxHeight !== '0px') {
+        parentItems.style.maxHeight = parentItems.scrollHeight + 'px';
+      }
     });
   });
 
