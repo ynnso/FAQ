@@ -2551,58 +2551,47 @@
                     <tr>
                         <th>Service</th>
                         <th>Starting Price</th>
-                        <th>Turnaround</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td><strong>Photography</strong></td>
-                        <td>From $139 (varies by property type)</td>
-                        <td>24 hours</td>
+                        <td>from $139</td>
                     </tr>
                     <tr>
                         <td><strong>Aerial Photography</strong></td>
-                        <td>$79–$119</td>
-                        <td>24 hours</td>
+                        <td>from $79</td>
                     </tr>
                     <tr>
                         <td><strong>Aerial Video</strong></td>
-                        <td>$119–$249</td>
-                        <td>24 hours</td>
+                        <td>from $119</td>
                     </tr>
                     <tr>
                         <td><strong>Matterport 3D Tours</strong></td>
-                        <td>$149–$249</td>
-                        <td>24 hours</td>
+                        <td>from $149</td>
                     </tr>
                     <tr>
                         <td><strong>Zillow Showcase</strong></td>
-                        <td>$160–$299</td>
-                        <td>24 hours</td>
+                        <td>from $160</td>
                     </tr>
                     <tr>
                         <td><strong>Virtual Staging</strong></td>
-                        <td>$60–$220</td>
-                        <td>24–48 hrs</td>
+                        <td>from $60</td>
                     </tr>
                     <tr>
                         <td><strong>Floor Plans (2D/3D)</strong></td>
-                        <td>$79–$199</td>
-                        <td>24 hours</td>
+                        <td>from $79</td>
                     </tr>
                     <tr>
                         <td><strong>HD Video Tours</strong></td>
-                        <td>$159–$319</td>
-                        <td>24 hours</td>
+                        <td>from $159</td>
                     </tr>
                     <tr>
                         <td><strong>BuzzReels (3 Reels)</strong></td>
-                        <td>$159</td>
-                        <td>24 hours</td>
+                        <td>from $159</td>
                     </tr>
                     <tr>
                         <td><strong>Agent Brand Video</strong></td>
-                        <td>Contact us (price unconfirmed)</td>
                         <td>Contact us</td>
                     </tr>
                 </tbody>
@@ -5028,8 +5017,16 @@
     const runPass = (matcher) => {
       let found = false;
       faqBlocks.forEach(block => {
-        let blockHasResults = false;
-        block.querySelectorAll('.accordion-item').forEach(item => {
+        const items = block.querySelectorAll('.accordion-item');
+        // Bug found in Sonny's live test 2026-08-25: Services Overview has
+        // no accordion-items at all (it's a pricing table, not Q&A), so
+        // blockHasResults never had a chance to go true for it -- any
+        // search, even an empty one, hid it and it never came back. A
+        // block with nothing to search is content search can't judge, so
+        // it stays visible instead of defaulting to hidden.
+        const noSearchableItems = items.length === 0;
+        let blockHasResults = noSearchableItems;
+        items.forEach(item => {
           const qText = item.querySelector('.accordion-q').textContent.toLowerCase();
           const aText = item.querySelector('.accordion-answer').textContent.toLowerCase();
           const textMatch = matcher(qText, aText);
@@ -5037,7 +5034,12 @@
           if (textMatch) blockHasResults = true;
         });
         block.classList.toggle('visible', blockHasResults);
-        if (blockHasResults) found = true;
+        // A block with nothing searchable (the pricing table) shouldn't
+        // count as a "found" result for the exact/smart/fuzzy tier
+        // fallback -- it stays visible on its own, but a real query that
+        // matches nothing else should still fall through to the next tier
+        // or to "no results", not get short-circuited by the table alone.
+        if (blockHasResults && !noSearchableItems) found = true;
       });
       return found;
     };
@@ -5052,7 +5054,12 @@
     // set) doesn't reflect that at all.
     let questionOnlyMatch = () => false;
     if (!query) {
-      runPass(() => true);
+      // Bug found in Sonny's live test 2026-08-25: anyVisible was never
+      // set on the empty-query path, so it stayed at its false default
+      // even though runPass(() => true) had just made everything visible
+      // -- noResults then showed "No results found" over a fully populated
+      // page the instant the search bar was focused or cleared.
+      anyVisible = runPass(() => true);
     } else {
       anyVisible = runPass((qText, aText) => qText.includes(query) || aText.includes(query));
       questionOnlyMatch = (qText) => qText.includes(query);
@@ -5178,11 +5185,11 @@
   });
 
   const trendingQuestions = [
-    'How much does Shoot2Sell cost?',
-    'How quickly will I receive my media?',
-    'Can I book a photographer for tomorrow?',
-    'What is your cancellation policy?',
-    'What payment methods do you accept?'
+    'How much does real estate photography cost?',
+    'Can I book a next-day real estate photography appointment?',
+    'What areas does Shoot2Sell serve?',
+    'How fast do I get my photos and media?',
+    'What is your real estate media cancellation and rescheduling policy?'
   ];
   const trending = trendingQuestions
     .map(q => faqIndex.find(f => f.q === q))
