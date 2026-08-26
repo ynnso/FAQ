@@ -5639,13 +5639,24 @@
     });
   }
 
-  // ── MLS/PORT pricing toggles (Services Overview) ── two independent
-  // collapsible tables, not an either/or switch -- both, one, or neither
-  // can be open at once.
-  document.querySelectorAll('.pricing-toggle-header').forEach(btn => {
+  // ── MLS/PORT pricing toggles (Services Overview) ── exclusive, like
+  // every other collapsible on this page (sections, and questions within
+  // a section) -- opening MLS or PORT closes the other one. Nobody needs
+  // both price types on screen at once, and showing both was the one
+  // place this page broke its own single-open pattern.
+  const pricingToggleBtns = document.querySelectorAll('.pricing-toggle-header');
+  pricingToggleBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const table = document.getElementById(btn.dataset.target);
       const nowOpen = table.style.display === 'none';
+
+      pricingToggleBtns.forEach(otherBtn => {
+        if (otherBtn === btn) return;
+        const otherTable = document.getElementById(otherBtn.dataset.target);
+        otherTable.style.display = 'none';
+        otherBtn.setAttribute('aria-expanded', 'false');
+      });
+
       table.style.display = nowOpen ? '' : 'none';
       btn.setAttribute('aria-expanded', nowOpen ? 'true' : 'false');
 
