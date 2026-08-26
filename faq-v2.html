@@ -1388,6 +1388,39 @@
   .service-table td strong,
   .accordion-answer table td strong { color: var(--black); }
 
+  /* MLS/PORT collapsible tables in Services Overview */
+  .pricing-toggle-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    background: var(--gray-100);
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gray-900);
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .pricing-toggle-header:hover { background: var(--gray-200); }
+
+  .pricing-toggle-header + .service-table { margin-top: 0; margin-bottom: 22px; }
+
+  .pricing-toggle-chevron svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.25s ease;
+  }
+
+  .pricing-toggle-header[aria-expanded="true"] .pricing-toggle-chevron svg {
+    transform: rotate(180deg);
+  }
+
   /* ── NO RESULTS ── */
   /* Shown only when the typo-tolerant fuzzy tier is what actually found
      the results -- see usedFuzzy in filterContent(). Tells you your typo
@@ -2545,8 +2578,13 @@
     </button>
 
     <div class="faq-block-items">
-    <div class="v2-intro-note"><p>All services available with 24-hour turnaround or rush delivery by 10 AM</p></div>
-    <table class="service-table">
+    <div class="v2-intro-note"><p>All services available with 24-hour turnaround or rush delivery by 10 AM. MLS covers everyday residential listings; PORT covers builder, commercial, and multifamily work.</p></div>
+
+    <button class="pricing-toggle-header" type="button" aria-expanded="true" data-target="mlsPricingTable">
+      <span>MLS (Residential)</span>
+      <span class="pricing-toggle-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+    </button>
+    <table class="service-table" id="mlsPricingTable">
                 <thead>
                     <tr>
                         <th>Service</th>
@@ -2593,6 +2631,49 @@
                     <tr>
                         <td><strong>Agent Brand Video</strong></td>
                         <td>Contact us</td>
+                    </tr>
+                </tbody>
+            </table>
+
+    <button class="pricing-toggle-header" type="button" aria-expanded="false" data-target="portPricingTable">
+      <span>PORT (Commercial)</span>
+      <span class="pricing-toggle-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+    </button>
+    <table class="service-table" id="portPricingTable" style="display:none">
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Starting Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Photography</strong></td>
+                        <td>from $199</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Aerial Photography</strong></td>
+                        <td>from $149</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Aerial Video</strong></td>
+                        <td>from $199</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Matterport 3D Tours</strong></td>
+                        <td>from $249</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Floor Plans (2D/3D)</strong></td>
+                        <td>from $129</td>
+                    </tr>
+                    <tr>
+                        <td><strong>HD Video Tours</strong></td>
+                        <td>from $299</td>
+                    </tr>
+                    <tr>
+                        <td><strong>BuzzReels (3 Reels)</strong></td>
+                        <td>from $299</td>
                     </tr>
                 </tbody>
             </table>
@@ -5557,6 +5638,18 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
+
+  // ── MLS/PORT pricing toggles (Services Overview) ── two independent
+  // collapsible tables, not an either/or switch -- both, one, or neither
+  // can be open at once.
+  document.querySelectorAll('.pricing-toggle-header').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const table = document.getElementById(btn.dataset.target);
+      const nowOpen = table.style.display === 'none';
+      table.style.display = nowOpen ? '' : 'none';
+      btn.setAttribute('aria-expanded', nowOpen ? 'true' : 'false');
+    });
+  });
 
 })();
 </script>
