@@ -1425,19 +1425,21 @@
     transition: background 0.2s ease;
   }
 
-  /* MLS gets a solid red fill (Residential too, same color -- unlike the
-     brand-word-only red used elsewhere, this one's a full block so both
-     words need to read against it). PORT stays unfilled/plain, so the
-     two panels still look visually distinct from each other. */
-  .pricing-toggle-header:not(.port-header) {
-    background: var(--red);
+  /* Both panels get a solid fill now (was MLS-only + PORT unfilled) --
+     MLS is black with a red brand word, PORT is red with a white brand
+     word, so the two still read as distinct from each other by which
+     color does the filling vs. the accenting. */
+  .pricing-toggle-header {
+    background: var(--black);
     padding: 16px 24px;
   }
 
-  .pricing-toggle-header:not(.port-header) .pricing-header-brand,
-  .pricing-toggle-header:not(.port-header) .pricing-header-type,
-  .pricing-toggle-header:not(.port-header) .pricing-toggle-chevron {
-    color: var(--white);
+  .pricing-toggle-header.port-header {
+    background: var(--red);
+  }
+
+  .pricing-toggle-header .pricing-toggle-chevron {
+    color: var(--gray-400);
   }
 
   .pricing-toggle-header:first-of-type { margin-top: 4px; }
@@ -1455,22 +1457,21 @@
     font-family: var(--font);
     font-size: clamp(40px, 11vw, 65px);
     font-weight: 900;
-    color: var(--black);
+    color: var(--red);
     letter-spacing: -0.01em;
   }
 
+  /* Type word (Residential/Commercial) always stays a muted grey --
+     never the identity color, on either panel. */
   .pricing-header-type {
     font-family: var(--font);
     font-size: clamp(24px, 6.5vw, 39px);
     font-weight: 800;
-    color: var(--gray-700);
+    color: var(--gray-400);
   }
 
-  /* Only the brand word (MLS/PORT) carries the identity color -- the
-     type word (Residential/Commercial) stays the same grey on both,
-     per Sonny's note. */
   .pricing-toggle-header.port-header .pricing-header-brand {
-    color: var(--red);
+    color: var(--white);
   }
 
   .pricing-toggle-header + .pricing-tile-grid { margin-top: 4px; }
@@ -1498,7 +1499,10 @@
     display: block;
     padding: 18px 16px;
     margin: 0 -16px;
-    border-bottom: 2px solid var(--gray-300);
+    /* Bulkier divider -- was 2px gray-300, reads as a real graphic bar
+       now instead of a thin hairline, matching the bolder poster look
+       of the rest of this section. Same weight/color on MLS and PORT. */
+    border-bottom: 4px solid var(--gray-900);
     border-radius: 12px;
     text-decoration: none;
     cursor: pointer;
@@ -1508,7 +1512,14 @@
                 box-shadow 0.2s ease;
   }
 
-  .pricing-tile.port-tile { border-bottom-color: var(--red-muted); }
+  /* The -16px negative margin above gives the hover-fill room to bleed
+     into the space between/around tiles -- but at the grid's own outer
+     edges (left of column 1, right of column 2) that same bleed pushed
+     the red fill past the section's actual content edge. Zero it out
+     only on the true outer sides; the inner sides still bleed into the
+     column gap, which is fine since nothing else sits there. */
+  .pricing-tile:nth-child(odd) { margin-left: 0; padding-left: 0; }
+  .pricing-tile:nth-child(even) { margin-right: 0; padding-right: 0; }
 
   /* Hover: lifts, fills red, price/name/icon all flip to white so they
      stay readable against the fill. Links through to the real service
