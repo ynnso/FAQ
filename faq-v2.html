@@ -1414,7 +1414,10 @@
 
   .pricing-header-text {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: baseline;
+    flex-wrap: wrap;
+    column-gap: 12px;
     line-height: 0.95;
   }
 
@@ -1431,11 +1434,12 @@
     font-size: clamp(24px, 6.5vw, 39px);
     font-weight: 800;
     color: var(--gray-700);
-    margin-top: 4px;
   }
 
-  .pricing-toggle-header.port-header .pricing-header-brand,
-  .pricing-toggle-header.port-header .pricing-header-type {
+  /* Only the brand word (MLS/PORT) carries the identity color -- the
+     type word (Residential/Commercial) stays the same grey on both,
+     per Sonny's note. */
+  .pricing-toggle-header.port-header .pricing-header-brand {
     color: var(--red);
   }
 
@@ -1480,20 +1484,32 @@
   }
 
   .pricing-tile-name svg {
-    width: 22px;
-    height: 22px;
+    width: 44px;
+    height: 44px;
     stroke: var(--black);
-    stroke-width: 2;
+    /* Halved from the usual 2 -- doubling the icon's rendered size also
+       doubles its visual stroke weight at a fixed viewBox (same gotcha
+       noted elsewhere in this file), so this keeps the outline reading
+       as the same thin weight instead of getting proportionally bulkier. */
+    stroke-width: 1;
     fill: none;
     flex-shrink: 0;
   }
 
   .pricing-tile-price {
     font-size: clamp(34px, 11vw, 74px);
-    font-weight: 800;
+    font-weight: 600;
     color: var(--red);
     letter-spacing: -0.02em;
     line-height: 1;
+  }
+
+  .pricing-tile-dollar {
+    font-size: 0.4em;
+    font-weight: 700;
+    vertical-align: top;
+    position: relative;
+    top: 0.15em;
   }
 
   .pricing-tile-from {
@@ -2678,39 +2694,39 @@
     <div class="pricing-tile-grid" id="mlsPricingTable">
         <div class="pricing-tile">
           <div class="pricing-tile-name"><svg viewBox="0 0 24 24" fill="none"><path d="M12 16C13.6569 16 15 14.6569 15 13C15 11.3431 13.6569 10 12 10C10.3431 10 9 11.3431 9 13C9 14.6569 10.3431 16 12 16Z" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 16.8V9.2C3 8.0799 3 7.51984 3.21799 7.09202C3.40973 6.71569 3.71569 6.40973 4.09202 6.21799C4.51984 6 5.0799 6 6.2 6H7.25464C7.37758 6 7.43905 6 7.49576 5.9935C7.79166 5.95961 8.05705 5.79559 8.21969 5.54609C8.25086 5.49827 8.27836 5.44328 8.33333 5.33333C8.44329 5.11342 8.49827 5.00346 8.56062 4.90782C8.8859 4.40882 9.41668 4.08078 10.0085 4.01299C10.1219 4 10.2448 4 10.4907 4H13.5093C13.7552 4 13.8781 4 13.9915 4.01299C14.5833 4.08078 15.1141 4.40882 15.4394 4.90782C15.5017 5.00345 15.5567 5.11345 15.6667 5.33333C15.7216 5.44329 15.7491 5.49827 15.7803 5.54609C15.943 5.79559 16.2083 5.95961 16.5042 5.9935C16.561 6 16.6224 6 16.7454 6H17.8C18.9201 6 19.4802 6 19.908 6.21799C20.2843 6.40973 20.5903 6.71569 20.782 7.09202C21 7.51984 21 8.0799 21 9.2V16.8C21 17.9201 21 18.4802 20.782 18.908C20.5903 19.2843 20.2843 19.5903 19.908 19.782C19.4802 20 18.9201 20 17.8 20H6.2C5.0799 20 4.51984 20 4.09202 19.782C3.71569 19.5903 3.40973 19.2843 3.21799 18.908C3 18.4802 3 17.9201 3 16.8Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Photography</span></div>
-          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span>$139</div>
+          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span><span class="pricing-tile-dollar">$</span>139</div>
         </div>
         <div class="pricing-tile">
           <div class="pricing-tile-name"><svg viewBox="0 0 24 24" fill="none"><path d="M22 2 11 13" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2 15 22l-4-9-9-4 20-7Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Aerial Photography</span></div>
-          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span>$79</div>
+          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span><span class="pricing-tile-dollar">$</span>79</div>
         </div>
         <div class="pricing-tile">
           <div class="pricing-tile-name"><svg viewBox="0 0 24 24" fill="none"><path d="M22 2 11 13" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2 15 22l-4-9-9-4 20-7Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Aerial Video</span></div>
-          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span>$119</div>
+          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span><span class="pricing-tile-dollar">$</span>119</div>
         </div>
         <div class="pricing-tile">
           <div class="pricing-tile-name"><svg viewBox="0 0 24 24" fill="none"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 3v5h-5" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 21v-5h5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Matterport 3D Tours</span></div>
-          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span>$149</div>
+          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span><span class="pricing-tile-dollar">$</span>149</div>
         </div>
         <div class="pricing-tile">
           <div class="pricing-tile-name"><svg viewBox="0 0 24 24" fill="none"><path d="M12 16C13.6569 16 15 14.6569 15 13C15 11.3431 13.6569 10 12 10C10.3431 10 9 11.3431 9 13C9 14.6569 10.3431 16 12 16Z" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 16.8V9.2C3 8.0799 3 7.51984 3.21799 7.09202C3.40973 6.71569 3.71569 6.40973 4.09202 6.21799C4.51984 6 5.0799 6 6.2 6H7.25464C7.37758 6 7.43905 6 7.49576 5.9935C7.79166 5.95961 8.05705 5.79559 8.21969 5.54609C8.25086 5.49827 8.27836 5.44328 8.33333 5.33333C8.44329 5.11342 8.49827 5.00346 8.56062 4.90782C8.8859 4.40882 9.41668 4.08078 10.0085 4.01299C10.1219 4 10.2448 4 10.4907 4H13.5093C13.7552 4 13.8781 4 13.9915 4.01299C14.5833 4.08078 15.1141 4.40882 15.4394 4.90782C15.5017 5.00345 15.5567 5.11345 15.6667 5.33333C15.7216 5.44329 15.7491 5.49827 15.7803 5.54609C15.943 5.79559 16.2083 5.95961 16.5042 5.9935C16.561 6 16.6224 6 16.7454 6H17.8C18.9201 6 19.4802 6 19.908 6.21799C20.2843 6.40973 20.5903 6.71569 20.782 7.09202C21 7.51984 21 8.0799 21 9.2V16.8C21 17.9201 21 18.4802 20.782 18.908C20.5903 19.2843 20.2843 19.5903 19.908 19.782C19.4802 20 18.9201 20 17.8 20H6.2C5.0799 20 4.51984 20 4.09202 19.782C3.71569 19.5903 3.40973 19.2843 3.21799 18.908C3 18.4802 3 17.9201 3 16.8Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Zillow Showcase</span></div>
-          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span>$160</div>
+          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span><span class="pricing-tile-dollar">$</span>160</div>
         </div>
         <div class="pricing-tile">
           <div class="pricing-tile-name"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 15.5l-5-5-9.5 9.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Virtual Staging</span></div>
-          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span>$60</div>
+          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span><span class="pricing-tile-dollar">$</span>60</div>
         </div>
         <div class="pricing-tile">
           <div class="pricing-tile-name"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1" stroke-linecap="round" stroke-linejoin="round"/><rect x="14" y="3" width="7" height="7" rx="1" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="14" width="7" height="7" rx="1" stroke-linecap="round" stroke-linejoin="round"/><rect x="14" y="14" width="7" height="7" rx="1" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Floor Plans (2D/3D)</span></div>
-          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span>$79</div>
+          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span><span class="pricing-tile-dollar">$</span>79</div>
         </div>
         <div class="pricing-tile">
           <div class="pricing-tile-name"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 8.5v7l6-3.5-6-3.5Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>HD Video Tours</span></div>
-          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span>$159</div>
+          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span><span class="pricing-tile-dollar">$</span>159</div>
         </div>
         <div class="pricing-tile">
           <div class="pricing-tile-name"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 8.5v7l6-3.5-6-3.5Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>BuzzReels (3 Reels)</span></div>
-          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span>$159</div>
+          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span><span class="pricing-tile-dollar">$</span>159</div>
         </div>
         <div class="pricing-tile">
           <div class="pricing-tile-name"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 8.5v7l6-3.5-6-3.5Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Agent Brand Video</span></div>
@@ -2728,31 +2744,31 @@
     <div class="pricing-tile-grid" id="portPricingTable" style="display:none">
         <div class="pricing-tile port-tile">
           <div class="pricing-tile-name"><svg viewBox="0 0 24 24" fill="none"><path d="M12 16C13.6569 16 15 14.6569 15 13C15 11.3431 13.6569 10 12 10C10.3431 10 9 11.3431 9 13C9 14.6569 10.3431 16 12 16Z" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 16.8V9.2C3 8.0799 3 7.51984 3.21799 7.09202C3.40973 6.71569 3.71569 6.40973 4.09202 6.21799C4.51984 6 5.0799 6 6.2 6H7.25464C7.37758 6 7.43905 6 7.49576 5.9935C7.79166 5.95961 8.05705 5.79559 8.21969 5.54609C8.25086 5.49827 8.27836 5.44328 8.33333 5.33333C8.44329 5.11342 8.49827 5.00346 8.56062 4.90782C8.8859 4.40882 9.41668 4.08078 10.0085 4.01299C10.1219 4 10.2448 4 10.4907 4H13.5093C13.7552 4 13.8781 4 13.9915 4.01299C14.5833 4.08078 15.1141 4.40882 15.4394 4.90782C15.5017 5.00345 15.5567 5.11345 15.6667 5.33333C15.7216 5.44329 15.7491 5.49827 15.7803 5.54609C15.943 5.79559 16.2083 5.95961 16.5042 5.9935C16.561 6 16.6224 6 16.7454 6H17.8C18.9201 6 19.4802 6 19.908 6.21799C20.2843 6.40973 20.5903 6.71569 20.782 7.09202C21 7.51984 21 8.0799 21 9.2V16.8C21 17.9201 21 18.4802 20.782 18.908C20.5903 19.2843 20.2843 19.5903 19.908 19.782C19.4802 20 18.9201 20 17.8 20H6.2C5.0799 20 4.51984 20 4.09202 19.782C3.71569 19.5903 3.40973 19.2843 3.21799 18.908C3 18.4802 3 17.9201 3 16.8Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Photography</span></div>
-          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span>$149</div>
+          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span><span class="pricing-tile-dollar">$</span>149</div>
         </div>
         <div class="pricing-tile port-tile">
           <div class="pricing-tile-name"><svg viewBox="0 0 24 24" fill="none"><path d="M22 2 11 13" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2 15 22l-4-9-9-4 20-7Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Aerial Photography</span></div>
-          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span>$149</div>
+          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span><span class="pricing-tile-dollar">$</span>149</div>
         </div>
         <div class="pricing-tile port-tile">
           <div class="pricing-tile-name"><svg viewBox="0 0 24 24" fill="none"><path d="M22 2 11 13" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2 15 22l-4-9-9-4 20-7Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Aerial Video</span></div>
-          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span>$199</div>
+          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span><span class="pricing-tile-dollar">$</span>199</div>
         </div>
         <div class="pricing-tile port-tile">
           <div class="pricing-tile-name"><svg viewBox="0 0 24 24" fill="none"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 3v5h-5" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 21v-5h5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Matterport 3D Tours</span></div>
-          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span>$249</div>
+          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span><span class="pricing-tile-dollar">$</span>249</div>
         </div>
         <div class="pricing-tile port-tile">
           <div class="pricing-tile-name"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1" stroke-linecap="round" stroke-linejoin="round"/><rect x="14" y="3" width="7" height="7" rx="1" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="14" width="7" height="7" rx="1" stroke-linecap="round" stroke-linejoin="round"/><rect x="14" y="14" width="7" height="7" rx="1" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Floor Plans (2D/3D)</span></div>
-          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span>$129</div>
+          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span><span class="pricing-tile-dollar">$</span>129</div>
         </div>
         <div class="pricing-tile port-tile">
           <div class="pricing-tile-name"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 8.5v7l6-3.5-6-3.5Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>HD Video Tours</span></div>
-          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span>$275</div>
+          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span><span class="pricing-tile-dollar">$</span>275</div>
         </div>
         <div class="pricing-tile port-tile">
           <div class="pricing-tile-name"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 8.5v7l6-3.5-6-3.5Z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>BuzzReels (3 Reels)</span></div>
-          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span>$275</div>
+          <div class="pricing-tile-price"><span class="pricing-tile-from">from</span><span class="pricing-tile-dollar">$</span>275</div>
         </div>
     </div>
     </div>
