@@ -897,7 +897,11 @@
     border-bottom: 1px solid var(--gray-200);
     border-radius: 0;
     margin: 0;
-    padding: 20px 2px;
+    /* Right inset matches .accordion-trigger's own 28px right padding
+       (see below) so the section chevron lines up on the same vertical
+       column as every question row's "+" icon underneath it, instead of
+       sitting further out toward the edge. */
+    padding: 20px 28px 20px 2px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -943,10 +947,9 @@
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .section-header-shelf.active .section-chevron {
-    color: var(--red);
-  }
-
+  /* Chevron stays neutral grey even when active -- per Sonny's note,
+     red belongs on the icon/title instead, not the chevron or the
+     divider line. Still rotates on open, just doesn't change color. */
   .section-header-shelf.active .section-chevron svg {
     transform: rotate(180deg);
   }
@@ -971,9 +974,9 @@
     transition: max-height 0.9s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .section-header-shelf.active {
-    border-bottom-color: var(--red);
-  }
+  /* Divider stays neutral grey when active too -- the base border-bottom
+     (var(--gray-200), set on .section-header-shelf itself) already covers
+     this, so no active-state override is needed here at all. */
 
   .section-header-text {
     display: flex;
@@ -1025,8 +1028,12 @@
     min-width: 0;
   }
 
+  .section-header-shelf.active .section-header-icon {
+    stroke: var(--red);
+  }
+
   .section-header-shelf.active .section-header-text h2 {
-    color: var(--black);
+    color: var(--red);
   }
 
   .section-header-text p {
@@ -1181,10 +1188,16 @@
 
   .accordion-item.open {
     border-bottom: none;
+    /* Explicit, not just relying on the page's own white showing through --
+       keeps this row from ever picking up a grey tint (hover rgba, a
+       lingering touch state, etc.) while it's the one actually open. */
+    background: var(--white);
   }
 
   .accordion-item.open .accordion-q {
     color: var(--black);
+    /* +25% over the base 16px */
+    font-size: 20px;
   }
 
   .accordion-icon {
@@ -2887,7 +2900,6 @@
     </button>
 
     <div class="faq-block-items">
-    <div class="v2-intro-note"><p><strong>68% Faster Sales &nbsp;&middot;&nbsp; $79+ Photo Price &nbsp;&middot;&nbsp; $119+ Video Price &nbsp;&middot;&nbsp; 24 hrs Turnaround</strong></p></div>
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">How much faster do aerial photos help homes sell?</span>
@@ -3106,7 +3118,6 @@
     </button>
 
     <div class="faq-block-items">
-    <div class="v2-intro-note"><p><strong>31% Faster Sales &nbsp;&middot;&nbsp; 9% Higher Prices &nbsp;&middot;&nbsp; 2x Zillow Saves &nbsp;&middot;&nbsp; 24 hrs Turnaround</strong></p></div>
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">What is Matterport 3D and how does it help sell homes faster?</span>
@@ -3225,7 +3236,6 @@
     </button>
 
     <div class="faq-block-items">
-    <div class="v2-intro-note"><p><strong>33% Faster Sales &nbsp;&middot;&nbsp; 1-10% Price Lift &nbsp;&middot;&nbsp; 83% Better Visualization &nbsp;&middot;&nbsp; 24-48 hrs Turnaround</strong></p></div>
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">What is virtual staging and how does it work?</span>
@@ -3369,7 +3379,6 @@
     </button>
 
     <div class="faq-block-items">
-    <div class="v2-intro-note"><p><strong>30% More Engagement &nbsp;&middot;&nbsp; 20% Skip Without Plan &nbsp;&middot;&nbsp; 3 Floor Plan Options &nbsp;&middot;&nbsp; 24 hrs Turnaround</strong></p></div>
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">What types of floor plans does Shoot2Sell offer?</span>
@@ -3515,7 +3524,6 @@
     </button>
 
     <div class="faq-block-items">
-    <div class="v2-intro-note"><p><strong>73% Sellers Prefer Video &nbsp;&middot;&nbsp; 32% Faster Sales &nbsp;&middot;&nbsp; 5.3x Short-Form Engagement &nbsp;&middot;&nbsp; 12x Video Shares</strong></p></div>
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">Do sellers really prefer agents who use video?</span>
@@ -3762,7 +3770,6 @@
     </button>
 
     <div class="faq-block-items">
-    <div class="v2-intro-note"><p><strong>76% More Online Views &nbsp;&middot;&nbsp; 3x More Showings &nbsp;&middot;&nbsp; 15% Faster Sales &nbsp;&middot;&nbsp; 6 Enhancement Options</strong></p></div>
     <div class="accordion-item">
       <button class="accordion-trigger" aria-expanded="false">
         <span class="accordion-q">What photo enhancement services does Shoot2Sell offer?</span>
