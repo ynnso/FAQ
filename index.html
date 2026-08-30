@@ -1915,48 +1915,22 @@
     .hero-top { padding: 28px 20px 0; border-radius: 24px; }
     .search-wrap { max-width: 100%; }
 
-    /* Pinned to the top of the screen while focused -- see the focus/blur
-       listeners on searchInput in JS. On a real phone the keyboard covers
-       roughly the bottom 40% of the viewport; leaving the bar wherever it
-       naturally sits on the page could put its own dropdown list partly or
-       fully behind the keyboard.
+    /* REAL root cause of every "doesn't stick" report, finally confirmed
+       2026-08-30 via an actual scroll test (getBoundingClientRect after
+       scrolling deep into the page): position:sticky can only hold a
+       child pinned for as long as its OWN CONTAINING BLOCK (.hero-actions
+       / .hero, a short intro section) still overlaps the viewport. Scroll
+       past the hero's own bottom edge -- which happens almost immediately,
+       the hero is short by design -- and the "stuck" bar gets pulled away
+       with its vanished container, no matter how the sticky rule itself
+       is tuned. This is structural, not fixable by adjusting top/z-index/
+       margin on this element -- confirmed live: rect.top was -760px after
+       scrolling, nowhere near the "stuck at 0" it should show.
 
-       This used to be position: fixed with a solid white full-screen cover
-       behind it -- confirmed live that broke something bigger than it
-       fixed: removing the bar (and everything visually "behind" it) from
-       the page entirely also hid the auto-expanded top search match
-       (search-top-match) that lives further down the SAME page, which is
-       exactly why mobile search read as "dumber" than desktop -- desktop
-       shows that answer opened right on the page; mobile's full-screen
-       cover was hiding it completely, leaving only the dropdown list.
-
-       position: sticky fixes both at once: the bar stays in normal
-       document flow (nothing needs covering, because nothing gets
-       displaced), it still sticks to the top of the viewport once you'd
-       scroll past it, and the real page underneath -- backdrop dim,
-       elevated top match, all of it -- stays intact and visible exactly
-       like it already does on desktop. */
-    .search-wrap.mobile-pinned {
-      position: sticky;
-      /* Flush to the true top now -- was 12px, leaving a visible gap
-         above the bar when pinned. Stays pinned through scroll too,
-         same sticky rule, as long as the input keeps focus. */
-      top: 0;
-      z-index: 500;
-      /* Real bug on notched/Dynamic-Island phones: pinned to true top:0
-         with no clearance sat the bar flush under the status bar.
-         margin-top (not padding-top) on purpose -- padding-top was tried
-         first and broke alignment: .search-mic/.search-actions are
-         position:absolute against THIS element's own box, anchored to
-         its top edge regardless of padding, so padding-top pushed the
-         input down while the icon buttons stayed put, floating above/
-         outside the bar. margin-top moves the whole box (input + icons)
-         down together as one unit instead. Body bg is white, so the
-         margin gap is covered by the page itself -- no extra fill
-         needed. env() is 0px with no inset (desktop, older phones) so
-         this is a no-op there. */
-      margin-top: env(safe-area-inset-top, 0px);
-    }
+       Reverted to normal flow -- the ALWAYS-pinned-while-scrolling
+       affordance is .sticky-header (position:fixed, no containing-block
+       limitation at all), which is what it was built for in the first
+       place. See the headerObserver comment in the JS below. */
     /* padding-top/bottom only — touching the shorthand here would reset
        left/right to 0 and silently cancel the clamp() inset above. That
        exact silent-zeroing bug was probably why the last spacing fix
@@ -4925,17 +4899,12 @@
   if (stickyHeader && heroSearchWrap) {
     const headerObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        // Real bug found live: focusing the search input pins the full
-        // hero search-wrap to the very top (mobile-pinned, position:
-        // sticky) -- but scrolling it there also made it stop
-        // "intersecting" in the normal sense, which this observer read
-        // as "scrolled away, show the compact sticky-header instead."
-        // Both ended up visible at once, overlapping in the same 0-64px
-        // strip (confirmed via getBoundingClientRect on both). Suppress
-        // the compact header entirely while the full bar is pinned --
-        // no reason to ever show both.
-        const suppressed = heroSearchWrap.classList.contains('mobile-pinned');
-        stickyHeader.classList.toggle('visible', !entry.isIntersecting && !suppressed);
+        // This IS the always-pinned-while-scrolling search affordance now
+        // (2026-08-30) -- position:fixed, so unlike the hero search-wrap
+        // it has no containing-block height limit to run out of. Shows
+        // the instant the real hero bar scrolls out of view, at any
+        // width, and stays pinned for the rest of the scroll.
+        stickyHeader.classList.toggle('visible', !entry.isIntersecting);
       });
     }, { threshold: 0, rootMargin: '-64px 0px 0px 0px' });
     headerObserver.observe(heroSearchWrap);
@@ -4951,16 +4920,18 @@
     if (searchInput.value.length === 0) searchCursor.classList.remove('hidden');
   });
 
-  // Mobile keyboard covers roughly the bottom 40% of the screen -- with
-  // the search bar sitting wherever it naturally falls on the page, the
-  // dropdown list underneath it could end up partly or fully hidden
-  // behind the keyboard. Pinning the bar itself to the top of the screen
-  // while focused keeps the whole dropdown in the remaining visible
-  // space above the keyboard instead. Only applies on narrow (phone-width)
-  // viewports -- desktop has no on-screen keyboard to make room for.
+  // .search-wrap is unconditionally position:sticky at mobile widths now
+  // (2026-08-30) -- it stays pinned to the top on any scroll, focused or
+  // not. This listener still earns its keep for one case: tapping the
+  // search bar from the very TOP of the page, before any scrolling has
+  // happened, where it's still sitting in its normal unstuck position.
+  // Mobile keyboard covers roughly the bottom 40% of the screen there --
+  // without an explicit scroll, the dropdown list underneath the bar
+  // could end up partly or fully hidden behind the keyboard. Only
+  // applies on narrow (phone-width) viewports -- desktop has no
+  // on-screen keyboard to make room for.
   searchInput.addEventListener('focus', () => {
     if (window.innerWidth <= 768) {
-      heroSearchWrap.classList.add('mobile-pinned');
       // Real bug: position:sticky only pins DURING scroll -- it doesn't
       // relocate the element on its own. scrollIntoView() was the first
       // attempt, but it's a no-op whenever the element is already fully
@@ -4975,9 +4946,6 @@
         window.scrollTo({ top: target, behavior: 'smooth' });
       });
     }
-  });
-  searchInput.addEventListener('blur', () => {
-    heroSearchWrap.classList.remove('mobile-pinned');
   });
   searchInput.addEventListener('input', () => {
     if (searchInput.value.length > 0) searchCursor.classList.add('hidden');
