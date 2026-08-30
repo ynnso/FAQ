@@ -1960,8 +1960,17 @@
        .pricing-tile-name, so "Contact us" landed under the icon
        instead of under "Agent"). 32px = 32px icon - 4px icon's own
        negative margin-left + 4px row gap, so this lines up with where
-       the text actually starts now. */
-    margin-left: 32px;
+       the text actually starts now.
+       padding-left, not margin-left -- this row is width:100% now (see
+       .pricing-tile-contact above, so the arrow can anchor to the
+       tile's real right edge via justify-content:space-between).
+       margin sits OUTSIDE a width:100% box's own width, so a
+       margin-left here would have pushed the whole row 32px past the
+       tile's right edge -- confirmed via measurement, contactRight
+       (505.7px) exceeded tileRight (489.7px). padding-left is
+       included IN the box's own width, so it insets the text without
+       overflowing. */
+    padding-left: 32px;
   }
 
   /* ── NO RESULTS ── */
@@ -2099,16 +2108,20 @@
   #block-account .section-header-shelf { animation-delay: 0.30s; }
 
   @media (max-width: 768px) {
-    /* Contact-us arrow stays standard (22px, matching the price row)
-       everywhere by default -- only shrinks within this narrow-mobile
-       range, where it's actually needed. Real measured room: desktop
-       (245px+ tiles) fits the standard arrow fine (1 line, verified);
-       a 155px mobile tile genuinely doesn't (2 lines at 22px, verified
-       via text-node rects). Scoped here instead of picking one size
-       for every width. */
+    /* Real root cause, calculated not guessed: the arrow's SIZE was
+       never the problem -- its 8px margin was. At a 155px mobile tile,
+       "Contact us" ends up needing all of a ~91px row (32px padding-
+       left to align under "Agent", ~63px for the text itself),
+       leaving ~28px for the arrow+margin. 22px arrow + 8px margin = 30
+       doesn't fit; 22px arrow + 4px margin = 26 does, with room to
+       spare. Verified via getClientRects() on the real text node at
+       every size from 14-22px with margin held at 4px -- all render 1
+       line, confirmed not an overflow false-positive (contactRight
+       stayed inside the tile's padding, no page-level horizontal
+       scroll). So the arrow stays the SAME standard 22px used
+       everywhere else on the page -- only the margin shrinks, and
+       only in this narrow-mobile range. */
     .pricing-tile-contact::after {
-      width: 14px;
-      height: 14px;
       margin-left: 4px;
     }
 
