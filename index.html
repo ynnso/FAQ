@@ -1853,18 +1853,6 @@
     transition: background-color 0.2s ease;
   }
 
-  /* Smaller arrow on JUST the Contact-us row -- real measurement (text
-     node getClientRects, not container height) showed "Contact us"
-     genuinely didn't fit its available width even at an 11-12px font
-     with the full-size 22px arrow eating a third of the row. The price
-     row's arrow next to 30-70px digits stays full size; this one only
-     needed to shrink here. */
-  .pricing-tile-contact::after {
-    width: 14px;
-    height: 14px;
-    margin-left: 4px;
-  }
-
   .pricing-tile:hover .pricing-tile-price::after,
   .pricing-tile:hover .pricing-tile-contact::after {
     background-color: var(--white);
@@ -2099,6 +2087,19 @@
   #block-account .section-header-shelf { animation-delay: 0.30s; }
 
   @media (max-width: 768px) {
+    /* Contact-us arrow stays standard (22px, matching the price row)
+       everywhere by default -- only shrinks within this narrow-mobile
+       range, where it's actually needed. Real measured room: desktop
+       (245px+ tiles) fits the standard arrow fine (1 line, verified);
+       a 155px mobile tile genuinely doesn't (2 lines at 22px, verified
+       via text-node rects). Scoped here instead of picking one size
+       for every width. */
+    .pricing-tile-contact::after {
+      width: 14px;
+      height: 14px;
+      margin-left: 4px;
+    }
+
     /* Search bar, pills, and section headers were running almost edge to
        edge (~20px each side, ~5% of the screen) — enough to read as
        "bleeding" off the sides. Roughly 15%+ more inset on both sides. */
