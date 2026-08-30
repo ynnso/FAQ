@@ -1783,8 +1783,14 @@
        the page) was wrapping to 3 lines on mobile -- icon(44px)+gap
        left too little room at the old size for two words to ever share
        a line. Smaller text + tighter gap together free enough width for
-       it to wrap to 2 lines like every other tile instead. */
-    font-size: clamp(15px, 3.4vw, 24px);
+       it to wrap to 2 lines like every other tile instead.
+       Ceiling 24px -> 19px: the 3-column desktop breakpoint (see
+       .pricing-tile-grid) narrowed each tile from ~378px to ~245px --
+       at desktop widths this clamp always sits at its max regardless
+       of vw (3.4vw exceeds 24px past ~706px), so the same "Agent Brand
+       Video" 3-line wrap regression came right back once columns got
+       narrower again, just at desktop instead of mobile this time. */
+    font-size: clamp(15px, 3.4vw, 19px);
     font-weight: 700;
     color: var(--black);
     line-height: 1.15;
@@ -1880,7 +1886,13 @@
   .pricing-tile-dollar {
     font-size: 0.4em;
     font-weight: 700;
-    vertical-align: top;
+    /* vertical-align only affects inline-level boxes -- .pricing-tile-
+       price became display:inline-flex (to lay the arrow out after the
+       price text), which made the $ a flex item and silently dropped
+       vertical-align:top entirely, sagging it down to the row's
+       align-items:center position instead of sitting raised like a
+       real superscript. align-self is the flex equivalent. */
+    align-self: flex-start;
     position: relative;
     top: 0.15em;
   }
@@ -1894,15 +1906,19 @@
   }
 
   .pricing-tile-contact {
-    font-size: clamp(16px, 4vw, 22px);
+    /* Ceiling 22px -> 17px, same reason as .pricing-tile-name: the
+       3-column desktop breakpoint narrowed each tile to ~245px, and
+       "Contact us" no longer fit on one line at the old desktop-max
+       size within that width -- confirmed wrapping to 2 lines live. */
+    font-size: clamp(16px, 4vw, 17px);
     font-weight: 600;
     color: var(--gray-500);
     /* Was flush left under the tile's own edge -- same x as the icon,
        not the name text next to it (icon is the first flex child in
        .pricing-tile-name, so "Contact us" landed under the icon
-       instead of under "Agent"). 52px = the 44px icon + its 8px gap,
+       instead of under "Agent"). 50px = the 44px icon + its 6px gap,
        so this lines up with where the text actually starts. */
-    margin-left: 52px;
+    margin-left: 50px;
   }
 
   /* ── NO RESULTS ── */
