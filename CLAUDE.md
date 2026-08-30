@@ -33,6 +33,10 @@ Vanilla HTML/CSS/JS. No framework, no build step. One `<script>` IIFE.
 
 Replaces `FAQ MD.txt`, the original design brief — now stale against the live build.
 
+## Cutover, 2026-08-29
+
+`index.html` now redirects (meta-refresh + JS) to `faq-v2.html` — Sonny's decision, done with the 5 open bugs below still unresolved (chose cutover now over fix-first). `faq-v2.html` is the only real version going forward; `index.html` is a redirect shell only, not a page to edit.
+
 ## v2 redesign (`faq-v2.html`) — open items log, 2026-08-29
 
 **Reported by Sonny, status STILL OPEN as of his last message ("again same issues") — do not mark resolved without his confirmation:**
