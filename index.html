@@ -252,9 +252,17 @@
     font-family: var(--font);
     font-size: 15px;
     font-weight: 500;
-    color: var(--white);
-    /* Default fill is black at 85% opacity now, not a light grey pill. */
-    background: rgba(0, 0, 0, 0.85);
+    /* Was white text on a near-black idle fill that flipped to white/black
+       on focus -- real bug found in that split: .search-clear's icon is
+       hardcoded stroke:black (see .search-clear svg) and was never part
+       of that focus-state color swap, so the X button was black-on-
+       near-black and effectively invisible any time the bar had text in
+       it but wasn't focused (e.g. right after picking a suggestion,
+       which blurs the input immediately). Plain white bar with black
+       text/icons always, no state-dependent swap, removes the entire
+       class of bug instead of patching each icon one at a time. */
+    color: var(--black);
+    background: var(--white);
     /* Left padding clears the mic icon (now inside the input, left-aligned
        -- see .search-mic, grown to 44px box); right clears the now-flush
        submit button (56px wide idle, was a 44px floating button with a
@@ -276,32 +284,23 @@
                 box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
                 padding-right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     letter-spacing: -0.1px;
-    caret-color: var(--white);
+    caret-color: var(--black);
     box-sizing: border-box;
   }
 
   .search-input::placeholder {
-    color: var(--white);
+    color: var(--gray-500);
     font-weight: 400;
-    /* Bright white, not dimmed -- was 0.7, read as dull grey. */
     opacity: 1;
   }
 
   /* Raised/hovering look on focus -- a neutral shadow, not a red glow, so
-     the only red left in the bar is the submit button itself. Text/caret/
-     placeholder flip to black here since the bg goes from black-70% to
-     white on focus. */
+     the only red left in the bar is the submit button itself. No color
+     swap needed here anymore -- text/caret/placeholder/icons are already
+     black-on-white at rest now, focus only adds the border/shadow lift. */
   .search-input:focus {
     border-color: var(--gray-400);
-    background-color: var(--white);
-    color: var(--black);
-    caret-color: var(--black);
     box-shadow: 0 12px 28px rgba(10, 10, 10, 0.12), 0 2px 8px rgba(10, 10, 10, 0.06);
-  }
-
-  .search-input:focus::placeholder {
-    color: var(--black);
-    opacity: 0.55;
   }
 
   .search-wrap:focus-within .search-input {
@@ -389,23 +388,17 @@
     transition: background var(--transition), transform var(--transition), opacity 0.3s ease;
     padding: 0;
     flex-shrink: 0;
-    /* Bright white by default, not dimmed -- bar's default fill is
-       black-85% now, so the icon needs full contrast against that. */
-    color: var(--white);
+    /* Black now that the bar is white at rest, not just on focus -- was
+       white-by-default (matching an idle black-85% fill), which is the
+       same class of bug that made .search-clear's icon invisible: a
+       fixed color tied to only one of the bar's two possible fills. One
+       fill now, one icon color, no state to fall out of sync. */
+    color: var(--black);
     z-index: 4;
   }
 
-  .search-input:focus ~ .search-mic,
-  .search-wrap:focus-within .search-mic {
-    /* Was gray-500 (#737373) -- too washed out against the white focus
-       background, reported as low-contrast on a real device. Black
-       matches the input's own focused text color. */
-    color: var(--black);
-  }
-
   .search-mic.visible { display: flex; }
-  .search-mic:hover { background: rgba(255,255,255,0.12); color: var(--white); }
-  .search-wrap:focus-within .search-mic:hover { background: rgba(0,0,0,0.08); color: var(--black); }
+  .search-mic:hover { background: rgba(0,0,0,0.08); }
 
   /* Scaled back from 36px (2x) -- overwhelmed the bar. ~1.3x the
      original 18px instead. */
