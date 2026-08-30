@@ -1845,6 +1845,26 @@
     min-height: clamp(30px, 9.5vw, 74px);
   }
 
+  /* Real bug, confirmed via screenshot: with the row still shrink-
+     wrapped (inline-flex, no explicit width), the arrow's horizontal
+     position follows each price's own digit width -- "$139" (3
+     digits) puts it somewhere different than "$79" (2 digits) or
+     "$60" (2 digits but a narrower font at that specific size). Down
+     a column of tiles, that reads as a visible zig-zag instead of a
+     straight line -- Sonny flagged this directly with a real
+     annotated screenshot. .pricing-tile-contact ("Contact us") is
+     deliberately NOT included here: that content is short enough that
+     forcing it to a fixed right edge visibly disconnects it from its
+     own arrow (tried and reverted earlier this session, confirmed via
+     side-by-side comparison). Price digits are wide enough that this
+     doesn't happen -- pushing the arrow to a consistent right edge
+     keeps it visually attached while actually aligning it. */
+  .pricing-tile-price {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+
   .pricing-tile-price::after,
   .pricing-tile-contact::after {
     content: "";
