@@ -1757,8 +1757,13 @@
   .pricing-tile-name {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: clamp(15px, 4vw, 24px);
+    gap: 6px;
+    /* 4vw -> 3.4vw: real bug, "Agent Brand Video" (the longest name on
+       the page) was wrapping to 3 lines on mobile -- icon(44px)+gap
+       left too little room at the old size for two words to ever share
+       a line. Smaller text + tighter gap together free enough width for
+       it to wrap to 2 lines like every other tile instead. */
+    font-size: clamp(15px, 3.4vw, 24px);
     font-weight: 700;
     color: var(--black);
     line-height: 1.15;
@@ -1822,7 +1827,12 @@
   }
 
   .pricing-tile-price {
-    font-size: clamp(34px, 11vw, 74px);
+    /* 11vw -> 9.5vw: at narrow mobile widths (2-column grid, ~155px
+       per tile) the price digits could render wide enough to run into
+       the arrow badge's corner (now anchored bottom-right, see
+       .pricing-tile::after) -- a bit smaller creates real clearance
+       there without needing to touch the arrow itself. */
+    font-size: clamp(30px, 9.5vw, 74px);
     font-weight: 600;
     color: var(--red);
     letter-spacing: -0.02em;
@@ -1841,7 +1851,8 @@
     font-size: 13px;
     font-weight: 500;
     color: var(--gray-500);
-    margin-right: 5px;
+    /* Tightened from 5px -- read as too loose a gap before the $. */
+    margin-right: 2px;
   }
 
   .pricing-tile-contact {
