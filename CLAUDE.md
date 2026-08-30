@@ -16,6 +16,10 @@ Vanilla HTML/CSS/JS. No framework, no build step. One `<script>` IIFE.
 - Search bar: Airbnb-style pill, grey idle / white raised on focus. Red squircle button morphs into a labeled "Search" pill on focus, elastic overshoot. Mic sits left-inside the input; the search button owns the right edge alone.
 - Search matching ignores filler words ("how/much/is") and maps real synonyms (cost↔price↔pricing, photo↔picture↔image). Exact match tried first, then synonym match, then typo-tolerant fallback.
 
+## Communication
+- Replies: terse bullet list of what changed, nothing else. No play-by-play, no narrated tool use, no re-explaining a prior answer at length — a one-line pointer back to it is enough.
+- Skip restating context the user already has.
+
 ## Rules
 - Verify every visual/behavior change live (screenshot or computed style) before calling it done. Never claim untested.
 - Push only after local verification passes: sync `FAQ.html`→`index.html`, commit, push, poll the live URL.
@@ -28,3 +32,9 @@ Vanilla HTML/CSS/JS. No framework, no build step. One `<script>` IIFE.
 4. State plainly what was and wasn't checked. "Confirmed via computed style, not a real screenshot" is a fine thing to say — a false "verified" is not.
 
 Replaces `FAQ MD.txt`, the original design brief — now stale against the live build.
+
+## v2 redesign (`faq-v2.html`) — open items log, 2026-08-29
+
+- **H1 weight (365), mic/search icon sizing (24px/40px), Top 5 Trending font (18px):** all confirmed already correct in the pushed commit via `grep` when Sonny reported them as not applied. Likely a stale cache on his device — ask for a hard refresh before assuming a code gap.
+- **Fixed: sticky-header vs mobile-pinned-search overlap.** Focusing the hero search pins it (`position: sticky`, `.mobile-pinned`) — this also read as "scrolled away" to the `IntersectionObserver` driving the compact `#stickyHeader`, so both rendered at once (confirmed via `getBoundingClientRect`, overlapping 0–64px). This was the "padding issues hiding under screen top" bug Sonny flagged. Fix: observer callback now checks `.mobile-pinned` and suppresses the compact header whenever the full bar is pinned. Verified via computed state, not a real click — see next note.
+- **Automation limitation:** the `computer` click tool has repeatedly timed out (30s) or silently no-op'd on this page's search-focus interactions in this environment, both on the real input and the sticky-header button. When a real click can't be confirmed, verify via computed DOM state (`classList`, `getBoundingClientRect`, `scrollY`) instead of assuming the click landed — and say explicitly that's what was done, not a full click-through.
