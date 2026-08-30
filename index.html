@@ -2091,49 +2091,54 @@
     flex: 1;
     max-width: 640px;
     margin: 0 auto;
-    height: 40px;
-    /* Matches the hero search bar's design now -- rectangle, black-85%
-       fill, white text/icon. Was a plain grey rounded pill, its own
-       unstyled look left over from before the hero bar redesign. */
+    height: 48px;
+    /* Real duplicate of the hero search bar's actual look now (white
+       fill, black border/text/mic, red submit chip) -- was still the
+       OLD black-85%/white-icon look from before the hero bar itself
+       went white, so the two read as two different search bars once
+       that changed. Sonny's ask: this should look like the same bar,
+       just pinned, not its own separate design. */
     border-radius: 0;
-    border: 1px solid var(--gray-300);
-    background: rgba(0, 0, 0, 0.85);
+    border: 1.5px solid var(--gray-300);
+    background: var(--white);
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     /* No right padding -- the red submit chip sits flush right, like
        the hero bar's own submit button. */
     padding: 0 0 0 16px;
     cursor: pointer;
-    color: var(--white);
+    color: var(--black);
     font-family: var(--font);
-    font-size: 13px;
+    font-size: 14px;
+    font-weight: 500;
     text-align: left;
   }
 
-  .sticky-header-search:hover { border-color: var(--gray-400); background: rgba(0, 0, 0, 0.95); }
+  .sticky-header-search:hover { border-color: var(--gray-400); }
   .sticky-header-search:active {
     transform: scale(0.97);
     transition: transform 0.1s cubic-bezier(0.4, 0, 1, 1);
   }
 
-  /* Mic (left, plain white outline) -- text -- red submit chip (right),
-     same left-to-right order as the hero bar. */
-  .sticky-header-search-mic { width: 15px; height: 15px; flex-shrink: 0; stroke: var(--white); }
+  /* Mic (left, black outline, matches .search-mic svg) -- text -- red
+     submit chip (right), same left-to-right order and colors as the
+     hero bar. */
+  .sticky-header-search-mic { width: 22px; height: 22px; flex-shrink: 0; stroke: var(--black); }
 
-  #stickyHeaderSearchLabel { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #stickyHeaderSearchLabel { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--gray-500); }
 
   .sticky-header-search-submit {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
+    width: 48px;
     height: 100%;
     background: var(--red);
     flex-shrink: 0;
   }
 
-  .sticky-header-search-submit svg { width: 16px; height: 16px; flex-shrink: 0; stroke: var(--white); }
+  .sticky-header-search-submit svg { width: 20px; height: 20px; flex-shrink: 0; stroke: var(--white); }
 
   @media (max-width: 600px) {
     .sticky-header { padding: 0 16px; gap: 10px; }
