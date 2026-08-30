@@ -1687,6 +1687,9 @@
 
   .pricing-tile {
     display: block;
+    /* So the outbound-link arrow (::after below) can be positioned in
+       the corner, out of the name/price flow entirely. */
+    position: relative;
     padding: 18px 16px;
     /* Was margin: 0 -16px (a negative-margin bleed into the column gap,
        meant to give the hover-fill room to extend past the tile).
@@ -1754,26 +1757,39 @@
 
   /* Every tile links out to its real service page on shoot2sell.com
      (see .pricing-tile:hover comment above) but nothing on the tile
-     itself said so -- Sonny's ask. One rule, applies to all 13 tiles,
-     no markup change needed per tile. Red and ~2.5x bigger (was 14px
-     grey, read as too subtle) so it reads as a real call-to-action, not
-     a faint hint; flips to white on hover so it stays visible once the
-     tile itself fills red. */
-  .pricing-tile-name::after {
+     itself said so -- Sonny's ask. Red and ~2.5x bigger (was 14px
+     grey, read as too subtle). Real bug from the first version: this
+     lived as a flex child of .pricing-tile-name (inline, next to the
+     icon+text), and at 36px wide it didn't fit the narrow mobile
+     column alongside icon+name text -- squeezed the text into extra
+     wrapped lines AND pushed the whole tile wider than its 1fr grid
+     track, shoving column 2 partway off-screen. Moved to the TILE
+     itself, absolutely positioned in the corner -- completely out of
+     the name/price flow now, can't compete for width with anything. */
+  .pricing-tile::after {
     content: "";
-    display: inline-block;
-    width: 36px;
-    height: 36px;
-    margin-left: auto;
-    flex-shrink: 0;
+    position: absolute;
+    top: 16px;
+    right: 12px;
+    display: block;
+    width: 30px;
+    height: 30px;
     background-color: var(--red);
     -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>') center / contain no-repeat;
     mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>') center / contain no-repeat;
     transition: background-color 0.2s ease;
   }
 
-  .pricing-tile:hover .pricing-tile-name::after {
+  .pricing-tile:hover::after {
     background-color: var(--white);
+  }
+
+  /* Reserves room at the row's right edge so wrapped name text (e.g.
+     "Floor Plan 2D/3D") can't run underneath the corner arrow -- this
+     is padding, not a flex sibling, so it doesn't force anything to
+     shrink or wrap on its own the way the old inline arrow did. */
+  .pricing-tile-name {
+    padding-right: 38px;
   }
 
   .pricing-tile-name svg {
