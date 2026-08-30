@@ -3,8 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>FAQ — Shoot2Sell Photography</title><meta name="description" content="Answers on real estate photography, aerial/drone, Matterport 3D tours, virtual staging, floor plans, video, and pricing for DFW, Houston, Austin, and San Antonio real estate listings.">
+<title>Real Estate Photography FAQ | Shoot2Sell Texas</title><meta name="description" content="Answers on real estate photography, aerial/drone, Matterport 3D tours, virtual staging, floor plans, video, and pricing for DFW, Houston, Austin, and San Antonio real estate listings.">
 <meta name="keywords" content="real estate photography FAQ, aerial drone photography, Matterport 3D tours, virtual staging, floor plans, real estate video, Texas real estate photography">
+<link rel="canonical" href="https://ynnso.github.io/FAQ/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Shoot2Sell Photography">
+<meta property="og:title" content="Real Estate Photography FAQ | Shoot2Sell Texas">
+<meta property="og:description" content="Answers on real estate photography, aerial/drone, Matterport 3D tours, virtual staging, floor plans, video, and pricing for DFW, Houston, Austin, and San Antonio real estate listings.">
+<meta property="og:url" content="https://ynnso.github.io/FAQ/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Real Estate Photography FAQ | Shoot2Sell Texas">
+<meta name="twitter:description" content="Answers on real estate photography, aerial/drone, Matterport 3D tours, virtual staging, floor plans, video, and pricing for DFW, Houston, Austin, and San Antonio real estate listings.">
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;493;800&display=swap" rel="stylesheet">
 <style>
@@ -198,6 +207,23 @@
   h1 em {
     font-style: normal;
     color: var(--red);
+  }
+
+  /* Real content, not decorative -- clipped to 1px instead of
+     display:none/visibility:hidden so screen readers and crawlers still
+     read it, while the giant display "FAQ" stays the only thing a
+     sighted visitor sees. Standard accessible sr-only pattern, not a
+     hidden-text SEO trick (it's the same text a sighted user gets one
+     line down in .hero-sub + the page's own real H2s, just also present
+     right in the H1 crawlers weight highest). */
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   /* ── ROW 3: Subtitle ── */
@@ -2149,6 +2175,8 @@
 {
    "@context" : "https://schema.org",
    "@type" : "FAQPage",
+   "url" : "https://ynnso.github.io/FAQ/",
+   "dateModified" : "2026-08-30",
    "mainEntity" : [
       {
          "@type" : "Question",
@@ -2645,174 +2673,50 @@
             "text" : "We serve all major Texas metros: Dallas-Fort Worth: Plano, Frisco, McKinney, Allen, Prosper, Southlake, Flower Mound, Arlington, Rockwall, Denton, Celina, and more. Houston: The Woodlands, Katy, Sugar Land, Pearland, Cypress, Spring, League City, and more. Austin: Round Rock, Cedar Park, Georgetown, Pflugerville, Leander, Lakeway, Dripping Springs, and more. San Antonio: New Braunfels, Boerne, Schertz, Cibolo, and more. Outlying suburbs and rural areas may include a travel fee based on distance."
          },
          "name" : "What areas does Shoot2Sell serve?"
+      }
+   ]
+}
+</script>
+<!-- Organization/WebSite/BreadcrumbList -- entity + freshness signals for
+     AI answer engines and Google, separate from the FAQPage block above.
+     Deliberately no logo/sameAs/telephone fields: no real, verified URL
+     or number for any of those exists anywhere in this file or repo, and
+     a fabricated one would be worse than none -- a broken/wrong
+     structured-data reference actively hurts trust signals rather than
+     helping them. Add these fields for real once real ones exist. -->
+<script type="application/ld+json">
+{
+   "@context" : "https://schema.org",
+   "@graph" : [
+      {
+         "@type" : "Organization",
+         "@id" : "https://shoot2sell.com/#organization",
+         "name" : "Shoot2Sell Photography",
+         "url" : "https://shoot2sell.com"
       },
       {
-         "@type" : "Question",
-         "acceptedAnswer" : {
-            "@type" : "Answer",
-            "text" : "You'll receive a delivery email with a dashboard link. Click on Hi-Res or Low-Res download buttons, then save the ZIP file and extract."
-         },
-         "name" : "How do I download my images?"
+         "@type" : "WebSite",
+         "@id" : "https://ynnso.github.io/FAQ/#website",
+         "name" : "Shoot2Sell Photography FAQ",
+         "url" : "https://ynnso.github.io/FAQ/",
+         "publisher" : { "@id" : "https://shoot2sell.com/#organization" }
       },
       {
-         "@type" : "Question",
-         "acceptedAnswer" : {
-            "@type" : "Answer",
-            "text" : "Go to client.shoot2sell.com or click the \"Download Images, Virtual Tour\" link in the delivery email. That direct link takes you to the Listing Page; use the \"Home\" button at top right to return to the Dashboard home."
-         },
-         "name" : "How do I get to my Shoot2Sell Dashboard?"
-      },
-      {
-         "@type" : "Question",
-         "acceptedAnswer" : {
-            "@type" : "Answer",
-            "text" : "Scroll past the Property Info area on your listing page to the Sharing Tools section. You can also share your Virtual Tour anywhere by copying and pasting the URL."
-         },
-         "name" : "How do I share my images or Virtual Tour with my homeowner?"
-      },
-      {
-         "@type" : "Question",
-         "acceptedAnswer" : {
-            "@type" : "Answer",
-            "text" : "Your Dashboard includes both versions of every tour. The branded Virtual Tour includes your agent contact information, headshot, website link, and a Lead Collection form that lets prospects reach you by phone, email, or Facebook Messenger."
-         },
-         "name" : "What is the difference between branded and unbranded Virtual Tours?"
-      },
-      {
-         "@type" : "Question",
-         "acceptedAnswer" : {
-            "@type" : "Answer",
-            "text" : "Yes — but if you change the Marketing Address of a listing, the URL to share the Virtual Tour will also change. Verify the Marketing Address is correct before you share your Virtual Tours."
-         },
-         "name" : "Can I change the Marketing Address after sharing?"
-      },
-      {
-         "@type" : "Question",
-         "acceptedAnswer" : {
-            "@type" : "Answer",
-            "text" : "Click the listing name or first photo in the Listing Feed to open the Listing Page. Scroll to the Property Media section and click \"Download Images\" to save your images as a .ZIP file."
-         },
-         "name" : "How do I download my photos?"
-      },
-      {
-         "@type" : "Question",
-         "acceptedAnswer" : {
-            "@type" : "Answer",
-            "text" : "Matterport 3D Spaces cannot be downloaded from the Dashboard. Contact the Front Office for direct Matterport access. Click the listing to view the Listing Page; the Property Media section has the links to your 360° content."
-         },
-         "name" : "How do I download my Matterport 3D tour?"
-      },
-      {
-         "@type" : "Question",
-         "acceptedAnswer" : {
-            "@type" : "Answer",
-            "text" : "Use the Search bar at the top of the Dashboard to filter listings by address, agent, or listing information. It's especially helpful for brokers managing multiple listings."
-         },
-         "name" : "How do I search for a specific listing?"
-      },
-      {
-         "@type" : "Question",
-         "acceptedAnswer" : {
-            "@type" : "Answer",
-            "text" : "Click the listing name or first photo in the Listing Feed to reach the Listing Page. Drag and drop images to reorder them."
-         },
-         "name" : "How do I show, hide, or reorder my photos?"
-      },
-      {
-         "@type" : "Question",
-         "acceptedAnswer" : {
-            "@type" : "Answer",
-            "text" : "Click the listing name or first photo in the Listing Feed. Scroll to the Property Media section and click the Branded or Unbranded Vimeo button to open the video page."
-         },
-         "name" : "How do I download my video?"
-      },
-      {
-         "@type" : "Question",
-         "acceptedAnswer" : {
-            "@type" : "Answer",
-            "text" : "Click the listing name or first photo in the Listing Feed to open the Listing Page. You can edit the Virtual Tour copy and basic listing information such as layout and price in the Property Info section."
-         },
-         "name" : "How do I edit info and copy for a listing?"
-      },
-      {
-         "@type" : "Question",
-         "acceptedAnswer" : {
-            "@type" : "Answer",
-            "text" : "You can rearrange the order of your images and hide any image on demand. On your dashboard link, click Edit Virtual Tour to view all the images. To rearrange the image order, click and drag the images to the desired order. To hide an image, click the orange button with the \"eye\" icon and the image will gray out. Click the eye icon again to un-hide it. You can also zoom on a particular image by clicking the blue zoom button."
-         },
-         "name" : "Can I edit my slideshow?"
-      },
-      {
-         "@type" : "Question",
-         "acceptedAnswer" : {
-            "@type" : "Answer",
-            "text" : "Honest, quality service is paramount to us. We regularly work with our clients and collaborate on individual solutions."
-         },
-         "name" : "What should I do if I'm not satisfied?"
-      },
-      {
-         "@type" : "Question",
-         "acceptedAnswer" : {
-            "@type" : "Answer",
-            "text" : "For simple viewing, use the Sharing Tools on the listing page. For team members who need to edit listings or download media, they will need to log in with their own account."
-         },
-         "name" : "How do I add my Listing Coordinator or another team member?"
-      },
-      {
-         "@type" : "Question",
-         "acceptedAnswer" : {
-            "@type" : "Answer",
-            "text" : "You'll receive a default password in your Image Delivery email. When you log in for the first time, we recommend setting a secure password of your choosing."
-         },
-         "name" : "How do I log in for the first time and set my password?"
-      },
-      {
-         "@type" : "Question",
-         "acceptedAnswer" : {
-            "@type" : "Answer",
-            "text" : "Use the Reset Password link on the login screen. Enter your email address and follow the instructions we send you. If the reset doesn't work, contact Shoot2Sell support."
-         },
-         "name" : "What if I forgot my password?"
-      },
-      {
-         "@type" : "Question",
-         "acceptedAnswer" : {
-            "@type" : "Answer",
-            "text" : "The most common reason for a 403 or 400 error is logging in with the wrong email address. Make sure you're using the email you use to do business with Shoot2Sell."
-         },
-         "name" : "Why did I get a 403 or 400 error message?"
-      },
-      {
-         "@type" : "Question",
-         "acceptedAnswer" : {
-            "@type" : "Answer",
-            "text" : "Both Owners and Editors can access listings to change information and download media."
-         },
-         "name" : "How do I make changes to listing info or move my photos?"
-      },
-      {
-         "@type" : "Question",
-         "acceptedAnswer" : {
-            "@type" : "Answer",
-            "text" : "On the Dashboard Home Page, click \"Edit Info\", then select \"Edit Headshot\". The recommended photo size is 1000 x 1000 px. Square photos work best."
-         },
-         "name" : "How do I change my headshot or personal photo?"
-      },
-      {
-         "@type" : "Question",
-         "acceptedAnswer" : {
-            "@type" : "Answer",
-            "text" : "On the Dashboard Home Page, click \"Edit Info\" and use the password field at the bottom to change it."
-         },
-         "name" : "How do I change my password?"
-      },
-      {
-         "@type" : "Question",
-         "acceptedAnswer" : {
-            "@type" : "Answer",
-            "text" : "On the Dashboard Home Page, click \"Edit Info\" to update your contact and company information. Some fields — such as the email address on your account — must be changed by the Shoot2Sell team."
-         },
-         "name" : "How do I edit my contact info or company info?"
+         "@type" : "BreadcrumbList",
+         "itemListElement" : [
+            {
+               "@type" : "ListItem",
+               "position" : 1,
+               "name" : "Shoot2Sell",
+               "item" : "https://shoot2sell.com"
+            },
+            {
+               "@type" : "ListItem",
+               "position" : 2,
+               "name" : "FAQ",
+               "item" : "https://ynnso.github.io/FAQ/"
+            }
+         ]
       }
    ]
 }
@@ -2877,7 +2781,7 @@
 
   <!-- Soft gradient hero — text only, no photo -->
   <div class="hero-top">
-    <h1>FAQ</h1>
+    <h1>FAQ<span class="sr-only"> — Real Estate Photography, Aerial, Matterport &amp; Pricing for DFW, Houston, Austin, San Antonio</span></h1>
     <h2 class="hero-sub">Hi. How can we help?</h2>
   </div>
 
