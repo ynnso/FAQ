@@ -255,6 +255,16 @@
        10px gap). */
     padding: 16px 68px 16px 60px;
     outline: none;
+    /* Explicit clip + ellipsis -- a picked Top-5/search-suggestion row
+       (see pickSuggestion()) can set the full question text as the
+       value, e.g. "Can I bundle real estate photography, video, floor
+       plans, and drone services?". Reported as visibly overflowing the
+       bar on a real device instead of clipping the way a plain <input>
+       normally would -- being explicit here instead of relying on
+       default input clipping behavior, which isn't fully consistent
+       across mobile browsers. */
+    overflow: hidden;
+    text-overflow: ellipsis;
     transition: border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
                 background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
                 box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
@@ -963,6 +973,16 @@
     transform: scale(0.99);
   }
 
+  /* Open section fills solid black (was transparent, red-only accents
+     on icon/title) -- Sonny's ask. border-bottom off here since the
+     divider line reads oddly against a filled black row; border-radius
+     matches the page's other filled-card language. */
+  .section-header-shelf.active {
+    background: var(--black);
+    border-bottom-color: transparent;
+    border-radius: 16px;
+  }
+
   /* Chevron lives outside the title's own wrapping flex row, so a long
      title wrapping to two lines never disturbs it. */
   .section-header-right {
@@ -1074,12 +1094,14 @@
   }
 
   .section-header-shelf.active .section-header-icon {
-    stroke: var(--red);
+    /* Was red -- now the row itself fills black, so the icon needs to
+       go white for contrast instead of accenting red on a light row. */
+    stroke: var(--white);
     /* Aerial/Virtual Staging use fill:currentColor (inline style) instead
        of stroke -- currentColor tracks this color property, not stroke,
        so they need this too or they stay black when active. Harmless for
        the stroke-based icons since they don't reference currentColor. */
-    color: var(--red);
+    color: var(--white);
   }
 
   /* 360/Floor Plans/Delivery/Booking/Enhancements are raster PNGs, now
@@ -1088,14 +1110,16 @@
      unreliable on mobile Safari, a known WebKit quirk; a real img tag
      filters consistently everywhere). currentColor doesn't apply to a
      bitmap either way, so filter is the only way to recolor one.
-     Standard black-to-#e60000 recipe. */
+     Black-to-white recipe now that the active row fills black (was a
+     black-to-red recipe for the old red-on-light-row look). */
   .section-header-shelf.active img.section-header-icon {
-    -webkit-filter: invert(8%) sepia(97%) saturate(7480%) hue-rotate(4deg) brightness(97%) contrast(118%);
-    filter: invert(8%) sepia(97%) saturate(7480%) hue-rotate(4deg) brightness(97%) contrast(118%);
+    -webkit-filter: invert(100%);
+    filter: invert(100%);
   }
 
   .section-header-shelf.active .section-header-text h2 {
-    color: var(--red);
+    /* Was red -- white now that the row itself fills black. */
+    color: var(--white);
   }
 
   .section-header-text p {
@@ -1553,7 +1577,9 @@
     font-family: var(--font);
     font-size: clamp(28px, 9vw, 65px);
     font-weight: 900;
-    color: var(--red);
+    /* Was red -- Sonny asked for plain white in both headers (MLS/PORT
+       and Residential/Commercial), not a red/grey split. */
+    color: var(--white);
     letter-spacing: -0.01em;
     flex-shrink: 0;
   }
@@ -1569,13 +1595,18 @@
        at 393px, scaling up on wider screens and down on narrower ones. */
     font-size: clamp(16px, 5.6vw, 39px);
     font-weight: 800;
-    color: var(--gray-400);
+    /* Was gray-400 -- Sonny asked for plain white, matching the brand
+       word above. */
+    color: var(--white);
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
+  /* Both words are white now (see .pricing-header-brand/-type above) --
+     this rule is a no-op left in place only because a future re-split
+     of brand-vs-type color would need it back on the PORT panel. */
   .pricing-toggle-header.port-header .pricing-header-brand {
     color: var(--white);
   }
