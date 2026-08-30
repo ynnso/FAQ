@@ -1831,6 +1831,18 @@
   .pricing-tile-contact {
     display: inline-flex;
     align-items: center;
+    /* Real bug, confirmed via measurement: grid's default row-stretch
+       only equalizes tile heights within a row that has multiple
+       items. "Agent Brand Video" is always the last tile (10th of 10),
+       so at the 3-column desktop breakpoint it's alone in its own row
+       -- nothing to stretch against -- and collapsed to its own short
+       content height (98px measured, vs. 150px for every other tile
+       in that same grid). Matches .pricing-tile-price's own font-size
+       clamp -- reserves as much vertical room as the price digits
+       would need at any given width, so a price-less tile ("Contact
+       us") still occupies the same space a real price would, with or
+       without row-mates to stretch against. */
+    min-height: clamp(30px, 9.5vw, 74px);
   }
 
   .pricing-tile-price::after,
