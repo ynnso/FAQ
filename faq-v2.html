@@ -6,7 +6,7 @@
 <title>FAQ — Shoot2Sell Photography</title><meta name="description" content="Answers on real estate photography, aerial/drone, Matterport 3D tours, virtual staging, floor plans, video, and pricing for DFW, Houston, Austin, and San Antonio real estate listings.">
 <meta name="keywords" content="real estate photography FAQ, aerial drone photography, Matterport 3D tours, virtual staging, floor plans, real estate video, Texas real estate photography">
 
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@200;400;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@200;270;400;800&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -171,8 +171,8 @@
     font-family: 'Plus Jakarta Sans', var(--font);
     /* 3x the old clamp(32px, 5.5vw, 44px) */
     font-size: clamp(96px, 16.5vw, 132px);
-    /* Cut in half again -- 400 still read as too thick at this size */
-    font-weight: 200;
+    /* Cut in half, then +35% back up (200 * 1.35 = 270) */
+    font-weight: 270;
     letter-spacing: -1.2%;
     line-height: 1;
     color: var(--black);
@@ -240,12 +240,13 @@
     font-size: 15px;
     font-weight: 500;
     color: var(--white);
-    /* Default fill is black at 70% opacity now, not a light grey pill. */
-    background: rgba(0, 0, 0, 0.7);
+    /* Default fill is black at 85% opacity now, not a light grey pill. */
+    background: rgba(0, 0, 0, 0.85);
     /* Left padding clears the mic icon (now inside the input, left-aligned
-       -- see .search-mic); right clears the now-flush submit button
-       (56px wide idle, was a 44px floating button with a 10px gap). */
-    padding: 16px 68px 16px 52px;
+       -- see .search-mic, grown to 44px box); right clears the now-flush
+       submit button (56px wide idle, was a 44px floating button with a
+       10px gap). */
+    padding: 16px 68px 16px 60px;
     outline: none;
     transition: border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
                 background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
@@ -259,7 +260,8 @@
   .search-input::placeholder {
     color: var(--white);
     font-weight: 400;
-    opacity: 0.7;
+    /* Bright white, not dimmed -- was 0.7, read as dull grey. */
+    opacity: 1;
   }
 
   /* Raised/hovering look on focus -- a neutral shadow, not a red glow, so
@@ -345,11 +347,12 @@
 
   .search-mic {
     position: absolute;
-    left: 12px;
+    left: 8px;
     top: 50%;
     translate: 0 -50%;
-    width: 32px;
-    height: 32px;
+    /* Grown to fit the 2x icon (was 32px) */
+    width: 44px;
+    height: 44px;
     box-sizing: border-box;
     border: none;
     background: transparent;
@@ -361,9 +364,9 @@
     transition: background var(--transition), transform var(--transition), opacity 0.3s ease;
     padding: 0;
     flex-shrink: 0;
-    /* Bar's default fill is black-70% now, so the icon needs to read
-       against that -- gray-500 was tuned for the old light-grey pill. */
-    color: rgba(255,255,255,0.7);
+    /* Bright white by default, not dimmed -- bar's default fill is
+       black-85% now, so the icon needs full contrast against that. */
+    color: var(--white);
     z-index: 4;
   }
 
@@ -376,7 +379,8 @@
   .search-mic:hover { background: rgba(255,255,255,0.12); color: var(--white); }
   .search-wrap:focus-within .search-mic:hover { background: rgba(0,0,0,0.08); color: var(--black); }
 
-  .search-mic svg { width: 18px; height: 18px; }
+  /* 2x the old 18px */
+  .search-mic svg { width: 36px; height: 36px; }
 
   .search-mic.listening {
     color: var(--red);
@@ -418,8 +422,9 @@
   .search-submit:hover { background: #a80d26; }
 
   .search-submit svg {
-    width: 18px;
-    height: 18px;
+    /* 2x the old 18px */
+    width: 36px;
+    height: 36px;
     stroke: var(--white);
     fill: none;
     flex-shrink: 0;
@@ -663,10 +668,13 @@
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.2px;
-    color: var(--gray-500);
+    color: var(--white);
+    /* Red fill on the "Top 5 Trending" row itself now, not just the
+       label text. */
+    background: var(--red);
     /* 48px left = 20px row padding + 16px icon + 12px gap, so the label
        lines up over the question text, not the icon column. */
-    padding: 14px 20px 8px 48px;
+    padding: 14px 20px 14px 48px;
   }
 
   .search-suggest-clear {
@@ -674,7 +682,7 @@
     font-weight: 700;
     letter-spacing: 0.4px;
     text-transform: none;
-    color: var(--red);
+    color: var(--white);
     background: none;
     border: none;
     cursor: pointer;
@@ -695,7 +703,8 @@
     font-weight: 500;
     color: var(--black);
     cursor: pointer;
-    border-bottom: 2px solid var(--red);
+    /* Black, razor-thin -- was 2px red. */
+    border-bottom: 1px solid var(--black);
     transition: background 0.15s ease;
   }
 
@@ -1042,6 +1051,7 @@
      svg), so currentColor doesn't apply -- filter is the only way to
      recolor a bitmap. This is a standard black-to-#e60000 filter recipe. */
   .section-header-shelf.active .section-header-icon image {
+    -webkit-filter: invert(8%) sepia(97%) saturate(7480%) hue-rotate(4deg) brightness(97%) contrast(118%);
     filter: invert(8%) sepia(97%) saturate(7480%) hue-rotate(4deg) brightness(97%) contrast(118%);
   }
 
@@ -1201,21 +1211,23 @@
 
   .accordion-item.open {
     border-bottom: none;
-    /* Red at 70% opacity now (was white) -- rgba, not a var(), since a
+    /* Red at 50% opacity now (was 70%) -- rgba, not a var(), since a
        CSS custom property can't be split into r/g/b channels for use
        inside rgba() (same reason this project's other translucent reds
        are all written out by hand). */
-    background: rgba(230, 0, 0, 0.7);
+    background: rgba(230, 0, 0, 0.5);
   }
 
   /* Answer gets its own black background for contrast -- question row
-     above it is the red-70% fill (the .accordion-item.open rule above). */
+     above it is the red-50% fill (the .accordion-item.open rule above). */
   .accordion-item.open .accordion-body {
     background: var(--black);
   }
 
   .accordion-item.open .accordion-q {
-    color: var(--black);
+    /* White + bolder now that the fill is red, not white. */
+    color: var(--white);
+    font-weight: 700;
     /* +25% over the base 16px */
     font-size: 20px;
   }
@@ -1255,12 +1267,12 @@
 
   .accordion-item.open .accordion-icon {
     transform: rotate(45deg);
-    background: rgba(10, 10, 10, 0.06);
-    border-radius: 50%;
+    /* No circle now -- was a light grey disc behind the icon. */
+    background: none;
   }
 
   .accordion-item.open .accordion-icon svg {
-    stroke: var(--black);
+    stroke: var(--white);
   }
 
   .accordion-body {
@@ -1296,8 +1308,9 @@
     margin-top: 4px;
     padding: 3px 11px;
     border-radius: 100px;
-    background: var(--gray-900);
-    color: var(--gray-300);
+    /* Red at 50% opacity now (was solid gray-900). */
+    background: rgba(230, 0, 0, 0.5);
+    color: var(--white);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.3px;
@@ -1826,7 +1839,10 @@
        like it already does on desktop. */
     .search-wrap.mobile-pinned {
       position: sticky;
-      top: 12px;
+      /* Flush to the true top now -- was 12px, leaving a visible gap
+         above the bar when pinned. Stays pinned through scroll too,
+         same sticky rule, as long as the input keeps focus. */
+      top: 0;
       z-index: 500;
     }
     /* padding-top/bottom only — touching the shorthand here would reset
