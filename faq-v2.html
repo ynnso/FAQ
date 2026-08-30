@@ -37,34 +37,8 @@
      enough to re-theme the whole page -- the two hardcoded exceptions
      (hero's red gradient, search backdrop dim) get their own overrides
      right where they're defined. */
-  @media (prefers-color-scheme: dark) {
-    html:not([data-theme="light"]) {
-      --white: #121212;
-      --black: #f2f2f2;
-      --gray-100: #1e1e1e;
-      --gray-200: #2a2a2a;
-      --gray-300: #3d3d3d;
-      --gray-400: #5c5c5c;
-      --gray-500: #a3a3a3;
-      --gray-700: #cfcfcf;
-      --gray-900: #e8e8e8;
-      --red: #ff2a2a;
-      --red-dark: #ff5c5c;
-    }
-  }
-  html[data-theme="dark"] {
-    --white: #121212;
-    --black: #f2f2f2;
-    --gray-100: #1e1e1e;
-    --gray-200: #2a2a2a;
-    --gray-300: #3d3d3d;
-    --gray-400: #5c5c5c;
-    --gray-500: #a3a3a3;
-    --gray-700: #cfcfcf;
-    --gray-900: #e8e8e8;
-    --red: #ff2a2a;
-    --red-dark: #ff5c5c;
-  }
+  
+  
 
   html {
     scroll-behavior: smooth;
@@ -182,17 +156,11 @@
        just the brand red's own RGB value written out, kept in sync by
        hand. Missed during the --red token swap since it's not a var()
        reference; caught while adding dark mode below. */
-    background: radial-gradient(140% 100% at 50% 0%, rgba(230,0,0,0.08) 0%, rgba(230,0,0,0.03) 35%, rgba(230,0,0,0) 70%);
+    background: none;
   }
 
-  html[data-theme="dark"] .hero {
-    background: radial-gradient(140% 100% at 50% 0%, rgba(255,42,42,0.14) 0%, rgba(255,42,42,0.05) 35%, rgba(255,42,42,0) 70%);
-  }
-  @media (prefers-color-scheme: dark) {
-    html:not([data-theme="light"]) .hero {
-      background: radial-gradient(140% 100% at 50% 0%, rgba(255,42,42,0.14) 0%, rgba(255,42,42,0.05) 35%, rgba(255,42,42,0) 70%);
-    }
-  }
+  
+  
 
   .hero-top {
     padding: 40px 24px 4px;
@@ -200,10 +168,12 @@
 
   /* ── ROW 2: H1 ── */
   h1 {
-    font-size: clamp(32px, 5.5vw, 44px);
-    font-weight: 800;
+    /* 3x the old clamp(32px, 5.5vw, 44px) */
+    font-size: clamp(96px, 16.5vw, 132px);
+    /* Cut in half from 800 -- at 3x the size, 800 read as way too thick */
+    font-weight: 400;
     letter-spacing: -1.2%;
-    line-height: 1.18;
+    line-height: 1;
     color: var(--black);
     margin: 0 auto 20px;
     text-align: center;
@@ -216,10 +186,11 @@
 
   /* ── ROW 3: Subtitle ── */
   .hero-sub {
-    font-size: 16px;
+    /* 2x the old 16px, black instead of grey-500 */
+    font-size: 32px;
     font-weight: 400;
-    color: var(--gray-500);
-    line-height: 1.6;
+    color: var(--black);
+    line-height: 1.15;
     margin: 0 auto 32px;
     max-width: 460px;
     letter-spacing: 0.01em;
@@ -551,14 +522,8 @@
      dims with a black-leaning overlay that's still visibly darker than
      the dark surface underneath (a light overlay would look like a spotlight,
      not a dim). */
-  @media (prefers-color-scheme: dark) {
-    html:not([data-theme="light"]) .search-backdrop {
-      background: rgba(0,0,0,0.55);
-    }
-  }
-  html[data-theme="dark"] .search-backdrop {
-    background: rgba(0,0,0,0.55);
-  }
+  
+  
 
   /* Punches the top search match's own section above the dim backdrop
      (z-index 45) -- see filterContent() in JS. It's the one real answer
@@ -586,6 +551,12 @@
   /* Fixed top-right, always visible regardless of scroll -- above the
      sticky header (z-index 200) so it's never covered once that appears. */
   .theme-toggle {
+    /* Dark mode removed entirely -- this page now always renders light,
+       regardless of system prefers-color-scheme or a stale localStorage
+       value from testing dark mode earlier. The toggle would be inert
+       (no dark CSS left for it to switch to), so it's hidden rather
+       than left as dead UI. */
+    display: none !important;
     position: fixed;
     top: 16px;
     right: 16px;
@@ -613,12 +584,9 @@
      data-theme on <html>; the "system, no explicit choice yet" state reads
      its icon from prefers-color-scheme the same way the color tokens do. */
   .theme-icon-moon { display: none; }
-  html[data-theme="dark"] .theme-icon-sun { display: none; }
-  html[data-theme="dark"] .theme-icon-moon { display: flex; }
-  @media (prefers-color-scheme: dark) {
-    html:not([data-theme="light"]) .theme-icon-sun { display: none; }
-    html:not([data-theme="light"]) .theme-icon-moon { display: flex; }
-  }
+  
+  
+  
 
   .back-to-top {
     position: fixed;
@@ -990,7 +958,13 @@
     /* Vertical padding trimmed from 20px to 9px so the row's total height
        (~62px) stays the same now that the icon inside it is 2x bigger —
        the shelf itself has no fixed height, it's driven entirely by this
-       padding + icon size. */
+       padding + icon size. This 24px left value pairs with the shelf's
+       own 2px left padding at desktop widths (24+2=26px, close enough to
+       the pricing header's 24px). At mobile widths the shelf's own left
+       padding changes to 20px (see the max-width:768px override below),
+       so this gets its own mobile override too, or the combined inset
+       balloons to 44px -- measured 20px too much versus everything else
+       on the page at 393px. */
     padding: 9px 0 9px 24px;
     min-width: 0;
     flex: 1 1 auto;
@@ -1494,7 +1468,11 @@
      brand word so the pair fits one row on narrow phones. */
   .pricing-header-type {
     font-family: var(--font);
-    font-size: clamp(13px, 4vw, 39px);
+    /* Measured directly at 393px (iPhone 15 baseline): 22px is the
+       largest size that avoids ellipsis-truncating "Commercial" (the
+       tighter of the two words) at that width. 5.6vw hits 22px exactly
+       at 393px, scaling up on wider screens and down on narrower ones. */
+    font-size: clamp(16px, 5.6vw, 39px);
     font-weight: 800;
     color: var(--gray-400);
     min-width: 0;
@@ -1774,7 +1752,8 @@
     }
 
     h1 { letter-spacing: -0.03em; }
-    .hero-sub { font-size: 14px; line-height: 1.6; margin-bottom: 28px; max-width: 100%; }
+    /* 2x the old 14px mobile value, matching the desktop rule's 2x bump */
+    .hero-sub { font-size: 28px; line-height: 1.15; margin-bottom: 28px; max-width: 100%; }
     .hero-top { padding: 28px 20px 0; border-radius: 24px; }
     .search-wrap { max-width: 100%; }
 
@@ -1814,6 +1793,15 @@
       /* No longer overridden to 10px here -- was quietly breaking the
          shared 20px squircle radius on mobile specifically. */
       padding: 16px 20px;
+    }
+
+    /* Shelf's own left padding is 20px here (vs. 2px at desktop widths),
+       so .section-header-text's left padding needs to drop to match --
+       real, measured bug: without this, section-row icons sat 20px
+       further right than the MLS/PORT bars and everything else on the
+       page at 393px. */
+    .section-header-text {
+      padding-left: 4px;
     }
 
     .categories-wrap {
@@ -1914,14 +1902,8 @@
 
   .sticky-header.visible { transform: translateY(0); }
 
-  @media (prefers-color-scheme: dark) {
-    html:not([data-theme="light"]) .sticky-header {
-      background: rgba(18,18,18,0.9);
-    }
-  }
-  html[data-theme="dark"] .sticky-header {
-    background: rgba(18,18,18,0.9);
-  }
+  
+  
 
   .sticky-header-logo {
     font-size: 14px;
