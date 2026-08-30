@@ -6,10 +6,10 @@ _Consolidated 2026-08-30 from CLAUDE.md, HANDOFF.md, PROGRESS.md, FAQ_SEO_AUDIT.
 Shoot2Sell (Texas real estate photography) self-serve FAQ page. Not client-facing marketing.
 
 ## Current state
-- **`faq-v2.html`** is the only live version. `index.html` is a redirect shell (meta-refresh + JS) pointing to it — kept only so the root URL still works.
-- **`index.html`**'s old content (original 6-section/57-question build, dark/light theme) is gone from the live file but survives in git history. Local `FAQ.html` mirror was deleted 2026-08-30.
+- **`index.html`** holds the real content (the v2 redesign) — swapped in 2026-08-30 so the short root URL works directly. `faq-v2.html` is now a redirect shell pointing to `./`, kept only for old bookmarks/links.
+- **`index.html`**'s original content (old 6-section/57-question build, dark/light theme) is gone from the live file but survives in git history. Local `FAQ.html` mirror was deleted 2026-08-30.
 - Repo is public again on GitHub (`github.com/ynnso/FAQ`) after a brief private stint broke GitHub Pages (free plan doesn't serve Pages from private repos) — visibility flipped back, Pages source had to be manually re-enabled in Settings → Pages, confirmed live again.
-- Live: https://ynnso.github.io/FAQ/ → redirects to https://ynnso.github.io/FAQ/faq-v2.html
+- Live: https://ynnso.github.io/FAQ/ (real page, short URL) — https://ynnso.github.io/FAQ/faq-v2.html redirects here.
 
 ## v2 redesign — still-open bugs (unconfirmed fixed)
 Reported by Sonny, repeated twice, cutover to v2 happened anyway on his call:
