@@ -170,12 +170,14 @@
   h1 {
     /* 3x the old clamp(32px, 5.5vw, 44px) */
     font-size: clamp(96px, 16.5vw, 132px);
-    /* Cut in half from 800 -- at 3x the size, 800 read as way too thick */
-    font-weight: 400;
+    /* Cut in half again -- 400 still read as too thick at this size */
+    font-weight: 200;
     letter-spacing: -1.2%;
     line-height: 1;
     color: var(--black);
-    margin: 0 auto 20px;
+    /* Snugged way down from 20px so h1/h2 read as one cohesive unit
+       instead of two separate blocks. */
+    margin: 0 auto 4px;
     text-align: center;
   }
 
@@ -190,7 +192,9 @@
     font-size: 32px;
     font-weight: 400;
     color: var(--black);
-    line-height: 1.15;
+    /* Tightened further so its own wrapped lines ("Hi. How can we /
+       help?" on narrow screens) sit snug too, matching h1. */
+    line-height: 1.05;
     margin: 0 auto 32px;
     max-width: 460px;
     letter-spacing: 0.01em;
