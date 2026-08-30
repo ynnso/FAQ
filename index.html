@@ -1778,23 +1778,30 @@
   .pricing-tile-name {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     /* 4vw -> 3.4vw: real bug, "Agent Brand Video" (the longest name on
        the page) was wrapping to 3 lines on mobile -- icon(44px)+gap
        left too little room at the old size for two words to ever share
        a line. Smaller text + tighter gap together free enough width for
        it to wrap to 2 lines like every other tile instead.
-       Ceiling 24px -> 19px: the 3-column desktop breakpoint (see
-       .pricing-tile-grid) narrowed each tile from ~378px to ~245px --
-       at desktop widths this clamp always sits at its max regardless
-       of vw (3.4vw exceeds 24px past ~706px), so the same "Agent Brand
-       Video" 3-line wrap regression came right back once columns got
-       narrower again, just at desktop instead of mobile this time. */
-    font-size: clamp(15px, 3.4vw, 19px);
+       Floor 15px -> 13px: the earlier "confirmed 2-line" read at 393px
+       was based on a screenshot, and this session has a real,
+       documented tool quirk where screenshots can show a stale render
+       right after a DOM change -- re-verified just now with actual
+       getComputedStyle/getBoundingClientRect measurement (not a
+       screenshot) and it was genuinely still 3 lines: at a 155px mobile
+       tile, a 44px icon leaves only ~73px for text, and "Agent Brand"
+       doesn't fit in that at 15px no matter the ceiling. 13px does.
+       Ceiling 19px -> 17px stays too, for the same real-device safety
+       margin as before. */
+    font-size: clamp(13px, 3.2vw, 17px);
     font-weight: 700;
     color: var(--black);
     line-height: 1.15;
-    margin-bottom: 10px;
+    /* Tightened 10px -> 4px, Sonny's ask -- the name/price block on the
+       Agent Brand Video tile ("Contact us") sat far enough below the
+       name that the outbound arrow crowded/felt disconnected from it. */
+    margin-bottom: 4px;
   }
 
   /* Every tile links out to its real service page on shoot2sell.com
@@ -1846,14 +1853,39 @@
     transition: background-color 0.2s ease;
   }
 
+  /* Smaller arrow on JUST the Contact-us row -- real measurement (text
+     node getClientRects, not container height) showed "Contact us"
+     genuinely didn't fit its available width even at an 11-12px font
+     with the full-size 22px arrow eating a third of the row. The price
+     row's arrow next to 30-70px digits stays full size; this one only
+     needed to shrink here. */
+  .pricing-tile-contact::after {
+    width: 14px;
+    height: 14px;
+    margin-left: 4px;
+  }
+
   .pricing-tile:hover .pricing-tile-price::after,
   .pricing-tile:hover .pricing-tile-contact::after {
     background-color: var(--white);
   }
 
   .pricing-tile-name svg {
-    width: 44px;
-    height: 44px;
+    /* 44px -> 32px: real root cause of the "Agent Brand Video" 3-line
+       wrap, verified this time via direct measurement + a zoomed live
+       clone (iterated live in the browser before touching the file),
+       not a screenshot or arithmetic guess. At a 155px mobile tile the
+       icon+gap was eating 50 of the row's 123px, leaving too little
+       for "Agent Brand" to fit together at ANY reasonable font size --
+       confirmed 3 lines even at 13px floor. Shrinking the icon, not
+       just the text, is what actually fixes it (verified 2 lines at
+       32px/4px gap/13px font before applying here). Universal change,
+       all 13 tiles, for visual consistency. */
+    width: 32px;
+    height: 32px;
+    /* Sonny's ask -- nudges the icon (and everything after it, name
+       text included) slightly left within the tile's own padding. */
+    margin-left: -4px;
     stroke: var(--black);
     /* Halved from the usual 2 -- doubling the icon's rendered size also
        doubles its visual stroke weight at a fixed viewBox (same gotcha
@@ -1865,8 +1897,9 @@
   }
 
   .pricing-tile-name img.raster-icon {
-    width: 44px;
-    height: 44px;
+    width: 32px;
+    height: 32px;
+    margin-left: -4px;
     flex-shrink: 0;
   }
 
@@ -1906,19 +1939,29 @@
   }
 
   .pricing-tile-contact {
-    /* Ceiling 22px -> 17px, same reason as .pricing-tile-name: the
-       3-column desktop breakpoint narrowed each tile to ~245px, and
-       "Contact us" no longer fit on one line at the old desktop-max
-       size within that width -- confirmed wrapping to 2 lines live. */
-    font-size: clamp(16px, 4vw, 17px);
+    /* 22px -> 17px -> 14px -> 11px. Real cause found via actual text-
+       node getClientRects() measurement (previous attempts used the
+       CONTAINER's height, which was silently wrong -- the container is
+       inline-flex now with the arrow as a sibling flex item, and the
+       arrow's own fixed 22px height dominates the row's height
+       regardless of whether the text itself is 1 or 2 lines).
+       .pricing-tile-contact renders at 91.2px wide on a 155px mobile
+       tile; the arrow+its margin (30px) eats a third of that, leaving
+       only ~61px for text -- "Contact us" needed ~73px at 13-14px,
+       genuinely didn't fit. 11px needs ~61px (canvas-measured), fits
+       with real margin. Also matches Sonny's separate ask to make this
+       smaller -- it's a secondary label, not something that should
+       compete with the real price/name content above it. */
+    font-size: clamp(11px, 3vw, 12px);
     font-weight: 600;
     color: var(--gray-500);
     /* Was flush left under the tile's own edge -- same x as the icon,
        not the name text next to it (icon is the first flex child in
        .pricing-tile-name, so "Contact us" landed under the icon
-       instead of under "Agent"). 50px = the 44px icon + its 6px gap,
-       so this lines up with where the text actually starts. */
-    margin-left: 50px;
+       instead of under "Agent"). 32px = 32px icon - 4px icon's own
+       negative margin-left + 4px row gap, so this lines up with where
+       the text actually starts now. */
+    margin-left: 32px;
   }
 
   /* ── NO RESULTS ── */
