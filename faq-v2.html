@@ -4835,7 +4835,17 @@
   if (stickyHeader && heroSearchWrap) {
     const headerObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        stickyHeader.classList.toggle('visible', !entry.isIntersecting);
+        // Real bug found live: focusing the search input pins the full
+        // hero search-wrap to the very top (mobile-pinned, position:
+        // sticky) -- but scrolling it there also made it stop
+        // "intersecting" in the normal sense, which this observer read
+        // as "scrolled away, show the compact sticky-header instead."
+        // Both ended up visible at once, overlapping in the same 0-64px
+        // strip (confirmed via getBoundingClientRect on both). Suppress
+        // the compact header entirely while the full bar is pinned --
+        // no reason to ever show both.
+        const suppressed = heroSearchWrap.classList.contains('mobile-pinned');
+        stickyHeader.classList.toggle('visible', !entry.isIntersecting && !suppressed);
       });
     }, { threshold: 0, rootMargin: '-64px 0px 0px 0px' });
     headerObserver.observe(heroSearchWrap);
