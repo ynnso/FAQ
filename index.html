@@ -1695,6 +1695,21 @@
     margin-bottom: 22px;
   }
 
+  /* Real layout bug at desktop widths, not a positioning bug: 2 columns
+     inside .main's 860px cap makes each tile ~378px wide, but the
+     content (icon+name, "from $XXX" + arrow) is compact and always
+     left-aligned -- it doesn't grow to fill a wider column, so the
+     tile's whole right half just reads as dead space (confirmed via a
+     real screenshot, Sonny flagged it directly). 3 narrower columns at
+     desktop widths keeps each tile close to the same proportions that
+     already work on mobile, instead of stretching 2 columns wide
+     enough to leave that gap. */
+  @media (min-width: 769px) {
+    .pricing-tile-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
   .pricing-tile {
     display: block;
     /* So the outbound-link arrow (::after below) can be positioned in
@@ -1724,8 +1739,14 @@
                 box-shadow 0.2s ease;
   }
 
-  .pricing-tile:nth-child(odd) { padding-left: 5%; }
-  .pricing-tile:nth-child(even) { padding-right: 5%; }
+  /* This nth-child(odd)/(even) asymmetric inset used to exist to
+     compensate for the old negative-margin hover-bleed (removed
+     earlier this session, see .pricing-tile's own comment). It's gone
+     now, not just unnecessary: odd/even assumes exactly 2 columns, so
+     at the 3-column desktop breakpoint below it would land on the
+     wrong tiles entirely (column position cycles every 3, odd/even
+     cycles every 2) -- real bug this would have caused if left in
+     place once 3 columns shipped. Base padding is symmetric now. */
 
   /* Hover: lifts, fills red, price/name/icon all flip to white so they
      stay readable against the fill. Links through to the real service
