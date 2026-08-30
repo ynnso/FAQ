@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>FAQ — Shoot2Sell Photography</title><meta name="description" content="Answers on real estate photography, aerial/drone, Matterport 3D tours, virtual staging, floor plans, video, and pricing for DFW, Houston, Austin, and San Antonio real estate listings.">
 <meta name="keywords" content="real estate photography FAQ, aerial drone photography, Matterport 3D tours, virtual staging, floor plans, real estate video, Texas real estate photography">
 
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@200;270;365;400;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;493;800&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -171,8 +171,15 @@
     font-family: 'Plus Jakarta Sans', var(--font);
     /* 3x the old clamp(32px, 5.5vw, 44px) */
     font-size: clamp(96px, 16.5vw, 132px);
-    /* 200 -> 270 (+35%) -> 365 (+35% again) */
-    font-weight: 365;
+    /* 200 -> 270 (+35%) -> 365 (+35% again) -> 493 (+35% again, 2026-08-30).
+       Real bug behind "doesn't read as heavier" the last two rounds: 365
+       is still BELOW the 400 (normal/regular) baseline, so no matter how
+       many +35% steps stack on top of a 200 starting point, it kept
+       reading as thin, not heavy -- confirmed via computed-style + a real
+       screenshot, not just the math. 493 is the first step in this chain
+       that's actually past regular weight, so it's the first one that can
+       visually read as heavier at all. */
+    font-weight: 493;
     letter-spacing: -1.2%;
     line-height: 1;
     color: var(--black);
@@ -681,6 +688,13 @@
     padding: 14px 20px 14px 48px;
   }
 
+  /* Top 5 Trending row only, +30% over the base 12px label size (Matching
+     Questions and every list row below stay untouched). Container/padding
+     unchanged on purpose -- just the text itself is bigger. */
+  .search-suggest-label--trending {
+    font-size: 15.6px;
+  }
+
   .search-suggest-clear {
     font-size: 11px;
     font-weight: 700;
@@ -701,12 +715,13 @@
     text-align: left;
     background: none;
     border: none;
-    /* Vertical padding trimmed 12px -> 8px to offset the bigger font
-       below, so the row itself stays roughly the same height. */
-    padding: 8px 20px;
+    padding: 12px 20px;
     font-family: var(--font);
-    /* +30% over the old 14px */
-    font-size: 18px;
+    /* Reverted 2026-08-30: a prior "+30%" pass landed here (14px -> 18px)
+       instead of on the "Top 5 Trending" header label, which is what was
+       actually asked for -- see .search-suggest-label--trending. List
+       rows go back to their original size, untouched. */
+    font-size: 14px;
     font-weight: 500;
     color: var(--black);
     cursor: pointer;
@@ -1874,6 +1889,16 @@
          same sticky rule, as long as the input keeps focus. */
       top: 0;
       z-index: 500;
+      /* Real bug on notched/Dynamic-Island phones: pinned to true top:0
+         with no clearance and no background sat the bar flush under the
+         status bar, AND let scrolling page content show through the gap
+         above it (nothing painting that strip). Padding pushes the bar
+         itself below the unsafe area; the white fill covers the strip
+         instead of leaving it transparent. env() is 0px with no inset
+         (desktop, older phones) so this is a no-op there. */
+      padding-top: env(safe-area-inset-top, 0px);
+      background: var(--white);
+      box-sizing: border-box;
     }
     /* padding-top/bottom only — touching the shorthand here would reset
        left/right to 0 and silently cancel the clamp() inset above. That
@@ -1977,7 +2002,14 @@
   .sticky-header {
     position: fixed;
     top: 0; left: 0; right: 0;
-    height: 64px;
+    /* Real bug, notched/Dynamic-Island phones: this bar sat flush under
+       the status bar with zero clearance -- no safe-area-inset usage
+       existed anywhere in the file. env() falls back to 0px on devices
+       without an inset (desktop, older phones), so this is a no-op there
+       and a real fix on anything with a notch. */
+    height: calc(64px + env(safe-area-inset-top, 0px));
+    padding-top: env(safe-area-inset-top, 0px);
+    box-sizing: border-box;
     background: rgba(255,255,255,0.94);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -1985,7 +2017,8 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 0 24px;
+    padding-left: 24px;
+    padding-right: 24px;
     z-index: 200;
     transform: translateY(-100%);
     /* Both transitions in one declaration -- a second transition: shorthand
@@ -5655,7 +5688,7 @@
       // rename to "Top 5 Trending" appeared to not have worked) rather
       // than a second, separate state. The Clear button still shows
       // whenever a recent search is actually mixed in.
-      sectionsHtml += '<div class="search-suggest-label">Top 5 Trending' +
+      sectionsHtml += '<div class="search-suggest-label search-suggest-label--trending">Top 5 Trending' +
         (recentRows.length ? '<button type="button" class="search-suggest-clear" id="suggestClearRecent">Clear</button>' : '') +
         '</div>';
     } else if (q.length >= 2) {

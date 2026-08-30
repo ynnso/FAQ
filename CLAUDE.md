@@ -33,17 +33,22 @@ Vanilla HTML/CSS/JS. No framework, no build step. One `<script>` IIFE.
 
 Replaces `FAQ MD.txt`, the original design brief — now stale against the live build.
 
-## Cutover, 2026-08-29
+## Cutover, 2026-08-29/30
 
-`index.html` now redirects (meta-refresh + JS) to `faq-v2.html` — Sonny's decision, done with the 5 open bugs below still unresolved (chose cutover now over fix-first). `faq-v2.html` is the only real version going forward; `index.html` is a redirect shell only, not a page to edit.
+`index.html` originally redirected to `faq-v2.html`; **swapped 2026-08-30** so the short root URL (`https://ynnso.github.io/FAQ/`) serves the real content directly. `index.html` is now the active file — edit it. `faq-v2.html` is a thin redirect to `./`, kept only for old bookmarks/links.
 
-## v2 redesign (`faq-v2.html`) — open items log, 2026-08-29
+## v2 redesign (`index.html`) — open items log, 2026-08-30 pass
 
-**Reported by Sonny, status STILL OPEN as of his last message ("again same issues") — do not mark resolved without his confirmation:**
-- H1 "FAQ" weight not reading as +35% heavier.
-- Mic & search icon sized wrong — expanded the search bar container height, text floats.
-- Search bar not staying pinned to the mobile screen top when scrolling.
-- Padding issue: something hiding/clipping under the screen top.
-- Top 5 Trending font not reading +30% bigger.
+**Primary test viewport: 393×852** (iPhone 15/16/17), not 375×667 — that's the stress-test floor only.
 
-**What was tried, 2026-08-29:** `grep` on the source showed H1 weight/icon sizing/trending font values matching what was asked for, and an `IntersectionObserver` fix was pushed for a sticky-header/pinned-search overlap. None of this was confirmed against a real click/scroll in the browser tool (timed out repeatedly) — only computed DOM state was checked. Sonny reports the same issues persisting after that push, so the `grep`-based "already correct" read and the overlap fix are both unconfirmed in practice — treat as still broken, re-investigate from scratch rather than re-checking the same values.
+**Fixed this pass, code-verified + real screenshot, not yet confirmed on Sonny's real device:**
+- H1 "FAQ" weight — root cause was the +35% chain never crossing 400 (CSS normal), so it stayed visually thin no matter how many steps stacked on a 200 start. Now 493, first step past regular. Font import trimmed to 400/493/800.
+- Top 5 Trending font — a prior pass bumped the wrong element (`.search-suggest-row`, the list, not the header label). List reverted to 14px, header gets its own `.search-suggest-label--trending` class at 15.6px (+30%), scoped so "Matching Questions" is untouched.
+- Mic & search icon sizing — checked again, already correct at 393×852 (static + simulated-focus). No change made, no bug found this round.
+
+**Fixed this pass, code-only — needs Sonny's real-device confirmation, could not be verified further in this environment:**
+- Mobile search pin / padding-under-screen-top clipping — root cause: no `safe-area-inset` usage anywhere in the file (flagged as a known gap since the original build). Added `viewport-fit=cover` + `env(safe-area-inset-top)` padding to `.sticky-header` and `.search-wrap.mobile-pinned`, plus a solid background on the pinned bar so nothing shows through. Resolves to a no-op on non-notched screens (verified via computed style) — cannot verify actual notch clearance without a real device.
+
+**Automation limitation, confirmed again this pass:** the `computer` click tool times out specifically on this page's search-focus interaction (30s, no console errors). Worked around via synthetic PointerEvent/MouseEvent + `.focus()`, but `document.hasFocus()` is false in this environment, so real `:focus`/`:focus-within` CSS doesn't reliably engage even when `document.activeElement` is correct — computed DOM state is the strongest verification available here for anything gated on real focus.
+
+Full detail in `REFERENCE.md`.
