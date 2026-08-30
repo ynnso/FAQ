@@ -1680,7 +1680,17 @@
      background/border/radius. */
   .pricing-tile-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    /* minmax(0, 1fr), not plain 1fr -- real bug found live: a bare 1fr
+       track's automatic minimum is its content's min-content width, not
+       zero, so a tile whose name/icon/reserved-arrow-padding needed
+       more room than its fair 50% share (confirmed via computed style:
+       195.6px vs 156.6px in a 330px container) just took it, pushing
+       the OTHER column narrower and the whole grid past its own
+       container's right edge. minmax(0, 1fr) overrides that automatic
+       minimum to 0, so both tracks are forced to the true equal split
+       and long content wraps/clips inside its own cell instead of
+       blowing out the grid. */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     column-gap: 20px;
     margin-bottom: 22px;
   }
