@@ -1893,13 +1893,20 @@
        "bleeding" off the sides. Roughly 15%+ more inset on both sides. */
     .hero {
       padding-top: 20px;
-      /* Was 42px -- measured against .section-header-shelf on a real
-         393px viewport and found a real ~10.5px per-side gap: the search
-         bar sat further inset than the section rows below it, so the two
-         never lined up on the same left/right edges. 32px matches the
-         shelf's own rendered edge (getBoundingClientRect, not guessed). */
-      padding-left: 32px;
-      padding-right: 32px;
+      /* Was a fixed 42px, then a fixed 32px -- both wrong for the same
+         reason: .section-header-shelf's rendered left/right edge isn't
+         its own padding at all, it's .main's padding (clamp(24px, 8vw,
+         42px), see .main), a FLUID value that scales with viewport
+         width. A fixed pixel number here can only ever match that at
+         one specific width -- 32px happened to match at 393px (where
+         8vw resolves to ~31.4px) and was confirmed aligned there, but
+         reappeared as a real ~10px gap at 768px (where 8vw clamps to
+         the 42px ceiling) the moment it got tested at a second width.
+         Using .main's exact formula instead of a hand-measured constant
+         keeps this aligned at every width in between, not just the one
+         that got tested. */
+      padding-left: clamp(24px, 8vw, 42px);
+      padding-right: clamp(24px, 8vw, 42px);
     }
 
     h1 { letter-spacing: -0.03em; }
