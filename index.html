@@ -1768,18 +1768,26 @@
   /* Every tile links out to its real service page on shoot2sell.com
      (see .pricing-tile:hover comment above) but nothing on the tile
      itself said so -- Sonny's ask. Red and ~2.5x bigger (was 14px
-     grey, read as too subtle). Real bug from the first version: this
-     lived as a flex child of .pricing-tile-name (inline, next to the
-     icon+text), and at 36px wide it didn't fit the narrow mobile
-     column alongside icon+name text -- squeezed the text into extra
-     wrapped lines AND pushed the whole tile wider than its 1fr grid
-     track, shoving column 2 partway off-screen. Moved to the TILE
-     itself, absolutely positioned in the corner -- completely out of
-     the name/price flow now, can't compete for width with anything. */
+     grey, read as too subtle).
+
+     Two real bugs already found and fixed in earlier positions: (1)
+     as a flex child of .pricing-tile-name it competed with icon+name
+     text for width, squeezing text into extra wrapped lines and
+     blowing out the grid column; (2) top-right-corner-of-the-tile
+     placement put it right where a 2-line wrapped name (e.g.
+     "Matterport 3D") already sits, overlapping the text directly
+     (confirmed live via screenshot -- "Matterpo[arrow]rt").
+
+     Anchored to the BOTTOM-right of the tile now instead of the top --
+     that's where .pricing-tile-price actually lives, and the price
+     text (e.g. "$149") never fills the tile's full width, so there's
+     real, reliably empty space there regardless of how many lines the
+     name above it wraps to. No padding reservation needed anywhere
+     either, since nothing else ever occupies that corner. */
   .pricing-tile::after {
     content: "";
     position: absolute;
-    top: 16px;
+    bottom: 16px;
     right: 12px;
     display: block;
     width: 30px;
@@ -1792,14 +1800,6 @@
 
   .pricing-tile:hover::after {
     background-color: var(--white);
-  }
-
-  /* Reserves room at the row's right edge so wrapped name text (e.g.
-     "Floor Plan 2D/3D") can't run underneath the corner arrow -- this
-     is padding, not a flex sibling, so it doesn't force anything to
-     shrink or wrap on its own the way the old inline arrow did. */
-  .pricing-tile-name {
-    padding-right: 38px;
   }
 
   .pricing-tile-name svg {
