@@ -35,6 +35,11 @@ Replaces `FAQ MD.txt`, the original design brief — now stale against the live 
 
 ## v2 redesign (`faq-v2.html`) — open items log, 2026-08-29
 
-- **H1 weight (365), mic/search icon sizing (24px/40px), Top 5 Trending font (18px):** all confirmed already correct in the pushed commit via `grep` when Sonny reported them as not applied. Likely a stale cache on his device — ask for a hard refresh before assuming a code gap.
-- **Fixed: sticky-header vs mobile-pinned-search overlap.** Focusing the hero search pins it (`position: sticky`, `.mobile-pinned`) — this also read as "scrolled away" to the `IntersectionObserver` driving the compact `#stickyHeader`, so both rendered at once (confirmed via `getBoundingClientRect`, overlapping 0–64px). This was the "padding issues hiding under screen top" bug Sonny flagged. Fix: observer callback now checks `.mobile-pinned` and suppresses the compact header whenever the full bar is pinned. Verified via computed state, not a real click — see next note.
-- **Automation limitation:** the `computer` click tool has repeatedly timed out (30s) or silently no-op'd on this page's search-focus interactions in this environment, both on the real input and the sticky-header button. When a real click can't be confirmed, verify via computed DOM state (`classList`, `getBoundingClientRect`, `scrollY`) instead of assuming the click landed — and say explicitly that's what was done, not a full click-through.
+**Reported by Sonny, status STILL OPEN as of his last message ("again same issues") — do not mark resolved without his confirmation:**
+- H1 "FAQ" weight not reading as +35% heavier.
+- Mic & search icon sized wrong — expanded the search bar container height, text floats.
+- Search bar not staying pinned to the mobile screen top when scrolling.
+- Padding issue: something hiding/clipping under the screen top.
+- Top 5 Trending font not reading +30% bigger.
+
+**What was tried, 2026-08-29:** `grep` on the source showed H1 weight/icon sizing/trending font values matching what was asked for, and an `IntersectionObserver` fix was pushed for a sticky-header/pinned-search overlap. None of this was confirmed against a real click/scroll in the browser tool (timed out repeatedly) — only computed DOM state was checked. Sonny reports the same issues persisting after that push, so the `grep`-based "already correct" read and the overlap fix are both unconfirmed in practice — treat as still broken, re-investigate from scratch rather than re-checking the same values.
