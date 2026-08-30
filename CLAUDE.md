@@ -1,3 +1,5 @@
+**NEVER ASSUME — TEST CODE.** Verify claims against real measurements, not screenshots or arithmetic. This session hit both failure modes directly: (1) screenshots taken right after a DOM change can show a stale render — a real, repeated tool quirk, not a page bug; re-screenshot after a wait, or better, measure. (2) height ÷ line-height "line count" math silently breaks the moment a row becomes `display:flex`/`inline-flex` — the row's height is set by its tallest child (e.g. an icon), not by how many lines the text wraps to. The one method that can't lie about line-wrapping: `range.selectNodeContents(textNode); range.getClientRects().length`. When a fix doesn't land, don't re-guess at a bigger number — measure what's actually happening first. Also: prefer the smallest change that verifiably works over a big swing (e.g. shrinking one element's spacing before resizing something universal); when the user offers alternatives, pick one — don't add an extra unrequested twist on top.
+
 # FAQ — Shoot2Sell Photography
 
 Single-file FAQ support page for Shoot2Sell, a Texas real estate photography company. Self-serve answers, not client-facing marketing.
