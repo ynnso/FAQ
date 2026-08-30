@@ -5512,11 +5512,16 @@
         // Bug found in Sonny's live test 2026-08-25: Services Overview has
         // no accordion-items at all (it's a pricing table, not Q&A), so
         // blockHasResults never had a chance to go true for it -- any
-        // search, even an empty one, hid it and it never came back. A
-        // block with nothing to search is content search can't judge, so
-        // it stays visible instead of defaulting to hidden.
+        // search, even an empty one, hid it and it never came back.
+        // Fixed then by defaulting it to always visible -- but that meant
+        // it stayed pinned open through every real search too, regardless
+        // of relevance. Sonny's actual ask (2026-08-30): it should hide
+        // like everything else once a real query is active; only the
+        // EMPTY-query state (nothing typed yet, or just cleared) should
+        // default it back to visible, since there's nothing to judge it
+        // against there.
         const noSearchableItems = items.length === 0;
-        let blockHasResults = noSearchableItems;
+        let blockHasResults = noSearchableItems && !query;
         items.forEach(item => {
           const qText = item.querySelector('.accordion-q').textContent.toLowerCase();
           const aText = item.querySelector('.accordion-answer').textContent.toLowerCase();
@@ -5852,6 +5857,17 @@
     // landed on the collapsed "+" state instead of the expanded answer.
     // ensureItemOpen is a no-op if it's already open.
     ensureItemOpen(entry.item);
+    // Real bug: the scrollIntoView above runs while the item is still
+    // COLLAPSED, so it centers the short closed question row -- the
+    // answer then expands open-body afterward (0.8s transition, see
+    // .accordion-item.open .accordion-body), pushing past the bottom of
+    // whatever viewport was centered on the old, shorter row. Reads as
+    // "the answer is buried" -- it's rendered, just off-screen below the
+    // fold with nothing re-scrolling to it. Re-scroll once the expand
+    // transition finishes so the actual expanded content ends up in view.
+    setTimeout(() => {
+      entry.item.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 820);
     // Flagged so the next click away from the search bar resets it -- a
     // picked question stays sitting in the bar otherwise (and the rest of
     // the page stays filtered down to just that match), which confused
