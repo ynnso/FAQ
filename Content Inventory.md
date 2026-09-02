@@ -139,7 +139,9 @@ Real page is entirely procedural (approval process, image count, changes, turnar
 
 **Floor Plans — done, 2026-09-02.** 5 of 6 real DUP questions shrunk to a short answer + link to `https://shoot2sell.com/floor-plans` (Types offered, How measured, How quickly, Do they help sell homes, Can upload to MLS). Q2 "How much do floor plans cost?" reclassified DUP→DUP-BETTER mid-execution: live-fetched the real page and found it has no dollar figures at all, so ours stays full-detail, not cut. Q7 "Should someone be on-site" left as-is (Partial, per Phase 2). Q6's MLS-compliance disclaimer (marketing-illustration-only, not architectural) preserved verbatim through the shrink — legal content, not filler. All 5 shortened HTML answers had their matching JSON-LD `text` fields updated to match (was a real sync gap mid-session, now closed). Verified: JSON-LD parses (2 blocks, `node -e` check), HTML/schema text diffed identical for all 5, deep-link + screenshot + console-clean at 393×852.
 
-Commercial (6 of 11 DUP) is next per the original Phase 3 recommendation, not started.
+**Commercial — done, 2026-09-02.** 5 of 6 real DUP questions shrunk to a short answer + link to the matching real commercial page (Types photographed, Aerial building+surroundings, Matterport vs. video walkthrough, CAD vs. marketing floor plans, Video walkthrough length). "How much does commercial real estate photography cost?" reclassified DUP→DUP-BETTER mid-execution — same pattern as Floor Plans: live-fetched the real page and found no dollar figures at all, ours has full tiered pricing, kept as-is. All 5 real pages live-fetched and answers confirmed near-verbatim before cutting. Matching JSON-LD schema `text` fields updated for all 5. Verified: JSON-LD parses, HTML/schema text diffed identical, screenshot + console check at 393×852.
+
+Both Phase 3 target categories (Floor Plans, Commercial) are now complete.
 
 ## Phase 3 recommendation (historical — superseded above for Floor Plans)
 
