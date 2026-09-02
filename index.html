@@ -3083,18 +3083,30 @@
      file or repo, and a fabricated one would be worse than none -- a
      broken/wrong structured-data reference actively hurts trust signals
      rather than helping them. Add these fields for real once real ones
-     exist. -->
+     exist. address/LocalBusiness added 2026-09-02, sourced from Sonny's
+     own live Google Business Profile screenshot (18484 Preston Rd Ste
+     102-2301, Dallas, TX 75252) -- an older Addison, TX address found on
+     third-party listings (Yelp/BBB) during a local-SEO check turned out
+     to be stale; this is the real, current one, confirmed by the owner. -->
 <script type="application/ld+json">
 {
    "@context" : "https://schema.org",
    "@graph" : [
       {
-         "@type" : "Organization",
+         "@type" : ["Organization", "LocalBusiness"],
          "@id" : "https://shoot2sell.com/#organization",
          "name" : "Shoot2Sell Photography",
          "url" : "https://shoot2sell.com",
          "foundingDate" : "2011",
          "telephone" : "+1-214-272-3200",
+         "address" : {
+            "@type" : "PostalAddress",
+            "streetAddress" : "18484 Preston Rd, Ste 102-2301",
+            "addressLocality" : "Dallas",
+            "addressRegion" : "TX",
+            "postalCode" : "75252",
+            "addressCountry" : "US"
+         },
          "contactPoint" : [
             {
                "@type" : "ContactPoint",
