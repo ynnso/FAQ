@@ -86,6 +86,10 @@ Sonny handed over `FAQ Price Sheet.md` (the real master rate sheet) plus real pr
 
 `FAQ SEO.html`, `files.zip`, `.gitignore` (dead rule), `PROGRESS.md`, `FAQ_SEO_AUDIT.md`, `FAQ_SEO_PLAN.md` were all deleted 2026-08-30 — fully migrated/superseded, findings captured above.
 
+## Commercial / PORT content, 2026-09-02
+
+Audited the file for MLS vs PORT content balance: 0 of 64 questions mentioned PORT or commercial real estate by name (verified via script, not eyeballed) despite PORT pricing already existing on the tile grid. Added an 11-question "Commercial Properties" section covering Photo, Aerial, 360/Matterport, Floor Plans, and Video — real content sourced from shoot2sell.com's own commercial pages (each already has a distinct, real `FAQPage` schema), real PORT pricing from `FAQ Price Sheet.md`, presented in plain language rather than the internal BCD/CR/AMF codes. See `HANDOFF.md`'s 2026-09-02 section for the full list of what changed.
+
 ## Rules that still apply (from CLAUDE.md)
 - Verify every visual/behavior change live before calling it done — computed-style checks alone are not sufficient, say explicitly when that's all that was possible.
 - Terse replies: bullet list of what changed, nothing else.

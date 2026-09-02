@@ -15,7 +15,7 @@ Single-file FAQ support page for Shoot2Sell, a Texas real estate photography com
 Vanilla HTML/CSS/JS. No framework, no build step. One `<script>` IIFE.
 
 ## Behavior, as built
-- 83 real questions across 13 categories (62 of those in the `FAQPage` JSON-LD — Dashboard/Account support content is deliberately excluded from schema, see REFERENCE.md), one section open at a time. Clicking outside, or opening another section, auto-collapses the current one.
+- 96 real questions across 14 categories (75 of those in the `FAQPage` JSON-LD — Dashboard/Account support content is deliberately excluded from schema, see REFERENCE.md), one section open at a time. Clicking outside, or opening another section, auto-collapses the current one. Includes a "Commercial Properties" section (added 2026-09-02) covering PORT/commercial pricing for Photo, Aerial, 360/Matterport, Floor Plans, and Video — separate from the MLS/residential content that makes up the rest of the page.
 - Opening a question isolates it — sibling questions hide until it's closed.
 - Rows cascade in one at a time on open, JS-timed (not CSS animation-delay — that broke silently once and is not going back).
 - Search bar: Airbnb-style pill, grey idle / white raised on focus. Red squircle button morphs into a labeled "Search" pill on focus, elastic overshoot. Mic sits left-inside the input; the search button owns the right edge alone.

@@ -1,6 +1,18 @@
 # FAQ Landing Page — Handoff
 
-_Last updated 2026-09-01. Read this first in a new chat — it replaces re-deriving context from scratch. `CLAUDE.md` and `REFERENCE.md` are the other two docs in this folder; read all three before touching code._
+_Last updated 2026-09-02. Read this first in a new chat — it replaces re-deriving context from scratch. `CLAUDE.md` and `REFERENCE.md` are the other two docs in this folder; read all three before touching code._
+
+## 2026-09-02 update: Commercial / PORT content added
+
+The FAQ was ~98% MLS/residential content with zero PORT/commercial-specific Q&A (verified by searching all schema text — confirmed via live audit, not assumed). Added a new **"Commercial Properties"** section, placed near the top (right after Services Overview, per Sonny's request), covering the 5 main services: Photo, Aerial (photo+video combined), 360/Matterport, Floor Plans, Video.
+
+- 11 new Q&As, real content pulled from shoot2sell.com's own commercial pages (`/commercial-real-estate-photography-services`, `/commercial-aerial-photography`, `/commercial-aerial-video`, `/commercial-3d-tours`, `/commercial-floor-plans`, `/commercial-video-tours`) — each already has its own real FAQPage schema, so this wasn't invented content.
+- Real PORT pricing tiers from `FAQ Price Sheet.md`, presented in **plain language, not the internal BCD/CR/AMF shorthand** (per Sonny's explicit direction): "Builders & Contractors," "Commercial & Retail," "Apartments & Multi-Family."
+- 96 total questions now (was 83), 75 in the `FAQPage` schema (was 64), 14 categories (was 13).
+- Also fixed in the same pass: the Virtual Staging pricing tile + Q&A link both pointed to `/commercial-virtual-staging` despite the content being 100% residential-toned — real, separate `/virtual-staging` page exists and is now linked instead.
+- Also: 14 new outbound links added earlier the same session (enhancements had zero despite 6 real dedicated pages existing; cost questions dead-ended with no next step; aerial comparison questions only linked one of two real pages) — see git log for the individual commits, each independently verified (live link check + screenshot + JSON-LD validation) before push.
+
+**Not yet done:** Enhancements' PORT-side variants (if any exist — not checked), and no PORT-specific Zillow Showcase content (unclear if Zillow Showcase applies to commercial properties at all — not verified either way).
 
 ---
 
