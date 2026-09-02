@@ -147,7 +147,13 @@ Both original Phase 3 target categories (Floor Plans, Commercial) are complete; 
 
 **360 Media Tours — done, 2026-09-02.** 2 of 3 real DUP questions shrunk to a short answer + link to `https://shoot2sell.com/matterport` (Standard vs. Premium Pro2, Matterport hosting duration). "How much does Zillow Showcase cost?" reclassified DUP→DUP-BETTER mid-execution — same pattern again: the live `/zillow-showcase` page states only a flat $160 headline, ours has the full accurate sq-ft tier breakdown up to $450 — kept full, not cut. Both real pages live-fetched before touching anything. Matching JSON-LD schema `text` fields updated for both. Verified: JSON-LD parses, HTML/schema text diffed identical, screenshot + console-clean at 393×852.
 
-Remaining Phase 2 DUP backlog: Video & Reels (3), Enhancements (5).
+**Video & Reels — done, 2026-09-02.** 2 of 3 real DUP questions shrunk to a short answer + link to `https://shoot2sell.com/video-tours` (Can I upload HD video to MLS, plus "Do sellers really prefer agents who use video?" below). "How fast is video turnaround?" reclassified DUP→VALUE, not cut — the real page only covers HD video timing; ours is a genuine cross-service digest (HD, BuzzReels, Agent Listing, Agent Lifestyle), consistent with how the Delivery & Technical section is already treated.
+
+**Real citation conflict found and resolved, user-directed:** "Do sellers really prefer agents who use video?" previously cited NAR 2024 for 73%-prefer and 32%-faster, and said "only about a quarter" of agents use video consistently (a hedge from an earlier citation fact-check pass this session, when two sources disagreed 26% vs 38%). The live `/video-tours` page cites entirely different sources and numbers: 73% (Animoto, 2024, same headline figure but different attribution), only 3% use it consistently (REALTOR Magazine, 2025), and 118% more engagement / 14% faster (PhotoUp, 2025), not 32%. Flagged to Sonny as a real conflict, not a phrasing difference — he chose to match the live page's numbers and sources. Updated accordingly, plus added the previously-missing link.
+
+Matching JSON-LD schema `text` fields updated for both touched questions. Verified: JSON-LD parses, HTML/schema text diffed identical, screenshot + console-clean at 393×852.
+
+Remaining Phase 2 DUP backlog: Enhancements (5).
 
 ## Phase 3 recommendation (historical — superseded above for Floor Plans)
 
