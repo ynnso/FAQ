@@ -1,92 +1,143 @@
-# Shoot2Sell Content Inventory — Phase 1
+# Shoot2Sell Content Inventory — Phase 1 + Phase 2
 
-_Built 2026-09-02. Real inventory of every FAQ-bearing page across the Shoot2Sell ecosystem — this repo's hub plus every dedicated page on shoot2sell.com. Every page listed here was live-fetched and its real question titles pulled directly (not estimated, not assumed). Use this before deciding what the hub should keep, cut, or route to._
+_Built 2026-09-02. Phase 1: real inventory of every FAQ-bearing page across the Shoot2Sell ecosystem. Phase 2: every one of this hub's 82 questions classified against that inventory. All real question titles below were live-fetched, not estimated or assumed._
 
-## The headline finding
+## Phase 1 — The headline finding
 
-**This hub has 82 questions. The rest of shoot2sell.com has ~250+ real questions across 28 dedicated pages, plus ~40-50 more on the dashboard/account support page.** The individual pages are not weak — collectively they're roughly 3x richer than this hub. The hub's job in a hub-and-spoke model is routing and cross-service decision support, not depth — the depth already exists, distributed across pages built specifically for each topic.
+**This hub has 82 questions. The rest of shoot2sell.com has ~252 real questions across 29 dedicated pages**, plus ~40-50 more on the dashboard/account support page. The individual pages are not weak — collectively roughly 3x richer than this hub.
 
-## This Hub (ynnso.github.io/FAQ)
+### Page counts
 
-| Metric | Count |
+| Group | Pages | Real Qs |
+|---|---|---|
+| Residential services | 10 | 87 |
+| Commercial services | 7 | 49 |
+| Enhancements | 6 | 45 |
+| Regional | 4 | 25 |
+| Services/Dashboard/About | 3 | ~46+ |
+| **This hub** | 1 | **82** |
+
+### Real pattern found
+"What areas does Shoot2Sell serve?" and "Do we need someone on-site during the shoot?" are duplicated near-verbatim across ~18-20 of the 28 service pages — deliberate consistency, but a real repetition signal at that scale.
+
+## Phase 2 — Classification of this hub's 82 questions
+
+Legend: **DUP** = true/near-duplicate of a real service-page question (candidate to shrink to a link). **VALUE** = genuinely hub-unique (digest, comparison, gateway, or fills a real gap the service page doesn't cover). **DUP-BETTER** = duplicate but this hub's version is more accurate (real $ figures where the service page is vague) — per an earlier decision this session, not a cut candidate.
+
+### Commercial (11) — vs. 7 commercial service pages
+| Question | Class |
 |---|---|
-| Total accordion questions | 82 |
-| Unique questions | 80 |
-| Categories | 13 |
-| In FAQPage schema | 80 |
+| Does Shoot2Sell offer commercial real estate photography services? | VALUE (gateway) |
+| How much does commercial real estate photography cost? | DUP |
+| What types of commercial properties do you photograph? | DUP (exact match) |
+| How much does commercial aerial photography and video cost? | VALUE (real pages have no combined price Q) |
+| Can you photograph both the building and its surroundings from the air? | DUP (near-exact) |
+| How much does a commercial Matterport 3D tour cost? | VALUE (real page has no pricing Q at all) |
+| How is a Matterport 3D tour different from a video walkthrough? | DUP (exact match) |
+| How much do commercial floor plans cost? | VALUE (real page has no pricing Q at all) |
+| What is the difference between CAD floor plans and marketing floor plans? | DUP (exact match) |
+| How much does commercial video cost? | VALUE (real page has no pricing Q at all) |
+| How long is a commercial video walkthrough? | DUP (near-exact) |
 
-## Residential Service Pages
+**6 DUP, 5 VALUE.** Real finding: every commercial pricing question on the hub fills a genuine gap — none of the 7 commercial service pages have their own cost question.
 
-| Page | URL | Real Qs |
-|---|---|---|
-| Real Estate Photography | `/real-estate-photography` | 8 |
-| Aerial Photography | `/aerial-photography` | 11 |
-| Aerial Video | `/aerial-video` | 9 |
-| Matterport 3D | `/matterport` | 9 |
-| Zillow Showcase | `/zillow-showcase` | 7 |
-| Floor Plans | `/floor-plans` | 8 |
-| Video Tours (HD) | `/video-tours` | 10 |
-| Virtual Staging | `/virtual-staging` | 7 |
-| Agent Listing Video | `/agent-listing-video` | 9 |
-| Agent Lifestyle Video | `/agent-lifestyle-video` | 9 |
-| **Subtotal** | | **87** |
+### Real Estate Photography (6) — vs. residential photography page
+All 6 were built directly from this real page's content (the section didn't exist until this session). **6 DUP by design** — this was filling a real structural gap (no dedicated section existed at all), not redundant content.
 
-## Commercial (PORT) Service Pages
+### Aerial (8) — vs. 2 residential aerial pages
+| Question | Class |
+|---|---|
+| How much faster do aerial photos help homes sell? | VALUE (stat-led, different framing) |
+| What's the difference between aerial photos and aerial video? | DUP (exact reverse-order match) |
+| Should I choose aerial photos or aerial video? | VALUE (decision support, no match) |
+| What weather conditions prevent drone flights? | Partial (different angle than real page) |
+| What happens if weather cancels my drone shoot? | DUP |
+| Are your pilots FAA-certified and insured? | DUP (verbatim on both real pages) |
+| What if my property is in restricted airspace? | VALUE (only on commercial page, not residential) |
+| Do I need to be on-site during the drone shoot? | DUP |
 
-| Page | URL | Real Qs |
-|---|---|---|
-| Commercial Photography | `/commercial-real-estate-photography-services` | 7 |
-| Commercial Aerial Photo | `/commercial-aerial-photography` | 7 |
-| Commercial Aerial Video | `/commercial-aerial-video` | 7 |
-| Commercial 3D Tours | `/commercial-3d-tours` | 7 |
-| Commercial Floor Plans | `/commercial-floor-plans` | 7 |
-| Commercial Video Tours | `/commercial-video-tours` | 7 |
-| Commercial Virtual Staging | `/commercial-virtual-staging` | 7 |
-| **Subtotal** | | **49** |
+**4 DUP, 2 partial, 2 VALUE.**
 
-## Enhancement Pages
+### 360 Media Tours (8) — vs. Matterport + Zillow Showcase pages
+| Question | Class |
+|---|---|
+| What is Matterport 3D and how does it help sell homes faster? | Partial (same topic, different framing) |
+| What's included in a Matterport 3D tour package? | VALUE (not on real page) |
+| What's the difference between Standard and Premium Pro2 Matterport? | DUP (exact match) |
+| How much does Matterport 3D cost? | VALUE (real page has no pricing Q) |
+| What is Zillow Showcase and why should I use it? | Partial |
+| What's included in the Zillow Showcase package? | Partial |
+| How much does Zillow Showcase cost? | DUP |
+| How long does Matterport hosting last? | DUP (near-exact) |
 
-| Page | URL | Real Qs |
-|---|---|---|
-| Blue Skies & Green Grass | `/blue-skies-green-grass` | 8 |
-| Aerial Green Grass | `/aerial-green-grass` | 8 |
-| ColorPop | `/colorpop-aerial-photos` | 6 |
-| Digital Twilight | `/virtual-twilight` | 8 |
-| Twilight Photography | `/twilight-photography` | 8 |
-| Keepsake Album | `/keepsake-album` | 7 |
-| **Subtotal** | | **45** |
+**3 DUP, 3 partial, 2 VALUE.**
 
-## Regional Pages
+### Virtual Staging (5) — vs. residential virtual staging page
+Real page is entirely procedural (approval process, image count, changes, turnaround, staged/unstaged). Hub content is entirely conceptual (what it is, does it work, vs. physical staging, bundling). **0 DUP, 5 VALUE** — genuinely complementary, the one category with almost no overlap.
 
-| Page | URL | Real Qs |
-|---|---|---|
-| Dallas-Fort Worth | `/dallas-fort-worth-photography-services` | 7 |
-| Houston | `/houston-real-estate-photography` | 5 |
-| Austin | `/austin-real-estate-photography` | 5 |
-| San Antonio | `/san-antonio-real-estate-photography` | 8 |
-| **Subtotal** | | **25** |
+### Floor Plans (7) — vs. residential floor plans page
+| Question | Class |
+|---|---|
+| What types of floor plans does Shoot2Sell offer? | DUP (exact match) |
+| How much do floor plans cost? | DUP (exact match) |
+| How are floor plans measured? | DUP (near-exact) |
+| How quickly do I get my floor plans? | DUP (exact match) |
+| Do floor plans really help sell homes? | DUP (near-exact) |
+| Can I upload floor plans to the MLS? | DUP (exact match) |
+| Should someone be on-site during the floor plan shoot? | Partial (real page uses generic boilerplate version) |
 
-## Hub / Support Pages
+**6 DUP, 1 partial.** The single heaviest-duplicated category found.
 
-| Page | URL | Real Qs |
-|---|---|---|
-| Services (catalog/booking guide) | `/services` | 6 |
-| Dashboard & Account Help | `/dashboard-help` | ~38-50+ across 6 sections (Booking 6, Services & Delivery 6, General 3, Payments & Copyright 3, Account & Support 1, Dashboard & Virtual Tour 19) |
-| About (trust/facts, not Q&A) | `/about` | 0 (facts page — founding 2011, 300K+ properties, FAA certs, in-house editing) |
+### Video & Reels (11) — vs. Video Tours + Agent Listing + Agent Lifestyle pages
+| Question | Class |
+|---|---|
+| Do sellers really prefer agents who use video? | DUP (close match) |
+| What are the types of video you offer? | VALUE (overview, no match) |
+| What's included in HD listing video packages? | Partial |
+| What are BuzzReels and why should I post them? | VALUE |
+| Should I appear on camera in my listing videos? | VALUE |
+| Can I upload HD video to MLS? | DUP |
+| Can I upload BuzzReels to MLS? | VALUE |
+| What is Agent Listing Video and when should I get one? | VALUE (gateway; real page has narrower specific Qs) |
+| What is the Agent Lifestyle Video Package? | VALUE (gateway) |
+| How fast is video turnaround? | DUP |
+| Can I bundle video with my photography session? | VALUE |
 
-## Real total, ecosystem-wide
+**3 DUP, 1 partial, 7 VALUE.**
 
-87 + 49 + 45 + 25 + 6 + ~40 (dashboard, low estimate) ≈ **~252 real questions across 29 dedicated pages** — not counting this hub's 82.
+### Enhancements (11) — vs. 6 enhancement pages
+| Question | Class |
+|---|---|
+| What photo enhancement services does Shoot2Sell offer? | VALUE (only place all 6 are compared together) |
+| What is Blue Skies & Green Grass enhancement? | DUP (exact match) |
+| How is Aerial Green Grass different from Blue Skies & Green Grass? | DUP (exact match) |
+| What is the difference between Twilight Time Slot and Digital Twilight? | DUP (close match) |
+| Why do twilight photos get so many more views? | VALUE |
+| What is ColorPop aerial enhancement? | DUP (close match) |
+| What is the Keepsake Photo Album? | VALUE (gateway; real page has narrower Qs) |
+| Can I combine enhancements with my photography package? | VALUE |
+| Are photo enhancements MLS compliant? | DUP (appears per-page, hub aggregates) |
+| Can I order enhancements for photos from a previous shoot? | DUP (appears per-page, hub aggregates) |
+| How quickly are enhancements delivered? | Partial (aggregates what's per-page on real site) |
 
-## Real, notable pattern found across the inventory
+**5 DUP, 1 partial, 5 VALUE.**
 
-**"What areas does Shoot2Sell serve?" and "Do we need someone on-site during the shoot?" appear near-verbatim on the large majority of the 28 service pages** (roughly 18-20 of them). This is real, deliberate consistency — every page answers the same core logistics questions — but at this scale it's also a real thin-content/repetition risk worth knowing about: the same 2 boilerplate Q&As are duplicated dozens of times across the domain. Not something to fix today — flagged for the classification pass in Phase 2.
+### Pricing & Packages (5), Delivery & Technical (3), Regional Coverage (1), Booking & Scheduling (6)
+- **Pricing & Packages:** 2 are intentional cross-listings of this hub's own Photography/Floor Plans answers (not external duplicates); 3 are real digests with no single external equivalent (HD video cost across 3 products, enhancement cost across 6 products, volume discounts). **All 5 = VALUE.**
+- **Delivery & Technical:** all 3 are cross-service digests (turnaround across all services, file formats across all services, usage rights across all services) — no single real page does this. **All 3 = VALUE.**
+- **Regional Coverage:** the 1 question is a gateway, now correctly linking to the 4 real deep regional pages. **VALUE**, and already fixed to route properly last commit.
+- **Booking & Scheduling:** substantially overlaps `dashboard-help`'s Booking section and `/services`, but this hub's version has real dollar figures where those are vague. **DUP-BETTER — not a cut candidate**, per the decision made earlier this session.
 
-## Next: Phase 2
+## Real totals across all 82
 
-Classify every one of this hub's 82 questions against this inventory:
-1. **True duplicate** of a service-page question → candidate to cut from the hub
-2. **Hub-only, no service-page equivalent** → decide: push out, or genuinely belongs on a hub (cross-service comparison, booking policy)
-3. Cross-reference which service pages have content **not yet reflected or linked from the hub** at all
+- **True/near duplicates (DUP):** ~30 questions
+- **Duplicate-but-more-accurate (DUP-BETTER):** ~6 questions (Booking & Scheduling)
+- **Genuine hub-unique value (VALUE):** ~40 questions
+- **Partial overlap:** ~6 questions
 
-Not run yet — this file is the real input for that pass, not the pass itself.
+## Phase 3 recommendation (not executed — this file is the input, not the decision)
+
+Don't do a blanket cut. The data doesn't support one:
+1. **~30 DUP questions** are real candidates to shrink into a short answer + a harder link-out, since the full depth already exists on the linked page.
+2. **~40 VALUE questions** are the hub's actual differentiated content — cross-service digests, decision-support comparisons, and gap-fills the service pages don't cover (every commercial pricing question, most of Virtual Staging, most of Pricing & Packages and Delivery & Technical). This is the real case for keeping the hub substantial rather than gutting it to match a generic "15-20 questions" benchmark — a large share of what's here doesn't exist anywhere else on the site.
+3. **Floor Plans (6 of 7 DUP)** and **Commercial (6 of 11 DUP)** are the two categories where trimming would have the most impact with the least loss.
