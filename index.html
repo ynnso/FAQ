@@ -241,6 +241,28 @@
     text-align: center;
   }
 
+  /* ── ROW 4: Trust strip ── real, verified facts only (see comment at
+     the trust-strip markup itself for sourcing). Deliberately plain --
+     small, muted, no border/divider so it doesn't compete with the H1/
+     subtitle or the search bar for attention. */
+  .trust-strip {
+    text-align: center;
+    font-size: 14px;
+    color: var(--gray-500);
+    margin: 0 auto 24px;
+    max-width: 480px;
+  }
+
+  .trust-strip a {
+    color: var(--red);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .trust-strip a:hover {
+    text-decoration: underline;
+  }
+
   /* ── ROW 5: Search ── */
   .hero-actions {
     padding-bottom: 0;
@@ -3052,11 +3074,13 @@
 </script>
 <!-- Organization/WebSite/BreadcrumbList -- entity + freshness signals for
      AI answer engines and Google, separate from the FAQPage block above.
-     Deliberately no logo/sameAs/telephone fields: no real, verified URL
-     or number for any of those exists anywhere in this file or repo, and
-     a fabricated one would be worse than none -- a broken/wrong
-     structured-data reference actively hurts trust signals rather than
-     helping them. Add these fields for real once real ones exist. -->
+     foundingDate added 2026-09-02, verified against the real, live
+     shoot2sell.com/about page. Still deliberately no logo/sameAs/telephone
+     fields: no real, verified value for any of those exists anywhere in
+     this file or repo, and a fabricated one would be worse than none -- a
+     broken/wrong structured-data reference actively hurts trust signals
+     rather than helping them. Add these fields for real once real ones
+     exist. -->
 <script type="application/ld+json">
 {
    "@context" : "https://schema.org",
@@ -3065,7 +3089,8 @@
          "@type" : "Organization",
          "@id" : "https://shoot2sell.com/#organization",
          "name" : "Shoot2Sell Photography",
-         "url" : "https://shoot2sell.com"
+         "url" : "https://shoot2sell.com",
+         "foundingDate" : "2011"
       },
       {
          "@type" : "WebSite",
@@ -3156,6 +3181,12 @@
   <div class="hero-top">
     <h1>FAQ<span class="sr-only"> — Residential & Commercial Real Estate Photography, Aerial, Matterport &amp; Pricing for DFW, Houston, Austin, San Antonio</span></h1>
     <h2 class="hero-sub">Hi. How can we help?</h2>
+    <!-- Trust strip: real, verified facts only, sourced from the live
+         shoot2sell.com/about page (2026-09-02). FAA Part 107 cert was
+         already in this file, buried inside the Aerial section only --
+         surfaced here too since it's real and relevant page-wide, not
+         just for aerial questions. -->
+    <p class="trust-strip">Texas real estate media since 2011 — 300K+ properties shot, FAA Part 107 certified pilots, in-house editing team. <a href="https://shoot2sell.com/about" target="_blank" rel="noopener">About Shoot2Sell</a></p>
   </div>
 
   <!-- Search + Chips -->
