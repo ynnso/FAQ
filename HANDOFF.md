@@ -14,6 +14,18 @@ The FAQ was ~98% MLS/residential content with zero PORT/commercial-specific Q&A 
 
 **Not yet done:** Enhancements' PORT-side variants (if any exist — not checked), and no PORT-specific Zillow Showcase content (unclear if Zillow Showcase applies to commercial properties at all — not verified either way).
 
+## 2026-09-02 (later same day): fresh-eyes review + fixes
+
+A step-back "what stands out" review (not chasing bugs, judging the page as a whole) surfaced real items, fixed in order:
+
+- **Citation fact-check:** checked ~24 statistical claims against real current sources. Fixed 6 confirmed-wrong ones (a "33% faster (NAR)" staging stat was actually RESA's number, not NAR's; "83%" should be 81%; a "85% prefer short-form video" HubSpot claim had no matching real figure and was replaced; "5.3x engagement" was really ~67% more; Zillow "2x more saves" was really 68%; "9% of agents use video" had no real source anywhere near that low). Added 2 missing citations to real-but-uncited aerial stats. ~9 claims remain unverified, flagged not assumed fine.
+- **Per-question URL anchors:** all 97 (now 76) questions got a stable `id`, with real bidirectional deep-linking (land on a hash → opens and scrolls to that answer; open any answer manually → URL updates via `replaceState`). Was a real structural gap — zero anchors existed before, so nothing could be deep-linked or cited to a specific answer.
+- **Core Web Vitals — measured, not assumed:** LCP 384-484ms, CLS 0.0000, FCP 368-468ms on the real live production URL. The 533KB single-file size (flagged earlier as a risk) turned out not to matter — one request, no render-blocking assets, GitHub Pages compression handles it. No fix needed; the original concern was wrong.
+- **Title/meta description fixed:** was still describing the pre-Commercial-Properties page ("Real Estate Photography FAQ," no mention of commercial or pricing). Updated across all 6 locations (title, meta description, OG, Twitter) plus the H1's hidden keyword span. Found and fixed a stray embedded `\r` character on the title line as a side effect (harmless to rendering, would've broken future exact-string edits there).
+- **Dashboard/Account section removed entirely** (21 questions) — real content already lives at `shoot2sell.com/dashboard-help` (verified: same exact question titles, live page). Replaced with one link-out line at the bottom of the page. **76 questions now** (was 96), **12 categories** (was 14), **75 unique in the FAQPage schema** (unchanged — these were always excluded from schema, so this was a pure page-weight/focus win with zero schema-side change).
+
+**Still open, not started:** splitting Booking & Delivery/Technical content the same way if `dashboard-help` turns out to cover those too (flagged as a possibility, never checked — see the note in the previous section about that page also having Booking & Scheduling / Services & Delivery / Payments & Copyright sections). Trust/E-E-A-T signal gap (no visible authorship/credentials block) — named, not acted on, real project scope not a quick fix.
+
 ---
 
 ## 1. What this is — full context & northstar

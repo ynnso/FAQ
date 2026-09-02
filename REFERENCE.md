@@ -90,6 +90,12 @@ Sonny handed over `FAQ Price Sheet.md` (the real master rate sheet) plus real pr
 
 Audited the file for MLS vs PORT content balance: 0 of 64 questions mentioned PORT or commercial real estate by name (verified via script, not eyeballed) despite PORT pricing already existing on the tile grid. Added an 11-question "Commercial Properties" section covering Photo, Aerial, 360/Matterport, Floor Plans, and Video — real content sourced from shoot2sell.com's own commercial pages (each already has a distinct, real `FAQPage` schema), real PORT pricing from `FAQ Price Sheet.md`, presented in plain language rather than the internal BCD/CR/AMF codes. See `HANDOFF.md`'s 2026-09-02 section for the full list of what changed.
 
+## Fresh-eyes review + Dashboard/Account removal, 2026-09-02
+
+A step-back review (not bug-hunting, judging the page as a whole) found: title/meta still described the pre-Commercial page (fixed), ~24 statistical citations never fact-checked (checked, 6 were wrong and fixed, 2 missing citations added, ~9 remain unverified), zero per-question URL anchors (added, with real bidirectional deep-linking), and the single largest category on the page (19 questions) was internal Dashboard/Account support content, not anything revenue-driving.
+
+That last one led to a real discovery: those 21 questions (Dashboard + Account + Support tags) substantially duplicated a real, live page — `shoot2sell.com/dashboard-help` — same exact question titles, already maintained externally. Removed the section entirely, replaced with a single link-out. Page is now 76 questions / 12 categories, 100% prospect-facing, matching its own stated northstar. See `HANDOFF.md`'s second 2026-09-02 section for full detail.
+
 ## Rules that still apply (from CLAUDE.md)
 - Verify every visual/behavior change live before calling it done — computed-style checks alone are not sufficient, say explicitly when that's all that was possible.
 - Terse replies: bullet list of what changed, nothing else.
