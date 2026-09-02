@@ -141,7 +141,11 @@ Real page is entirely procedural (approval process, image count, changes, turnar
 
 **Commercial — done, 2026-09-02.** 5 of 6 real DUP questions shrunk to a short answer + link to the matching real commercial page (Types photographed, Aerial building+surroundings, Matterport vs. video walkthrough, CAD vs. marketing floor plans, Video walkthrough length). "How much does commercial real estate photography cost?" reclassified DUP→DUP-BETTER mid-execution — same pattern as Floor Plans: live-fetched the real page and found no dollar figures at all, ours has full tiered pricing, kept as-is. All 5 real pages live-fetched and answers confirmed near-verbatim before cutting. Matching JSON-LD schema `text` fields updated for all 5. Verified: JSON-LD parses, HTML/schema text diffed identical, screenshot + console check at 393×852.
 
-Both Phase 3 target categories (Floor Plans, Commercial) are now complete.
+Both original Phase 3 target categories (Floor Plans, Commercial) are complete; trimming continued into the rest of Phase 2's DUP backlog.
+
+**Aerial — done, 2026-09-02.** 4 of 4 real DUP questions shrunk to a short answer + link to the matching real page (Photos-vs-video, FAA-certified, On-site during shoot; plus one real accuracy fix, below). "How much faster do aerial photos help homes sell?", "Should I choose aerial photos or aerial video?", "What if my property is in restricted airspace?" (VALUE) and "What weather conditions prevent drone flights?" (Partial) left untouched, per Phase 2. **Real accuracy fix found mid-trim:** "What happens if weather cancels my drone shoot?" — the hub's old text said cancellations are "handled with no fees" across the board; the live `/aerial-photography` page states a trip fee may apply if the crew is already dispatched close to shoot time. Corrected, not just shortened — this was a real factual gap, not a duplication issue. All 4 real pages live-fetched before touching anything. Matching JSON-LD schema `text` fields updated for all 4. Verified: JSON-LD parses, HTML/schema text diffed identical, screenshot + console-clean at 393×852.
+
+Remaining Phase 2 DUP backlog: 360 Media Tours (3), Video & Reels (3), Enhancements (5).
 
 ## Phase 3 recommendation (historical — superseded above for Floor Plans)
 
