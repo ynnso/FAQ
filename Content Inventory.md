@@ -145,7 +145,9 @@ Both original Phase 3 target categories (Floor Plans, Commercial) are complete; 
 
 **Aerial — done, 2026-09-02.** 4 of 4 real DUP questions shrunk to a short answer + link to the matching real page (Photos-vs-video, FAA-certified, On-site during shoot; plus one real accuracy fix, below). "How much faster do aerial photos help homes sell?", "Should I choose aerial photos or aerial video?", "What if my property is in restricted airspace?" (VALUE) and "What weather conditions prevent drone flights?" (Partial) left untouched, per Phase 2. **Real accuracy fix found mid-trim:** "What happens if weather cancels my drone shoot?" — the hub's old text said cancellations are "handled with no fees" across the board; the live `/aerial-photography` page states a trip fee may apply if the crew is already dispatched close to shoot time. Corrected, not just shortened — this was a real factual gap, not a duplication issue. All 4 real pages live-fetched before touching anything. Matching JSON-LD schema `text` fields updated for all 4. Verified: JSON-LD parses, HTML/schema text diffed identical, screenshot + console-clean at 393×852.
 
-Remaining Phase 2 DUP backlog: 360 Media Tours (3), Video & Reels (3), Enhancements (5).
+**360 Media Tours — done, 2026-09-02.** 2 of 3 real DUP questions shrunk to a short answer + link to `https://shoot2sell.com/matterport` (Standard vs. Premium Pro2, Matterport hosting duration). "How much does Zillow Showcase cost?" reclassified DUP→DUP-BETTER mid-execution — same pattern again: the live `/zillow-showcase` page states only a flat $160 headline, ours has the full accurate sq-ft tier breakdown up to $450 — kept full, not cut. Both real pages live-fetched before touching anything. Matching JSON-LD schema `text` fields updated for both. Verified: JSON-LD parses, HTML/schema text diffed identical, screenshot + console-clean at 393×852.
+
+Remaining Phase 2 DUP backlog: Video & Reels (3), Enhancements (5).
 
 ## Phase 3 recommendation (historical — superseded above for Floor Plans)
 
