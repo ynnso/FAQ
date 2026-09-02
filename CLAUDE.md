@@ -6,15 +6,16 @@
 
 Single-file FAQ support page for Shoot2Sell, a Texas real estate photography company. Self-serve answers, not client-facing marketing.
 
-**Working file:** `index.html` (mirror `FAQ.html` locally, sync before every commit)
+**Working file:** `index.html` (the only version that matters — `FAQ.html` mirror was deleted 2026-08-30 as fully migrated)
 **Live:** https://ynnso.github.io/FAQ/
 **Repo:** github.com/ynnso/FAQ
+**Pricing source of truth:** `FAQ Price Sheet.md` (added 2026-09-01) — verify any dollar figure against it (or live shoot2sell.com) before shipping. This repo has real, confirmed history of a prior session shipping wrong prices and conflating two distinct real products under one name — see the 2026-09-01 entry in `REFERENCE.md`.
 
 ## Stack
 Vanilla HTML/CSS/JS. No framework, no build step. One `<script>` IIFE.
 
 ## Behavior, as built
-- 52 real questions, 6 categories, one section open at a time. Clicking outside, or opening another section, auto-collapses the current one.
+- 83 real questions across 13 categories (62 of those in the `FAQPage` JSON-LD — Dashboard/Account support content is deliberately excluded from schema, see REFERENCE.md), one section open at a time. Clicking outside, or opening another section, auto-collapses the current one.
 - Opening a question isolates it — sibling questions hide until it's closed.
 - Rows cascade in one at a time on open, JS-timed (not CSS animation-delay — that broke silently once and is not going back).
 - Search bar: Airbnb-style pill, grey idle / white raised on focus. Red squircle button morphs into a labeled "Search" pill on focus, elastic overshoot. Mic sits left-inside the input; the search button owns the right edge alone.
@@ -26,7 +27,7 @@ Vanilla HTML/CSS/JS. No framework, no build step. One `<script>` IIFE.
 
 ## Rules
 - Verify every visual/behavior change live (screenshot or computed style) before calling it done. Never claim untested.
-- Push only after local verification passes: sync `FAQ.html`→`index.html`, commit, push, poll the live URL.
+- Push only after local verification passes: commit, push, poll the live URL.
 - Make the exact edit asked for — no incidental scope, no revisiting things not flagged.
 
 ## Verification protocol — required before every push

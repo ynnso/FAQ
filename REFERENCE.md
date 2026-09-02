@@ -45,11 +45,27 @@ Ran a hard critique grounded in the live deployed page (fetched fresh, not assum
 
 **Not done, held for a later decision (from the same critique):** splitting the highest-intent service clusters (Aerial, Matterport/360, Floor Plans, Virtual Staging) into their own dedicated URLs — the single biggest remaining structural gap, but a real project scope, not a quick fix. Also not done: separating the inline `<style>`/`<script>` into external cacheable files (540KB single file, low urgency, no images so no waterfall problem).
 
-## Content fact-check flags (from the SEO audit, do not ship unverified numbers)
-- Real photography pricing floor is **$139** (tiered: $139 home / $149 new construction / $159 rental / $199 commercial / $249 multifamily) — draft content and old `index.html` both understated this as $159.
-- "Agent Lifestyle Video" is likely misnamed — real service is **"Agent Listing Video"**; no confirmed price or turnaround exists for it anywhere.
+## Content fact-check flags — status as of 2026-09-01 pricing pass (see full section below)
+- ~~Real photography pricing floor is $139~~ — **resolved 2026-09-01**, real floor is $139 (25-image base, under-2,000-sqft tier) but the real "starting from" figure across all packages is **$119** (Mini, 12 images). Both now correctly represented.
+- ~~"Agent Lifestyle Video" is likely misnamed — real service is "Agent Listing Video"~~ — **this flag was itself wrong.** Confirmed 2026-09-01 directly from Sonny (real product screenshots): these are **two separate, real products** — Agent Listing Video ($499) and Agent Lifestyle Video Package ($999) — not one misnamed thing. A prior session had conflated them under one name/price; fixed.
 - Confirmed accurate: HD Video Tours $159–$319, Aerial Photography $79–$119, all 4 regional phone numbers (DFW/Houston/Austin/San Antonio).
-- Not yet independently verified: Aerial Video, Matterport, Zillow Showcase, Virtual Staging, Floor Plans pricing rows, and the LocalBusiness schema's `$29` price-range floor.
+- **Resolved 2026-09-01** (was "not yet independently verified"): Floor Plans (2D $69 / 3D $99, was showing $79/$199), ColorPop ($39 first/$15 additional, was flat $39/image), Blue Skies & Green Grass (two separate $29 add-ons, was merged into one). See dated section below.
+- **Still not independently verified:** Aerial Video, Matterport, Zillow Showcase pricing rows beyond the single tile figure, and the LocalBusiness schema's `$29` price-range floor. `FAQ Price Sheet.md` (added 2026-09-01) has the real tier ladders for Matterport and Zillow 360 — not yet built into the FAQ's Q&A text.
+
+## Pricing fact-check pass, 2026-09-01
+
+Sonny handed over `FAQ Price Sheet.md` (the real master rate sheet) plus real product screenshots mid-session, prompted by catching a mismatch between two numbers already on the same page. Cross-verified against the price sheet, live shoot2sell.com embedded JSON data, and (where relevant) the separate PriceApp project's own Golden Dataset — all three agreed, confirming the price sheet as reliable ground truth. Fixed, real, confirmed errors:
+
+- **ColorPop:** was flat "$39 per image" everywhere (6 locations) — real structure is $39 first + $15 each additional, matching PriceApp's own Golden Dataset (ADD-03: 4 images = $84, not $156).
+- **Floor Plan 2D/3D:** 2D was $79 (real $69), 3D was $199 (real $99 — that $199 figure was actually the PORT/commercial rate, misapplied to the residential FAQ).
+- **Photography:** was flat "$159–$549" range not matching the live pricing tile's own $139. Replaced with the real 7-tier sqft breakdown from the price sheet ($139/$166/$189/$214/$279/$339/$399 at the 25-image base), plus the real $119 Mini-package floor.
+- **Blue Skies & Green Grass:** was one $29 service; real price sheet shows these as two separate $29 add-ons (Blue Sky Replacement, Green Grass Enhancement). Split across all 9 locations that referenced it (overview table, dedicated Q&A, comparison Q&A, turnaround/compliance/reorder/pricing-summary lists).
+- **Agent Brand Video → two real products, not one:** confirmed via Sonny's own product-page screenshots that "Agent Listing Video" ($499, shoot2sell.com/agent-listing-video) and "Agent Lifestyle Video Package" ($999, shoot2sell.com/agent-lifestyle-video) are separate real products with separate real specs — a prior session had conflated them under one FAQ entry named "Agent Brand Video," with the $999 product's content wrongly attached to a "$499 or price-on-request" label, and a wrong 5–7 business day turnaround (real: Agent Listing Video is 24-hour, only the Lifestyle Package takes 5–7 days). Renamed to match the real site, added the missing Lifestyle Package as its own Q&A, fixed the mismatched delivery times and file-format specs that resulted from the conflation.
+- **Duplicate schema question:** "How much do floor plans cost?" appeared twice as separate `Question` nodes in the same `FAQPage` block (legitimately shown twice in the visible UI, across two categories — but Google flags duplicate `name` fields in one schema block). Removed the duplicate schema entry, kept both visible accordions.
+
+**Verification:** JSON-LD re-validated after every edit (62 questions, no duplicate names). All 9+ outbound shoot2sell.com links checked live (200 OK, no redirects). Pricing tile screenshot-confirmed clean at 393×852 (primary target, matches CLAUDE.md) and 440×956 (ceiling) after the Agent Listing Video rename — no clipping, tile row height auto-equalizes with its neighbor. At 375×667 (stress floor only) the longer name wraps to 3 lines instead of 2 but does not clip or overflow (measured via `getClientRects()` per the NEVER ASSUME rule, not eyeballed) — accepted by Sonny as-is, not worth trading off the 393×852 primary target for.
+
+**Real lesson, matches this file's existing pattern:** this is the second documented case (after the Aug 30 pricing-table saga) of a real defect surviving specifically *because* a prior session's content was trusted at face value instead of fact-checked against a real source. The "Agent Lifestyle Video is likely misnamed" flag two sections up was itself wrong — written from inference, not verification, and would have led a future session toward the wrong fix if acted on directly. Treat every existing pricing claim in this file as unverified until checked, including ones that look authoritative.
 
 ## Decisions made along the way
 - Structure: granular per-service sections (11ish), not the audit's leaner 7-section alternative — long-tail search favors per-service pages.
@@ -65,8 +81,10 @@ Ran a hard critique grounded in the live deployed page (fetched fresh, not assum
 | `CLAUDE.md` | Binding project rules (communication style, verification protocol) |
 | `REFERENCE.md` | This file |
 | `README.md` | 1 line, effectively empty |
+| `FAQ Price Sheet.md` | Added 2026-09-01. Real master rate sheet — the pricing source of truth, see the 2026-09-01 section above |
+| `HANDOFF.md` | Re-added 2026-08-30 (was deleted earlier that day, reinstated as the per-session onboarding doc) — read first in a new chat |
 
-`FAQ SEO.html`, `files.zip`, `.gitignore` (dead rule), `HANDOFF.md`, `PROGRESS.md`, `FAQ_SEO_AUDIT.md`, `FAQ_SEO_PLAN.md` were all deleted 2026-08-30 — fully migrated/superseded, findings captured above.
+`FAQ SEO.html`, `files.zip`, `.gitignore` (dead rule), `PROGRESS.md`, `FAQ_SEO_AUDIT.md`, `FAQ_SEO_PLAN.md` were all deleted 2026-08-30 — fully migrated/superseded, findings captured above.
 
 ## Rules that still apply (from CLAUDE.md)
 - Verify every visual/behavior change live before calling it done — computed-style checks alone are not sufficient, say explicitly when that's all that was possible.
