@@ -66,10 +66,10 @@ Full detail and root-cause writeups in `git log --oneline` and `REFERENCE.md`'s 
 
 ## 5. Next steps
 
-1. **Matterport / Zillow Showcase enrichment** — real tier data exists in `FAQ Price Sheet.md`, not yet built into the Q&A text. Natural continuation of the 2026-09-01 pass.
-2. **Booking/cancellation fee answers are still vague** ("may incur a fee") where `FAQ Price Sheet.md` has real numbers ($29 weekend, $49 cancellation, $49/$79 rush) — flagged, not yet applied.
-3. **Aerial bundle combo pricing** exists in the price sheet (e.g. Mini+Curb Appeal, Standard+2min) but isn't mentioned in the FAQ — optional enrichment, not a fix.
-4. **The biggest remaining strategic item, still not started:** splitting the highest-intent service clusters (Aerial, Matterport/360, Floor Plans, Virtual Staging) into their own dedicated URLs on shoot2sell.com's own domain — real project scope, hold until Sonny raises it.
+1. ~~Matterport / Zillow Showcase enrichment~~ — **done 2026-09-01**, real tier data added to both Q&As.
+2. ~~Booking/cancellation fee answers~~ — **done 2026-09-01**, real numbers applied ($29 weekend, $49 cancellation, $49/$79 rush).
+3. ~~Aerial bundle combo pricing~~ — **done 2026-09-01**, all 4 real combo prices added.
+4. ~~"Biggest remaining strategic item" — splitting service clusters into dedicated shoot2sell.com URLs~~ — **this was already done, on the real business site, before this doc was ever written.** Verified 2026-09-01: `shoot2sell.com/aerial-photography`, `/aerial-video`, `/matterport`, `/floor-plans`, `/commercial-virtual-staging` all already have their own dedicated pages with real, distinct per-service `FAQPage` schemas (confirmed via live fetch — e.g. `/aerial-video` has "How much does aerial video cost for real estate agents in Texas?" as its own question, not shared with this repo's FAQ). **This item never should have been on this list.** Sonny caught it by asking a plain question about the site's actual structure — a third confirmed case (after the Agent Video and question-count flags) of this doc carrying a claim that was never checked against reality. If a future session sees a "not yet started" item here, verify against the live site before trusting it.
 5. Low-priority: splitting the inline `<style>`/`<script>` into external cacheable files — a "someday" item, not a bug.
 
 ---
