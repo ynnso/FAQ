@@ -153,7 +153,13 @@ Both original Phase 3 target categories (Floor Plans, Commercial) are complete; 
 
 Matching JSON-LD schema `text` fields updated for both touched questions. Verified: JSON-LD parses, HTML/schema text diffed identical, screenshot + console-clean at 393×852.
 
-Remaining Phase 2 DUP backlog: Enhancements (5).
+**Enhancements — done, 2026-09-02.** 4 of 6 real DUP questions shrunk to a short answer, links (already present) preserved: Blue Skies & Green Grass definition, Aerial Green Grass vs. ground-level, Twilight Time Slot vs. Digital Twilight, ColorPop definition. All 4 real pages live-fetched and confirmed near-verbatim before cutting — pricing detail our version had that the real page left vague (Digital Twilight's $29/$15 breakdown, ColorPop's per-additional-image rate) was preserved, not cut.
+
+"Are photo enhancements MLS compliant?" and "Can I order enhancements for photos from a previous shoot?" reclassified DUP→VALUE, not cut — same cross-service-digest pattern as "How fast is video turnaround?": each covers all 6 enhancement types in one answer, no single real page does that. Left full.
+
+Matching JSON-LD schema `text` fields updated for all 4 touched questions. Verified: JSON-LD parses, HTML/schema text diffed identical, screenshot + console-clean at 393×852.
+
+**All Phase 2 DUP backlog is now cleared.** Floor Plans, Commercial, Aerial, 360 Media Tours, Video & Reels, Enhancements — every flagged duplicate question has been shrunk-and-linked or reclassified with a documented reason (DUP-BETTER pricing, cross-service-digest VALUE, or a genuine accuracy fix). Two real content bugs were caught and fixed in the process (aerial weather trip-fee, video seller-preference stat sourcing) that pure duplication-cutting would not have surfaced.
 
 ## Phase 3 recommendation (historical — superseded above for Floor Plans)
 
