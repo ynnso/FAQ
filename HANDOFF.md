@@ -30,6 +30,20 @@ A step-back "what stands out" review (not chasing bugs, judging the page as a wh
 - **Real conflict on the parent site itself:** `dashboard-help` states photography "ranges from $159–$549 per shoot." Our FAQ says $139 starting, verified three ways (live pricing widget, this page's own pricing tile, PriceApp's Golden Dataset) earlier this session. Two pages on shoot2sell.com now disagree with each other — not something this repo can fix, since it's the other page that's likely stale, not ours. Worth knowing if this surfaces again.
 - **Real content gap:** `dashboard-help` has "Can I request a reshoot if I don't like the photos?" — not answered anywhere in our FAQ. Real reshoot fee exists in `FAQ Price Sheet.md` ($89 MLS). Could be added; wasn't, on request.
 
+## 2026-09-02 (later still): added a real "Real Estate Photography" section
+
+Sonny caught a real structural gap: every other core service (Aerial, 360, Staging, Floor Plans, Video) had its own dedicated section — the company's actual namesake service, base residential photography, had none. Its only mention was one pricing question buried inside "Pricing & Packages."
+
+Sonny also pasted an unsourced claim that Google recommends "15-30 questions in 3-5 categories" for a main FAQ page. Checked it the same way as the earlier SEO-skills list: that specific figure isn't traceable to any real Google documentation. Real sources give a much looser range (3-8 for most pages, 5-10 for "pillar" content, some say no set ideal). The specific number was wrong, but the underlying concern was real and, if anything, understated -- even the most generous real range is far below where this page now sits.
+
+Fixed the concrete, unambiguous part now (the missing section); the volume question (82 questions total) is a much bigger, separate content-strategy decision, not resolved here.
+
+- New **"Real Estate Photography"** section, inserted between Booking & Scheduling and Aerial Photo & Video. 6 questions: the existing, already-verified pricing answer (cross-listed, same pattern as the Floor Plans duplicate), plus 5 new questions sourced from the real, live `shoot2sell.com/real-estate-photography` FAQ (shoot length, on-site requirement, free single-page website inclusion, homeowner-vs-agent booking, delivery turnaround) -- not invented content.
+- **82 questions now** (was 76), **13 categories** (was 12), **80 unique in the FAQPage schema** (was 75).
+- Caught and fixed a real gap while building this: the 6 new accordion items didn't get the `id="q-..."` deep-link anchors, since those were added by a one-time script run before this section existed. Added manually, verified unique against all 82 ids file-wide, verified live via cold-load deep-link.
+
+**Still open:** the page-volume question (82 questions vs. the 3-10 range real sources suggest) -- named, not decided. Trust/E-E-A-T gap -- still open. `dashboard-help` reshoot-question gap and the $139/$159 site-wide pricing conflict -- still just noted, not acted on.
+
 ---
 
 ## 1. What this is — full context & northstar
