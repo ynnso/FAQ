@@ -3075,9 +3075,12 @@
 <!-- Organization/WebSite/BreadcrumbList -- entity + freshness signals for
      AI answer engines and Google, separate from the FAQPage block above.
      foundingDate added 2026-09-02, verified against the real, live
-     shoot2sell.com/about page. Still deliberately no logo/sameAs/telephone
-     fields: no real, verified value for any of those exists anywhere in
-     this file or repo, and a fabricated one would be worse than none -- a
+     shoot2sell.com/about page. telephone + per-metro contactPoint array
+     added 2026-09-02, verified against the real, live shoot2sell.com/
+     llms.txt (the main site's own file, not this repo's) -- real numbers
+     for DFW/San Antonio/Austin/Houston. Still deliberately no logo/sameAs
+     fields: no real, verified value for either exists anywhere in this
+     file or repo, and a fabricated one would be worse than none -- a
      broken/wrong structured-data reference actively hurts trust signals
      rather than helping them. Add these fields for real once real ones
      exist. -->
@@ -3090,7 +3093,34 @@
          "@id" : "https://shoot2sell.com/#organization",
          "name" : "Shoot2Sell Photography",
          "url" : "https://shoot2sell.com",
-         "foundingDate" : "2011"
+         "foundingDate" : "2011",
+         "telephone" : "+1-214-272-3200",
+         "contactPoint" : [
+            {
+               "@type" : "ContactPoint",
+               "telephone" : "+1-214-272-3200",
+               "contactType" : "customer service",
+               "areaServed" : "Dallas-Fort Worth, TX"
+            },
+            {
+               "@type" : "ContactPoint",
+               "telephone" : "+1-210-200-8984",
+               "contactType" : "customer service",
+               "areaServed" : "San Antonio, TX"
+            },
+            {
+               "@type" : "ContactPoint",
+               "telephone" : "+1-512-649-9003",
+               "contactType" : "customer service",
+               "areaServed" : "Austin, TX"
+            },
+            {
+               "@type" : "ContactPoint",
+               "telephone" : "+1-346-980-4800",
+               "contactType" : "customer service",
+               "areaServed" : "Houston, TX"
+            }
+         ]
       },
       {
          "@type" : "WebSite",
