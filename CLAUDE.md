@@ -68,3 +68,12 @@ Replaces `FAQ MD.txt`, the original design brief — now stale against the live 
 **Automation limitation, confirmed again this pass:** the `computer` click tool times out specifically on this page's search-focus interaction (30s, no console errors). Worked around via synthetic PointerEvent/MouseEvent + `.focus()`, but `document.hasFocus()` is false in this environment, so real `:focus`/`:focus-within` CSS doesn't reliably engage even when `document.activeElement` is correct — computed DOM state is the strongest verification available here for anything gated on real focus.
 
 Full detail in `REFERENCE.md`.
+
+## Local SEO — decisions log, 2026-09-02
+
+**shoot2sell.net — leave it alone, no action.** Legacy domain, used up until recently, now migrated to shoot2sell.com (the newer/current domain). Sonny's read: historically Google will let the old domain age out and redirect naturally now that .com is established — not a fix to force in this repo. Revisit only if he raises it again.
+
+**Review/AggregateRating schema — decided against, real reason not a preference.** Considered adding star-rating structured data to the Organization schema (real data available: 4.5★ / 265 reviews, confirmed from Sonny's own live Google Business Profile). Not added, because it wouldn't work the way it sounds:
+- Google's structured data guidelines explicitly exclude *self-serving* reviews — an org marking up ratings about itself, on its own site, does not get shown as stars in organic search results. This is a stated policy rule, not a maybe.
+- The stars that actually show in search (local pack, Maps, knowledge panel) come from Google Business Profile directly — a completely separate system from anything in this file's schema. Adding markup here has zero effect on those.
+- Real lever for that star rating: growing the actual GBP review count/rating itself, which needs Sonny's GBP account access — outside anything this repo can touch.
