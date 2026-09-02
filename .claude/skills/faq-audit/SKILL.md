@@ -35,6 +35,21 @@ obj.mainEntity.filter(q => /^how much/i.test(q.name)).forEach(q => {
 });
 ```
 
+**Extend this to yes/no and "what is" questions too (confirmed 2026-09-02 — not just a rule on paper, actually run):**
+```js
+obj.mainEntity.forEach(q => {
+  const name = q.name, lead = q.acceptedAnswer.text.split(/(?<=[.:])\s/)[0];
+  if (/^(do|does|can|is|are|should|will|has|have)\b/i.test(name)) {
+    const ok = /^(yes|no)\b/i.test(lead.trim());
+    if (!ok) console.log('CHECK', name, '->', lead); // read before flagging as MISS, see below
+  } else if (/^what is\b/i.test(name)) {
+    const teaser = /^(great question|it depends|there are|we offer a variety|good question)/i.test(lead.trim());
+    if (teaser) console.log('MISS', name, '->', lead);
+  }
+});
+```
+**The yes/no regex over-flags — read every hit before treating it as a miss.** Run once on this file: 9 of 27 yes/no questions failed the literal `/^(yes|no)/` check, but 7 were already strong direct leads that just don't use the literal word — "Absolutely.", "Both.", "Not required, but strongly recommended." all answer immediately, just not as "Yes." Only 2 were real teaser leads ("Choose based on your priority:", "You have options —") that dodged the actual question; those got rewritten to state the direct answer first. Don't auto-rewrite every regex hit — a false-positive rewrite (e.g. turning "Absolutely." into "Yes.") makes the copy worse, not better.
+
 ## Outbound links: intent, not volume
 
 Link at genuine decision points — a definitional question and (this was a real gap found and fixed) the cost/pricing question for that same service, since that's the moment someone convinced by the price needs a next step. Don't force a link onto content with no natural single-service target (booking policy, delivery formats, dashboard/account, regional coverage) — that's the spam pattern to avoid, not a coverage goal to hit.
