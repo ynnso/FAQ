@@ -135,7 +135,13 @@ Real page is entirely procedural (approval process, image count, changes, turnar
 - **Genuine hub-unique value (VALUE):** ~40 questions
 - **Partial overlap:** ~6 questions
 
-## Phase 3 recommendation (not executed — this file is the input, not the decision)
+## Phase 3 execution log
+
+**Floor Plans — done, 2026-09-02.** 5 of 6 real DUP questions shrunk to a short answer + link to `https://shoot2sell.com/floor-plans` (Types offered, How measured, How quickly, Do they help sell homes, Can upload to MLS). Q2 "How much do floor plans cost?" reclassified DUP→DUP-BETTER mid-execution: live-fetched the real page and found it has no dollar figures at all, so ours stays full-detail, not cut. Q7 "Should someone be on-site" left as-is (Partial, per Phase 2). Q6's MLS-compliance disclaimer (marketing-illustration-only, not architectural) preserved verbatim through the shrink — legal content, not filler. All 5 shortened HTML answers had their matching JSON-LD `text` fields updated to match (was a real sync gap mid-session, now closed). Verified: JSON-LD parses (2 blocks, `node -e` check), HTML/schema text diffed identical for all 5, deep-link + screenshot + console-clean at 393×852.
+
+Commercial (6 of 11 DUP) is next per the original Phase 3 recommendation, not started.
+
+## Phase 3 recommendation (historical — superseded above for Floor Plans)
 
 Don't do a blanket cut. The data doesn't support one:
 1. **~30 DUP questions** are real candidates to shrink into a short answer + a harder link-out, since the full depth already exists on the linked page.
